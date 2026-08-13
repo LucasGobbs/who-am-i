@@ -6,11 +6,13 @@ interface Props {
   caption?: string;
 }
 const { src, alt, caption } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const resolved = src.startsWith("/") ? `${base}${src.replace(/^\//, "")}` : src;
 ---
 
 <figure style="margin: var(--gap-xl) 0; text-align: center;">
   <img
-    src={src}
+    src={resolved}
     alt={alt}
     loading="lazy"
     decoding="async"

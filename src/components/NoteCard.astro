@@ -64,7 +64,7 @@ const year = date.getFullYear();
           aria-label={title}
         >
           <img
-            src={thumbnail}
+            src={thumbnail!.startsWith("/") ? `${import.meta.env.BASE_URL}${thumbnail!.replace(/^\//, "")}` : thumbnail}
             alt={thumbnailAlt ?? title}
             loading="lazy"
             decoding="async"
