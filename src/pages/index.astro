@@ -35,7 +35,7 @@ const thoughts = (await getSortedThoughts()).slice(0, 3);
     <h2 style="margin-bottom: var(--gap-md);">Experience</h2>
     <ExperienceTimeline experiences={EXPERIENCES.slice(0, 1)} />
     <p style="margin-top: var(--gap-md);">
-      <a href="/resume">Full resume →</a>
+      <a href={`${import.meta.env.BASE_URL}resume/`}>Full resume →</a>
     </p>
   </section>
 
@@ -45,7 +45,7 @@ const thoughts = (await getSortedThoughts()).slice(0, 3);
       {PROJECTS.slice(0, 2).map((p) => <ProjectCard project={p} />)}
     </div>
     <p style="margin-top: var(--gap-md);">
-      <a href="/projects">All projects →</a>
+      <a href={`${import.meta.env.BASE_URL}projects/`}>All projects →</a>
     </p>
   </section>
 
@@ -57,7 +57,7 @@ const thoughts = (await getSortedThoughts()).slice(0, 3);
       thoughts.map((entry) => <NoteCard entry={entry} />)
     )}
     <p style="margin-top: var(--gap-md);">
-      <a href="/thoughts">All thoughts →</a>
+      <a href={`${import.meta.env.BASE_URL}thoughts/`}>All thoughts →</a>
     </p>
   </section>
 </PageLayout>

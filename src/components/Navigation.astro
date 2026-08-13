@@ -1,9 +1,14 @@
 ---
 import { NAV_LINKS, SITE_AUTHOR, SITE_ROLE } from "../consts";
 
+const base = import.meta.env.BASE_URL;
+const withBase = (href: string) =>
+  href === "/" ? base : `${base}${href.replace(/^\//, "")}`;
 const path = Astro.url.pathname;
-const isActive = (href: string) =>
-  href === "/" ? path === "/" : path.startsWith(href);
+const isActive = (href: string) => {
+  if (href === base) return path === base || path === base.replace(/\/$/, "");
+  return path.startsWith(href);
+};
 ---
 
 <header
@@ -13,7 +18,7 @@ const isActive = (href: string) =>
     style="max-width: 72ch; margin-inline: auto; padding: 1rem clamp(1.25rem, 5vw, 2rem); display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;"
   >
     <a
-      href="/"
+      href={base}
       style="text-decoration: none; font-family: var(--font-display); font-size: 1.15rem; letter-spacing: -0.01em; color: var(--ink);"
     >
       {SITE_AUTHOR}
@@ -28,17 +33,20 @@ const isActive = (href: string) =>
         style="list-style: none; padding: 0; margin: 0; display: flex; gap: 1.4rem; flex-wrap: wrap;"
       >
         {
-          NAV_LINKS.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                aria-current={isActive(link.href) ? "page" : undefined}
-                style="font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-decoration: none; color: var(--ink-soft); transition: color var(--dur-fast) var(--ease-out);"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))
+          NAV_LINKS.map((link) => {
+            const href = withBase(link.href);
+            return (
+              <li>
+                <a
+                  href={href}
+                  aria-current={isActive(href) ? "page" : undefined}
+                  style="font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-decoration: none; color: var(--ink-soft); transition: color var(--dur-fast) var(--ease-out);"
+                >
+                  {link.label}
+                </a>
+              </li>
+            );
+          })
         }
       </ul>
     </nav>

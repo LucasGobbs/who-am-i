@@ -29,7 +29,7 @@ const year = date.getFullYear();
     </time>
     <div class="note-text" style="flex: 1; min-width: 0;">
       <a
-        href={`/thoughts/${entry.id}/`}
+        href={`${import.meta.env.BASE_URL}thoughts/${entry.id}/`}
         style="text-decoration: none; font-family: var(--font-display); font-size: 1.1rem; color: var(--ink);"
       >
         {title}
@@ -58,7 +58,7 @@ const year = date.getFullYear();
     {
       hasThumb && (
         <a
-          href={`/thoughts/${entry.id}/`}
+          href={`${import.meta.env.BASE_URL}thoughts/${entry.id}/`}
           class="note-thumb-link"
           style="flex-shrink: 0; display: block; width: 96px; height: 64px; overflow: hidden; border-radius: var(--radius-sm); border: 1px solid var(--paper-edge); align-self: center;"
           aria-label={title}

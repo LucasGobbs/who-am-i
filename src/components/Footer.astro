@@ -1,6 +1,7 @@
 ---
 import { SOCIAL_LINKS, SITE_AUTHOR } from "../consts";
 const year = new Date().getFullYear();
+const base = import.meta.env.BASE_URL;
 ---
 
 <footer
@@ -18,16 +19,21 @@ const year = new Date().getFullYear();
       style="list-style: none; padding: 0; margin: 0; display: flex; gap: 1.1rem; flex-wrap: wrap;"
     >
       {
-        SOCIAL_LINKS.map((link) => (
-          <li>
-            <a
-              href={link.href}
-              style="font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-decoration: none; color: var(--ink-soft); transition: color var(--dur-fast) var(--ease-out);"
-            >
-              {link.label}
-            </a>
-          </li>
-        ))
+        SOCIAL_LINKS.map((link) => {
+          const href = link.href.startsWith("http") || link.href.startsWith("mailto")
+            ? link.href
+            : `${base}${link.href}`;
+          return (
+            <li>
+              <a
+                href={href}
+                style="font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-decoration: none; color: var(--ink-soft); transition: color var(--dur-fast) var(--ease-out);"
+              >
+                {link.label}
+              </a>
+            </li>
+          );
+        })
       }
     </ul>
   </div>

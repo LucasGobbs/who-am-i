@@ -2,6 +2,8 @@
 import PageLayout from "../layouts/PageLayout.astro";
 import { SITE_AUTHOR } from "../consts";
 
+const base = import.meta.env.BASE_URL;
+
 export type Tool = {
   name: string;
   description: string;
@@ -15,7 +17,7 @@ const TOOLS: Tool[] = [
     name: "QR Code Generator",
     description:
       "Paste a URL or text, get a scannable QR code. Runs entirely in your browser, no server roundtrip.",
-    href: "/tools/qr",
+    href: `${base}tools/qr/`,
     kind: "interactive",
     tag: "Generator",
   },
@@ -23,7 +25,7 @@ const TOOLS: Tool[] = [
     name: "Base64 Encode / Decode",
     description:
       "Convert text to Base64 and back. Handles UTF-8 correctly, client-side only.",
-    href: "/tools/base64",
+    href: `${base}tools/base64/`,
     kind: "interactive",
     tag: "Converter",
   },
@@ -31,7 +33,7 @@ const TOOLS: Tool[] = [
     name: "Unix Time Converter",
     description:
       "Convert between Unix timestamps and human-readable dates across timezones.",
-    href: "/tools/unix-time",
+    href: `${base}tools/unix-time/`,
     kind: "interactive",
     tag: "Converter",
   },

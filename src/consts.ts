@@ -12,18 +12,18 @@ export const SITE_LOCATION = "Espírito Santo, Brazil";
 
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/resume", label: "Resume" },
-  { href: "/projects", label: "Projects" },
-  { href: "/tools", label: "Tools" },
-  { href: "/thoughts", label: "Thoughts" },
-  { href: "/about", label: "About" },
+  { href: "/resume/", label: "Resume" },
+  { href: "/projects/", label: "Projects" },
+  { href: "/tools/", label: "Tools" },
+  { href: "/thoughts/", label: "Thoughts" },
+  { href: "/about/", label: "About" },
 ] as const;
 
 export const SOCIAL_LINKS = [
   { href: "https://github.com/LucasGobbs", label: "GitHub" },
   { href: "https://www.linkedin.com/in/lucascgobbi/", label: "LinkedIn" },
   { href: "llcostagobbi@gmail.com", label: "Email" },
-  { href: "/rss.xml", label: "RSS" },
+  { href: "rss.xml", label: "RSS" },
 ] as const;
 
 export type Experience = {

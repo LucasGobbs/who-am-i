@@ -26,7 +26,7 @@ const titleAttr = description ?? title;
     <article class="note-article">
       <header style="margin-bottom: var(--gap-xl);">
         <p class="label" style="margin: 0 0 0.75rem;">
-          <a href="/thoughts" style="text-decoration: none; color: var(--ink-mute);">← Thoughts</a>
+          <a href={`${import.meta.env.BASE_URL}thoughts/`} style="text-decoration: none; color: var(--ink-mute);">← Thoughts</a>
         </p>
         <h1 style="margin: 0 0 0.4rem; font-size: var(--step-display);">{title}</h1>
         <p
@@ -60,7 +60,7 @@ const titleAttr = description ?? title;
       >
         <div style="flex: 1; min-width: 0;">
           {prev ? (
-            <a href={`/thoughts/${prev.slug}/`} rel="prev" style="text-decoration: none;">
+            <a href={`${import.meta.env.BASE_URL}thoughts/${prev.slug}/`} rel="prev" style="text-decoration: none;">
               <span class="label" style="display: block; color: var(--ink-faint); margin-bottom: 0.2rem;">Older</span>
               <span style="font-family: var(--font-display); color: var(--ink-soft);">← {prev.title}</span>
             </a>
@@ -70,7 +70,7 @@ const titleAttr = description ?? title;
         </div>
         <div style="flex: 1; min-width: 0; text-align: right;">
           {next ? (
-            <a href={`/thoughts/${next.slug}/`} rel="next" style="text-decoration: none;">
+            <a href={`${import.meta.env.BASE_URL}thoughts/${next.slug}/`} rel="next" style="text-decoration: none;">
               <span class="label" style="display: block; color: var(--ink-faint); margin-bottom: 0.2rem;">Newer</span>
               <span style="font-family: var(--font-display); color: var(--ink-soft);">{next.title} →</span>
             </a>

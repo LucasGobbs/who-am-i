@@ -31,7 +31,7 @@ const years = [...byYear.keys()].sort((a, b) => b - a);
     Small posts and notes, mostly for future me.
   </p>
 
-  <InterestFilter current={current} basePath="/thoughts" />
+  <InterestFilter current={current} basePath={`${import.meta.env.BASE_URL}thoughts`} />
 
   <div data-interest-list>
     {

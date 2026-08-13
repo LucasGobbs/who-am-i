@@ -17,7 +17,7 @@ const current: "all" | Interest =
   <p class="label" style="margin: 0 0 0.5rem;">Work</p>
   <h1 style="margin: 0 0 var(--gap-lg);">Projects</h1>
 
-  <InterestFilter current={current} basePath="/projects" />
+  <InterestFilter current={current} basePath={`${import.meta.env.BASE_URL}projects`} />
 
   <div data-interest-list style="display: grid; gap: var(--gap-md);">
     {
