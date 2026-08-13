@@ -12,47 +12,70 @@ const years = [
 ].sort((a, b) => a - b);
 ---
 
-<p class="label" style="margin: 0 0 var(--gap-lg);">
+<p class="kicker" style="margin: 0 0 var(--gap-lg);">
   {years.join("  ·  ")}
 </p>
 
-<ol
-  style="list-style: none; padding: 0; margin: 0; border-left: 1px solid var(--paper-edge);"
->
+<ol class="timeline" style="list-style: none; padding: 0; margin: 0;">
   {
-    experiences.map((e) => (
-      <li style="position: relative; padding: 0 0 var(--gap-xl) 1.75rem;">
+    experiences.map((e, i) => (
+      <li class="timeline-item" style="position: relative; padding: 0 0 var(--gap-xxl) 2.5rem;">
         <span
-          style="position: absolute; left: -5px; top: 0.5rem; width: 9px; height: 9px; border-radius: 50%; background: var(--ink);"
+          class="timeline-dot"
+          style="position: absolute; left: 0; top: 0.35rem; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--paper); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 600; color: var(--accent);"
           aria-hidden="true"
-        />
+        >{String(i + 1).padStart(2, "0")}</span>
         <p
           class="label"
-          style="margin: 0 0 0.2rem; color: var(--ink-mute);"
+          style="margin: 0 0 0.4rem; color: var(--accent); font-weight: 600;"
         >
           {formatExperienceRange(e)}
         </p>
-        <h3 style="margin: 0 0 0.4rem; font-size: var(--step-title);">
+        <h3 style="margin: 0 0 0.5rem; font-size: 1.35rem; line-height: 1.15;">
           {e.role}
-          <span style="color: var(--ink-mute); font-family: var(--font-body); font-size: 0.95rem; margin-left: 0.4rem;">{e.company}</span>
         </h3>
-        <p style="margin: 0 0 var(--gap-sm); color: var(--ink-soft); font-size: 0.98rem;">
+        <p style="margin: 0 0 var(--gap-sm); font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-mute); letter-spacing: 0.04em; text-transform: uppercase;">
+          {e.company}
+        </p>
+        <p style="margin: 0 0 var(--gap-md); color: var(--ink-soft); font-size: 1rem; line-height: 1.6;">
           {e.summary}
         </p>
-        <ul style="margin: var(--gap-sm) 0; padding-left: 1.25rem; font-size: 0.93rem; color: var(--ink-soft);">
+        <ul style="margin: var(--gap-sm) 0; padding-left: 1.25rem; font-size: 0.94rem; color: var(--ink-soft); line-height: 1.55;">
           {e.highlights.map((h) => (
-            <li style="margin: 0.35rem 0;">{h}</li>
+            <li style="margin: 0.4rem 0;">{h}</li>
           ))}
         </ul>
         {e.tech.length > 0 && (
-          <p
-            class="label"
-            style="margin: var(--gap-sm) 0 0; color: var(--ink-faint); font-size: 0.72rem;"
+          <ul
+            class="tech-list"
+            style="list-style: none; padding: 0; margin: var(--gap-md) 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem;"
           >
-            {e.tech.join("  ·  ")}
-          </p>
+            {e.tech.map((t) => (
+              <li style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em; padding: 0.18rem 0.6rem; border: 1px solid var(--paper-edge); border-radius: var(--radius-pill); color: var(--ink-soft); background: var(--paper-deep);">
+                {t}
+              </li>
+            ))}
+          </ul>
         )}
       </li>
     ))
   }
 </ol>
+
+<style>
+  .timeline {
+    position: relative;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 0.75rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--paper-edge);
+  }
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+</style>

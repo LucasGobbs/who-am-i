@@ -247,26 +247,18 @@ export type Project = {
 
 export const PROJECTS: Project[] = [
   {
-    name: "Project One",
+    name: "Toy Raytracer",
     description:
-      "A short, honest description of what this project is and why it exists.",
-    tech: ["TypeScript", "Astro", "Postgres"],
-    role: "Creator, maintainer",
-    links: [
-      { label: "Source", href: "#" },
-      { label: "Live", href: "#" },
-    ],
-    interest: "development",
-  },
-  {
-    name: "Project Two",
-    description:
-      "Another project. Replace this placeholder with real content in consts.ts.",
-    tech: ["Go", "SQLite"],
+      "A small raytracer written in Rust to learn the math and physics behind light transport, reflections, and shading.",
+    tech: ["Rust"],
     role: "Creator",
-    links: [{ label: "Source", href: "#" }],
-    interest: "gamedev",
-  },
+    links: [
+      { label: "Source", href: "https://github.com/LucasGobbs/toy_raytracer" },
+    ],
+    thumbnail: "/projects/toy-raytracer/thumb.png",
+    thumbnailAlt: "Rendered scene from the toy raytracer",
+    interest: "development",
+  }
 ];
 
 export const SKILLS = [

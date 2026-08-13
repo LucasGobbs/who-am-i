@@ -14,16 +14,20 @@ import {
 import { getSortedThoughts } from "../lib/thoughts";
 
 const thoughts = (await getSortedThoughts()).slice(0, 3);
+const first = SITE_AUTHOR.charAt(0);
+const rest = SITE_AUTHOR.slice(1);
 ---
 
 <PageLayout title={`${SITE_AUTHOR} — ${SITE_ROLE}`} description={SITE_DESCRIPTION}>
-  <section>
-    <p class="label" style="margin: 0 0 0.75rem;">Notebook · Resume · Projects</p>
-    <h1 style="margin: 0 0 0.5rem;">{SITE_AUTHOR}</h1>
-    <p style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-mute); margin: 0 0 var(--gap-lg); letter-spacing: 0.03em;">
+  <section class="hero" style="margin: 0 0 var(--gap-xxl);">
+    <p class="kicker" style="margin: 0 0 1.2rem;">Notebook · Resume · Projects</p>
+    <h1 class="mega-name" style="margin: 0; font-size: var(--step-mega); line-height: 0.9; letter-spacing: -0.04em;">
+      <span style="color: var(--accent);">{first}</span><span>{rest}</span>
+    </h1>
+    <p style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--ink-mute); margin: 1.2rem 0 0; letter-spacing: 0.04em;">
       {SITE_ROLE} · {SITE_LOCATION}
     </p>
-    <p style="font-size: 1.1rem; line-height: 1.65; max-width: 60ch; color: var(--ink-soft);">
+    <p class="drop-cap" style="font-size: 1.15rem; line-height: 1.68; max-width: 58ch; color: var(--ink-soft); margin: var(--gap-xl) 0 0;">
       Software developer with 5+ years across backend, frontend, and DevOps.
       I build integrations and care about boring, observable, maintainable
       infrastructure. This site is my resume, my projects, and a small
@@ -31,8 +35,11 @@ const thoughts = (await getSortedThoughts()).slice(0, 3);
     </p>
   </section>
 
+  <div class="ornament" aria-hidden="true">✦ ✦ ✦</div>
+
   <section>
-    <h2 style="margin-bottom: var(--gap-md);">Experience</h2>
+    <p class="section-num">01</p>
+    <h2 style="margin: 0 0 var(--gap-lg);">Experience</h2>
     <ExperienceTimeline experiences={EXPERIENCES.slice(0, 1)} />
     <p style="margin-top: var(--gap-md);">
       <a href={`${import.meta.env.BASE_URL}resume/`}>Full resume →</a>
@@ -40,7 +47,8 @@ const thoughts = (await getSortedThoughts()).slice(0, 3);
   </section>
 
   <section>
-    <h2 style="margin-bottom: var(--gap-md);">Selected projects</h2>
+    <p class="section-num">02</p>
+    <h2 style="margin: 0 0 var(--gap-lg);">Selected projects</h2>
     <div style="display: grid; gap: var(--gap-md);">
       {PROJECTS.slice(0, 2).map((p) => <ProjectCard project={p} />)}
     </div>
@@ -50,7 +58,8 @@ const thoughts = (await getSortedThoughts()).slice(0, 3);
   </section>
 
   <section>
-    <h2 style="margin-bottom: var(--gap-md);">Latest thoughts</h2>
+    <p class="section-num">03</p>
+    <h2 style="margin: 0 0 var(--gap-lg);">Latest thoughts</h2>
     {thoughts.length === 0 ? (
       <p style="color: var(--ink-mute);">No thoughts yet.</p>
     ) : (

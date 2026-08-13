@@ -12,25 +12,25 @@ const isActive = (href: string) => {
 ---
 
 <header
-  style="border-bottom: 1px solid var(--paper-edge); background: var(--paper); position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(1.1);"
+  style="border-bottom: 1px solid var(--ink); background: var(--paper); position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(1.1);"
 >
   <div
-    style="max-width: 72ch; margin-inline: auto; padding: 1rem clamp(1.25rem, 5vw, 2rem); display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;"
+    style="max-width: 72ch; margin-inline: auto; padding: 0.9rem clamp(1.25rem, 5vw, 2rem); display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;"
   >
     <a
       href={base}
-      style="text-decoration: none; font-family: var(--font-display); font-size: 1.15rem; letter-spacing: -0.01em; color: var(--ink);"
+      style="text-decoration: none; font-family: var(--font-display); font-size: 1.3rem; letter-spacing: -0.02em; color: var(--ink); font-weight: 400;"
     >
-      {SITE_AUTHOR}
+      <span style="color: var(--accent);">L</span><span>ucas&nbsp;Gobbi</span>
       <span
-        style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-mute); margin-left: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500;"
+        style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-mute); margin-left: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; vertical-align: 0.1em;"
       >
         {SITE_ROLE}
       </span>
     </a>
     <nav aria-label="Primary">
       <ul
-        style="list-style: none; padding: 0; margin: 0; display: flex; gap: 1.4rem; flex-wrap: wrap;"
+        style="list-style: none; padding: 0; margin: 0; display: flex; gap: 1.3rem; flex-wrap: wrap;"
       >
         {
           NAV_LINKS.map((link) => {
@@ -40,7 +40,7 @@ const isActive = (href: string) => {
                 <a
                   href={href}
                   aria-current={isActive(href) ? "page" : undefined}
-                  style="font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-decoration: none; color: var(--ink-soft); transition: color var(--dur-fast) var(--ease-out);"
+                  style="font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; text-decoration: none; color: var(--ink-soft); transition: color var(--dur-fast) var(--ease-out);"
                 >
                   {link.label}
                 </a>
@@ -55,16 +55,9 @@ const isActive = (href: string) => {
 
 <style>
   a[aria-current="page"] {
-    color: var(--ink) !important;
-    text-decoration: underline;
-    text-decoration-color: var(--ink);
-    text-underline-offset: 0.3em;
-    text-decoration-thickness: 1px;
+    color: var(--accent) !important;
   }
   nav a:hover {
     color: var(--ink) !important;
-    text-decoration: underline;
-    text-decoration-color: var(--ink-mute);
-    text-underline-offset: 0.3em;
   }
 </style>
