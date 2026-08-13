@@ -1,0 +1,147 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { SITE_AUTHOR } from "../../consts";
+---
+
+<PageLayout
+  title={`Unix Time Converter — ${SITE_AUTHOR}`}
+  description="Convert between Unix timestamps and human-readable dates across timezones."
+>
+  <p class="label" style="margin: 0 0 0.5rem;">
+    <a href="/tools" style="text-decoration: none; color: var(--ink-mute);">← Tools</a>
+  </p>
+  <h1 style="margin: 0 0 var(--gap-lg);">Unix Time Converter</h1>
+
+  <div style="display: grid; gap: var(--gap-md); max-width: 56ch;">
+    <div>
+      <label
+        for="ux-unix"
+        style="display: block; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 var(--gap-xs);"
+      >
+        Unix timestamp (seconds)
+      </label>
+      <input
+        id="ux-unix"
+        type="text"
+        placeholder="1700000000"
+        style="width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 0.9rem; padding: var(--gap-sm) var(--gap-md); border: 1px solid var(--paper-edge); border-radius: var(--radius-md); background: var(--paper); color: var(--ink);"
+      />
+    </div>
+
+    <div>
+      <label
+        for="ux-date"
+        style="display: block; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 var(--gap-xs);"
+      >
+        Human-readable (ISO 8601)
+      </label>
+      <input
+        id="ux-date"
+        type="text"
+        placeholder="2023-11-14T22:13:20Z"
+        style="width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 0.9rem; padding: var(--gap-sm) var(--gap-md); border: 1px solid var(--paper-edge); border-radius: var(--radius-md); background: var(--paper-deep); color: var(--ink);"
+      />
+    </div>
+
+    <div style="display: flex; gap: var(--gap-sm); align-items: center; flex-wrap: wrap;">
+      <label
+        for="ux-tz"
+        style="font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-mute);"
+      >Timezone</label>
+      <select
+        id="ux-tz"
+        style="font-family: var(--font-mono); font-size: 0.82rem; padding: 0.25rem 0.5rem; border: 1px solid var(--paper-edge); border-radius: var(--radius-sm); background: var(--paper); color: var(--ink);"
+      >
+        <option value="UTC">UTC</option>
+        <option value="local">Local</option>
+        <option value="America/Sao_Paulo">America/Sao_Paulo</option>
+        <option value="America/New_York">America/New_York</option>
+        <option value="America/Los_Angeles">America/Los_Angeles</option>
+        <option value="Europe/London">Europe/London</option>
+        <option value="Europe/Berlin">Europe/Berlin</option>
+        <option value="Asia/Tokyo">Asia/Tokyo</option>
+      </select>
+      <button
+        id="ux-now"
+        type="button"
+        style="font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.3rem 0.8rem; border: 1px solid var(--paper-edge); border-radius: var(--radius-pill); background: var(--paper); color: var(--ink-mute); cursor: pointer; margin-left: auto;"
+      >Now</button>
+    </div>
+
+    <p
+      id="ux-err"
+      style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); margin: 0; min-height: 1.2em;"
+    ></p>
+  </div>
+</PageLayout>
+
+<script is:inline>
+  (() => {
+    const run = () => {
+      const unix = document.getElementById("ux-unix");
+      const date = document.getElementById("ux-date");
+      const tz = document.getElementById("ux-tz");
+      const err = document.getElementById("ux-err");
+      const now = document.getElementById("ux-now");
+      if (!unix || !date || !tz || !err || !now) return;
+
+      const fmt = (d) => {
+        const opts = {
+          year: "numeric", month: "2-digit", day: "2-digit",
+          hour: "2-digit", minute: "2-digit", second: "2-digit",
+          timeZone: tz.value === "local" ? undefined : tz.value,
+          timeZoneName: "short",
+        };
+        const parts = new Intl.DateTimeFormat("en-CA", opts).formatToParts(d);
+        const get = (t) => parts.find((p) => p.type === t)?.value ?? "";
+        return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}:${get("second")}${get("timeZoneName") ? " " + get("timeZoneName") : ""}`;
+      };
+
+      const parseLocal = (s) => {
+        const m = s.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})/);
+        if (!m) return null;
+        const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]));
+        if (tz.value !== "UTC" && tz.value !== "local") {
+          const offset = new Intl.DateTimeFormat("en-US", { timeZone: tz.value, timeZoneName: "shortOffset" }).formatToParts(d).find((p) => p.type === "timeZoneName")?.value;
+          if (offset) {
+            const om = offset.match(/GMT([+-]\d{1,2})?(:\d{2})?/);
+            if (om) {
+              const h = parseInt(om[1] || "0", 10);
+              const min = parseInt((om[2] || "").replace(":", "") || "0", 10);
+              d.setUTCMinutes(d.getUTCMinutes() - (h * 60 + (h < 0 ? -min : min)));
+            }
+          }
+        }
+        return d;
+      };
+
+      unix.addEventListener("input", () => {
+        err.textContent = "";
+        const v = Number(unix.value);
+        if (!unix.value.trim()) { date.value = ""; return; }
+        if (isNaN(v)) { err.textContent = "Invalid timestamp."; return; }
+        date.value = fmt(new Date(v * 1000));
+      });
+      date.addEventListener("input", () => {
+        err.textContent = "";
+        if (!date.value.trim()) { unix.value = ""; return; }
+        const d = parseLocal(date.value);
+        if (!d || isNaN(d.getTime())) { err.textContent = "Invalid date. Use YYYY-MM-DDTHH:MM:SS."; return; }
+        unix.value = Math.floor(d.getTime() / 1000);
+      });
+      tz.addEventListener("change", () => {
+        if (unix.value.trim()) unix.dispatchEvent(new Event("input"));
+      });
+      now.addEventListener("click", () => {
+        const t = Math.floor(Date.now() / 1000);
+        unix.value = t;
+        unix.dispatchEvent(new Event("input"));
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", run);
+    } else {
+      run();
+    }
+  })();
+</script>

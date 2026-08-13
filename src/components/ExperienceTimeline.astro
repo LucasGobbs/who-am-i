@@ -1,0 +1,58 @@
+---
+import type { Experience } from "../consts";
+import { formatExperienceRange } from "../consts";
+
+interface Props {
+  experiences: Experience[];
+}
+const { experiences } = Astro.props;
+
+const years = [
+  ...new Set(experiences.map((e) => e.startYear)),
+].sort((a, b) => a - b);
+---
+
+<p class="label" style="margin: 0 0 var(--gap-lg);">
+  {years.join("  ·  ")}
+</p>
+
+<ol
+  style="list-style: none; padding: 0; margin: 0; border-left: 1px solid var(--paper-edge);"
+>
+  {
+    experiences.map((e) => (
+      <li style="position: relative; padding: 0 0 var(--gap-xl) 1.75rem;">
+        <span
+          style="position: absolute; left: -5px; top: 0.5rem; width: 9px; height: 9px; border-radius: 50%; background: var(--ink);"
+          aria-hidden="true"
+        />
+        <p
+          class="label"
+          style="margin: 0 0 0.2rem; color: var(--ink-mute);"
+        >
+          {formatExperienceRange(e)}
+        </p>
+        <h3 style="margin: 0 0 0.4rem; font-size: var(--step-title);">
+          {e.role}
+          <span style="color: var(--ink-mute); font-family: var(--font-body); font-size: 0.95rem; margin-left: 0.4rem;">{e.company}</span>
+        </h3>
+        <p style="margin: 0 0 var(--gap-sm); color: var(--ink-soft); font-size: 0.98rem;">
+          {e.summary}
+        </p>
+        <ul style="margin: var(--gap-sm) 0; padding-left: 1.25rem; font-size: 0.93rem; color: var(--ink-soft);">
+          {e.highlights.map((h) => (
+            <li style="margin: 0.35rem 0;">{h}</li>
+          ))}
+        </ul>
+        {e.tech.length > 0 && (
+          <p
+            class="label"
+            style="margin: var(--gap-sm) 0 0; color: var(--ink-faint); font-size: 0.72rem;"
+          >
+            {e.tech.join("  ·  ")}
+          </p>
+        )}
+      </li>
+    ))
+  }
+</ol>

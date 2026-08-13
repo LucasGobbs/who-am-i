@@ -1,0 +1,91 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import ExperienceTimeline from "../components/ExperienceTimeline.astro";
+import {
+  EXPERIENCES,
+  SKILLS,
+  EDUCATION,
+  CERTIFICATES,
+  SITE_AUTHOR,
+} from "../consts";
+---
+
+<PageLayout
+  title={`Resume — ${SITE_AUTHOR}`}
+  description="Professional experience, skills, education, and certifications."
+>
+  <section>
+    <p class="label" style="margin: 0 0 0.5rem;">Curriculum</p>
+    <h1 style="margin: 0 0 var(--gap-xl);">Resume</h1>
+    <ExperienceTimeline experiences={EXPERIENCES} />
+  </section>
+
+  <section>
+    <h2 style="margin-bottom: var(--gap-md);">Skills</h2>
+    <dl style="margin: 0; display: grid; gap: var(--gap-md);">
+      {
+        SKILLS.map((group) => (
+          <div style="display: grid; grid-template-columns: 8rem 1fr; gap: var(--gap-md); align-items: baseline;">
+            <dt class="label" style="margin: 0; color: var(--ink-mute);">
+              {group.group}
+            </dt>
+            <dd style="margin: 0; font-size: 0.98rem; color: var(--ink-soft); line-height: 1.55;">
+              {group.items.join("  ·  ")}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section>
+    <h2 style="margin-bottom: var(--gap-md);">Education</h2>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      {
+        EDUCATION.map((edu) => (
+          <li style="margin: var(--gap-md) 0; padding-bottom: var(--gap-md); border-bottom: 1px solid var(--paper-edge);">
+            <p class="label" style="margin: 0 0 0.3rem; color: var(--ink-mute);">
+              {edu.startYear} – {edu.endYear ?? "present"}
+            </p>
+            <p style="margin: 0; font-family: var(--font-display); font-size: 1.05rem; color: var(--ink);">
+              {edu.degree}
+            </p>
+            <p style="margin: 0.2rem 0 0; font-size: 0.92rem; color: var(--ink-mute);">
+              {edu.institution}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section>
+    <h2 style="margin-bottom: var(--gap-md);">Certificates</h2>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      {
+        CERTIFICATES.map((cert) => (
+          <li style="margin: var(--gap-sm) 0; display: flex; gap: var(--gap-md); align-items: baseline; flex-wrap: wrap;">
+            <span class="label" style="color: var(--ink-faint); flex-shrink: 0; min-width: 3rem;">
+              {cert.year}
+            </span>
+            <span style="flex: 1; min-width: 0;">
+              <span style="font-family: var(--font-display); font-size: 1rem; color: var(--ink);">
+                {cert.name}
+              </span>
+              <span style="color: var(--ink-mute); font-size: 0.88rem; margin-left: 0.5rem;">
+                {cert.issuer}
+              </span>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section>
+    <h2 style="margin-bottom: var(--gap-md);">Contact</h2>
+    <p style="margin: 0; color: var(--ink-soft);">
+      See the footer for links, or reach out via email.
+    </p>
+  </section>
+</PageLayout>

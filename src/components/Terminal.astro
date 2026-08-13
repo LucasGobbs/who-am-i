@@ -1,0 +1,131 @@
+---
+// Faux terminal window, static HTML + tiny progressive-enhancement script
+// for per-line copy buttons. The one dark surface on the page.
+interface Props {
+  title?: string;
+}
+const { title = "terminal" } = Astro.props;
+---
+
+<figure
+  class="terminal"
+  data-terminal
+  style="margin: var(--gap-xl) 0; background: #050505; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid #1c1917; box-shadow: 0 8px 24px rgba(28,23,20,0.12);"
+>
+  <figcaption
+    style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.8rem; background: #0a0a0a; border-bottom: 1px solid #1c1917; font-family: var(--font-mono); font-size: 0.72rem; color: var(--terminal-mute); letter-spacing: 0.04em;"
+  >
+    <span
+      style="display: inline-flex; gap: 0.35rem;"
+      aria-hidden="true"
+    >
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444;"></span>
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></span>
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #22c55e;"></span>
+    </span>
+    <span style="margin-left: 0.5rem; opacity: 0.9;">{title}</span>
+  </figcaption>
+  <pre
+    style="margin: 0; padding: var(--gap-md) var(--gap-lg); font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6; color: var(--terminal-ink); overflow-x: auto;"
+  ><slot /></pre>
+</figure>
+
+<style>
+  :global(.terminal .term-line) {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  :global(.terminal .term-line .term-content) {
+    flex: 1;
+    min-width: 0;
+  }
+  :global(.terminal .term-prompt) {
+    color: var(--terminal-prompt);
+    user-select: none;
+    flex-shrink: 0;
+  }
+  :global(.terminal .term-output) {
+    color: var(--terminal-mute);
+    white-space: pre-wrap;
+    word-break: break-word;
+    display: block;
+  }
+  :global(.terminal .term-copy) {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: #57534e;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+  }
+  :global(.terminal .term-line:hover .term-copy),
+  :global(.terminal .term-copy:focus-visible) {
+    opacity: 1;
+  }
+  :global(.terminal .term-copy:hover) {
+    color: var(--terminal-ink);
+    background: #292524;
+  }
+  :global(.terminal .term-copy[data-copied="true"]) {
+    color: var(--terminal-prompt);
+    opacity: 1;
+  }
+  :global(.terminal .term-copy svg) {
+    width: 12px;
+    height: 12px;
+    display: block;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.terminal .term-copy) {
+      transition: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const blocks = document.querySelectorAll(".terminal[data-terminal]");
+    if (!blocks.length) return;
+    const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+    blocks.forEach((block) => {
+      const lines = block.querySelectorAll(".term-line");
+      lines.forEach((line) => {
+        const content = line.querySelector(".term-content");
+        if (!content) return;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "term-copy";
+        btn.setAttribute("aria-label", "Copy line to clipboard");
+        btn.innerHTML = ICON;
+        btn.addEventListener("click", async () => {
+          const text = content.textContent ?? "";
+          try {
+            await navigator.clipboard.writeText(text);
+            btn.innerHTML = CHECK;
+            btn.dataset.copied = "true";
+            setTimeout(() => {
+              btn.innerHTML = ICON;
+              delete btn.dataset.copied;
+            }, 1200);
+          } catch (e) {
+            console.error("Clipboard write failed", e);
+          }
+        });
+        line.appendChild(btn);
+      });
+    });
+  })();
+</script>

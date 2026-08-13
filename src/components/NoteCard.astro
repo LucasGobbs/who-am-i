@@ -1,0 +1,88 @@
+---
+import Tag from "./Tag.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"thoughts">;
+}
+const { entry } = Astro.props;
+const { title, date, tags, description, thumbnail, thumbnailAlt } = entry.data;
+const hasThumb = Boolean(thumbnail);
+
+const mmdd = new Intl.DateTimeFormat("en-US", {
+  month: "2-digit",
+  day: "2-digit",
+}).format(date);
+const year = date.getFullYear();
+---
+
+<article
+  class:list={["note-card", { "has-thumb": hasThumb }]}
+  style="margin: 0.9rem 0; padding: 0.5rem 0; border-bottom: 1px solid var(--paper-edge);"
+>
+  <div class="note-row" style="display: flex; gap: 1rem; align-items: baseline; flex-wrap: wrap;">
+    <time
+      datetime={date.toISOString()}
+      style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-mute); flex-shrink: 0; min-width: 4rem; letter-spacing: 0.04em;"
+    >
+      {year}.{mmdd}
+    </time>
+    <div class="note-text" style="flex: 1; min-width: 0;">
+      <a
+        href={`/thoughts/${entry.id}/`}
+        style="text-decoration: none; font-family: var(--font-display); font-size: 1.1rem; color: var(--ink);"
+      >
+        {title}
+      </a>
+      {
+        description && (
+          <p style="margin: 0.3rem 0 0; color: var(--ink-mute); font-size: 0.9rem; line-height: 1.5;">
+            {description}
+          </p>
+        )
+      }
+      {
+        tags.length > 0 && (
+          <ul
+            style="list-style: none; padding: 0; margin: 0.6rem 0 0; display: flex; gap: 0.4rem; flex-wrap: wrap;"
+          >
+            {tags.map((t) => (
+              <li>
+                <Tag>{t}</Tag>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+    {
+      hasThumb && (
+        <a
+          href={`/thoughts/${entry.id}/`}
+          class="note-thumb-link"
+          style="flex-shrink: 0; display: block; width: 96px; height: 64px; overflow: hidden; border-radius: var(--radius-sm); border: 1px solid var(--paper-edge); align-self: center;"
+          aria-label={title}
+        >
+          <img
+            src={thumbnail}
+            alt={thumbnailAlt ?? title}
+            loading="lazy"
+            decoding="async"
+            style="display: block; width: 100%; height: 100%; object-fit: cover;"
+          />
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  /* On narrow viewports the thumbnail wraps below and stretches. */
+  @media (max-width: 480px) {
+    .note-card.has-thumb .note-thumb-link {
+      width: 100%;
+      height: 140px;
+      margin-top: 0.5rem;
+    }
+  }
+</style>

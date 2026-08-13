@@ -1,0 +1,200 @@
+---
+title: "A demo of every visual toy"
+description: "What's possible inside a thought post — terminals, canvas, quotes, asides, sized text, images, and code."
+date: 2026-08-12
+tags:
+  - meta
+  - demo
+thumbnail: "/favicon.svg"
+thumbnailAlt: "Square zine mark: italic lg on cream paper."
+interest: "development"
+---
+
+import Terminal from "../../components/Terminal.astro";
+import TerminalLine from "../../components/TerminalLine.astro";
+import TerminalOutput from "../../components/TerminalOutput.astro";
+import Callout from "../../components/Callout.astro";
+import Pullquote from "../../components/Pullquote.astro";
+import Sized from "../../components/Sized.astro";
+import Figure from "../../components/Figure.astro";
+import Canvas from "../../components/Canvas.astro";
+import Section from "../../components/Section.astro";
+import Divider from "../../components/Divider.astro";
+import Cite from "../../components/Cite.astro";
+import References from "../../components/References.astro";
+import Math from "../../components/Math.astro";
+
+This post exists to show what you can do inside a thought. Copy any block
+below into a new `.mdx` file and edit it.
+
+<Section title="Headings, emphasis, and size">
+  Normal Markdown works everywhere: **bold**, *italic*, `inline code`,
+  [links](https://example.com), and lists.
+
+  <Sized as="h3" size="lg" align="center" serif>A large centered heading</Sized>
+
+  <Sized size="sm" color="mute" align="center">fine print, smaller and muted</Sized>
+</Section>
+
+<Divider variant="dots" space="md" />
+
+<Section title="Blockquotes, pull-quotes, and callouts">
+  A normal Markdown blockquote:
+
+  > Boring infrastructure is underrated.
+
+  A larger editorial pull-quote:
+
+  <Pullquote>The fastest code is the code you never wrote.</Pullquote>
+
+  Asides for notes, warnings, and tips:
+
+  <Callout kind="note">
+    This is a side note. It renders as a muted box.
+  </Callout>
+
+  <Callout kind="warn" title="Don't">
+    Never run <code>rm -rf /</code> in production. Probably.
+  </Callout>
+
+  <Callout kind="tip">
+    Store UTC. Render in the user's locale. This is advice, not a suggestion.
+  </Callout>
+</Section>
+
+<Divider variant="dotted" space="md" />
+
+<Section title="Code blocks">
+  Fenced code blocks work as usual:
+
+  ```python
+  def idempotent(handler):
+      def wrapped(event):
+          if already_processed(event.id):
+              return "ok"
+          handler(event)
+          mark_processed(event.id)
+          return "ok"
+      return wrapped
+  ```
+</Section>
+
+<Section title="Terminal">
+  A faux terminal window — static, no JS:
+
+  <Terminal title="bash — lucas@thinkpad">
+    <TerminalLine prompt="$">git push --force</TerminalLine>
+    <TerminalOutput>Everything is fine.</TerminalOutput>
+    <TerminalLine prompt="$">echo "probably fine"</TerminalLine>
+    <TerminalOutput>probably fine</TerminalOutput>
+  </Terminal>
+</Section>
+
+<Divider variant="line" space="lg" />
+
+<Section title="Images and figures">
+  Drop images under `public/thoughts/<slug>/` and reference them with `/thoughts/<slug>/file.png`.
+
+  <Figure
+    src="/favicon.svg"
+    alt="The site favicon as a placeholder image."
+    caption="Figure 1: a placeholder. Replace with a real diagram."
+  />
+</Section>
+
+<Section title="Animated canvas">
+  A tiny inline canvas animation. Paused when offscreen, and rendered as a
+  single static frame when the user prefers reduced motion.
+
+  <Canvas
+    id="sine-demo"
+    width={600}
+    height={120}
+    caption="Figure 2: a sine wave. Animation only runs while in view."
+    draw={`(ctx, t, w, h) => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = "#1a1714";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const y = h / 2 + Math.sin((x + t) * 0.04) * 32;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }`}
+  />
+</Section>
+
+<Section title="GIFs">
+  GIFs are just images. Drop a `.gif` in `public/thoughts/<slug>/` and use
+  `<Figure>` or plain Markdown:
+
+  ```mdx
+  ![alt text](/thoughts/my-post/animation.gif)
+  ```
+</Section>
+
+<Divider variant="space" space="lg" />
+
+<Section title="Thumbnails (optional)">
+  A thought can carry a thumbnail that shows up on the thoughts index and
+  homepage latest list. Add `thumbnail` (and optional `thumbnailAlt`) to the
+  frontmatter:
+
+  ```yaml
+  ---
+  title: "My thought"
+  date: 2026-08-13
+  tags: [software]
+  thumbnail: "/thoughts/my-thought/cover.png"
+  thumbnailAlt: "A diagram of the system described below."
+  ---
+  ```
+
+  Drop the image under `public/thoughts/<slug>/`. If `thumbnail` is absent, the
+  list renders as a plain row. This post has one set, so the index shows it.
+</Section>
+
+<Section title="That's it">
+  If you need richer state or interaction than the canvas helper allows, write
+  a Svelte component in `src/components/` and import it here with `client:visible`:
+
+  ```mdx
+  import InteractiveTimeline from "../../components/InteractiveTimeline.svelte";
+
+  <InteractiveTimeline client:visible />
+  ```
+</Section>
+
+<Divider variant="line" space="lg" />
+
+<Section title="Citations and references">
+  Inline citations link to the reference list at the bottom of the post.
+  Use <Cite id="knuth1984" /> for academic-style links<Cite id="knuth1984" />.
+
+  Multiple references work too<Cite id="ritchie1978" />, and they all
+  jump to the matching entry below.
+</Section>
+
+<Section title="Math and equations">
+  Inline math like <Math>E = mc<sup>2</sup></Math> fits in the sentence.
+  Block equations center on their own line:
+
+  <Math block label="eq:energy">
+    E = m c<sup>2</sup>
+  </Math>
+
+  Labeled equations can be referenced by their label, rendered as `(energy)`
+  next to the equation. Superscripts use `<sup>`, subscripts use `<sub>`:
+
+  <Math block label="eq:newton">
+    F = m a = G m<sub>1</sub> m<sub>2</sub> / r<sup>2</sup>
+  </Math>
+</Section>
+
+<References
+  items={[
+    { id: "knuth1984", html: "Donald E. Knuth, <em>The TeXbook</em>, Addison-Wesley, 1984." },
+    { id: "ritchie1978", html: "Dennis M. Ritchie and Ken Thompson, <em>The UNIX Time-Sharing System</em>, Bell System Technical Journal 57(6), 1978." },
+  ]}
+/>

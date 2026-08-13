@@ -1,0 +1,39 @@
+---
+// Sized text wrapper for editorial emphasis.
+interface Props {
+  as?: "h1" | "h2" | "h3" | "h4" | "p" | "span" | "div";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  align?: "left" | "center" | "right";
+  color?: "ink" | "soft" | "mute" | "faint" | "accent";
+  serif?: boolean;
+}
+const {
+  as: Tag = "p",
+  size = "md",
+  align = "left",
+  color = "ink",
+  serif = false,
+} = Astro.props;
+
+const sizes: Record<string, string> = {
+  xs: "0.78rem",
+  sm: "0.9rem",
+  md: "1rem",
+  lg: "1.4rem",
+  xl: "1.9rem",
+};
+const colors: Record<string, string> = {
+  ink: "var(--ink)",
+  soft: "var(--ink-soft)",
+  mute: "var(--ink-mute)",
+  faint: "var(--ink-faint)",
+  accent: "var(--accent)",
+};
+const family = serif ? "var(--font-display)" : "var(--font-body)";
+---
+
+<Tag
+  style={`font-family: ${family}; font-size: ${sizes[size]}; line-height: 1.5; text-align: ${align}; color: ${colors[color]}; margin: var(--gap-md) 0; display: block;`}
+>
+  <slot />
+</Tag>

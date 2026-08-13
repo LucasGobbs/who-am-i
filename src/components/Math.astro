@@ -1,0 +1,60 @@
+---
+// Math equation widget. Renders inline or block via KaTeX-like manual layout.
+// No external deps — just styled HTML. For real LaTeX, use KaTeX remark plugin later.
+// Usage:
+//   <Math>E = mc^2</Math>                     → inline
+//   <Math block>E = mc^2</Math>               → block, centered
+//   <Math block label="eq:energy">E = mc^2</Math>  → numbered, referenceable
+// For superscript/subscript, use <sup>/<sub> tags inside:
+//   <Math block>E = m<sup>2</sup>c<sup>4</sup></Math>
+interface Props {
+  block?: boolean;
+  label?: string;
+}
+const { block = false, label } = Astro.props;
+---
+
+{
+  block ? (
+    <figure
+      class="math-block"
+      id={label ? `eq-${label}` : undefined}
+      style="margin: var(--gap-lg) 0; text-align: center; overflow-x: auto;"
+    >
+      <div
+        style="font-family: 'Libre Caslon Display', 'Iowan Old Style', Georgia, serif; font-size: 1.15rem; font-style: italic; color: var(--ink); line-height: 1.8; padding: var(--gap-sm) var(--gap-md); display: inline-block;"
+      >
+        <slot />
+      </div>
+      {label && (
+        <span
+          style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-faint); margin-left: 1rem; vertical-align: middle;"
+        >
+          ({label.replace(/^eq:/, "")})
+        </span>
+      )}
+    </figure>
+  ) : (
+    <span
+      class="math-inline"
+      style="font-family: 'Libre Caslon Display', 'Iowan Old Style', Georgia, serif; font-style: italic; font-size: 1.05em; color: var(--ink); padding: 0 0.15em;"
+    >
+      <slot />
+    </span>
+  )
+}
+
+<style is:global>
+  .math-block sup,
+  .math-inline sup {
+    font-size: 0.7em;
+    vertical-align: super;
+    font-style: normal;
+  }
+  .math-block sub,
+  .math-inline sub {
+    font-size: 0.7em;
+    vertical-align: sub;
+    font-style: normal;
+  }
+</style>

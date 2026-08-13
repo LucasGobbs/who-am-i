@@ -1,0 +1,19 @@
+---
+// Inline academic-style citation. Links to a Reference entry at the bottom.
+// Usage: <Cite id="knuth1984" /> → renders [?] linking to #ref-knuth1984
+// Number is filled client-side from the <References> list order.
+// Optional n prop overrides auto-numbering if you want manual control.
+interface Props {
+  id: string;
+  n?: number;
+}
+const { id, n } = Astro.props;
+---
+
+<a
+  href={`#ref-${id}`}
+  class="cite"
+  data-cite={id}
+  data-cite-n={n ?? undefined}
+  style="font-family: var(--font-mono); font-size: 0.78em; color: var(--accent); text-decoration: none; vertical-align: super; line-height: 0; margin-left: 0.1em; transition: color var(--dur-fast) var(--ease-out);"
+>[{n ?? "?"}]</a>

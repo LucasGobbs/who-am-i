@@ -1,0 +1,120 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { SITE_AUTHOR } from "../../consts";
+---
+
+<PageLayout
+  title={`Base64 Encode / Decode — ${SITE_AUTHOR}`}
+  description="Convert text to Base64 and back. UTF-8 safe. Runs in your browser."
+>
+  <p class="label" style="margin: 0 0 0.5rem;">
+    <a href="/tools" style="text-decoration: none; color: var(--ink-mute);">← Tools</a>
+  </p>
+  <h1 style="margin: 0 0 var(--gap-lg);">Base64 Encode / Decode</h1>
+
+  <div style="display: grid; gap: var(--gap-md); max-width: 56ch;">
+    <div>
+      <label
+        for="b64-input"
+        style="display: block; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 var(--gap-xs);"
+      >
+        Input
+      </label>
+      <textarea
+        id="b64-input"
+        rows="4"
+        placeholder="Type text to encode, or Base64 to decode"
+        style="width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 0.9rem; padding: var(--gap-sm) var(--gap-md); border: 1px solid var(--paper-edge); border-radius: var(--radius-md); background: var(--paper); color: var(--ink); resize: vertical;"
+      ></textarea>
+    </div>
+
+    <div style="display: flex; gap: var(--gap-sm);">
+      <button
+        id="b64-encode"
+        type="button"
+        style="font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.4rem 0.9rem; border: 1px solid var(--paper-edge); border-radius: var(--radius-pill); background: var(--paper-deep); color: var(--ink-soft); cursor: pointer; transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);"
+      >Encode →</button>
+      <button
+        id="b64-decode"
+        type="button"
+        style="font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.4rem 0.9rem; border: 1px solid var(--paper-edge); border-radius: var(--radius-pill); background: var(--paper-deep); color: var(--ink-soft); cursor: pointer; transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);"
+      >← Decode</button>
+      <button
+        id="b64-swap"
+        type="button"
+        style="font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.4rem 0.9rem; border: 1px solid var(--paper-edge); border-radius: var(--radius-pill); background: var(--paper); color: var(--ink-mute); cursor: pointer; transition: color var(--dur-fast) var(--ease-out);"
+      >Swap ↑↓</button>
+    </div>
+
+    <div>
+      <label
+        for="b64-output"
+        style="display: block; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 var(--gap-xs);"
+      >
+        Output
+      </label>
+      <textarea
+        id="b64-output"
+        rows="4"
+        readonly
+        style="width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 0.9rem; padding: var(--gap-sm) var(--gap-md); border: 1px solid var(--paper-edge); border-radius: var(--radius-md); background: var(--paper-deep); color: var(--ink); resize: vertical;"
+      ></textarea>
+    </div>
+
+    <p
+      id="b64-error"
+      style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); margin: 0; min-height: 1.2em;"
+    ></p>
+  </div>
+</PageLayout>
+
+<script is:inline>
+  (() => {
+    const run = () => {
+      const input = document.getElementById("b64-input");
+      const output = document.getElementById("b64-output");
+      const err = document.getElementById("b64-error");
+      const enc = document.getElementById("b64-encode");
+      const dec = document.getElementById("b64-decode");
+      const swap = document.getElementById("b64-swap");
+      if (!input || !output || !err || !enc || !dec || !swap) return;
+
+      const encode = () => {
+        err.textContent = "";
+        try {
+          const bytes = new TextEncoder().encode(input.value);
+          let bin = "";
+          bytes.forEach((b) => bin += String.fromCharCode(b));
+          output.value = btoa(bin);
+        } catch (e) {
+          err.textContent = "Encode failed.";
+        }
+      };
+      const decode = () => {
+        err.textContent = "";
+        try {
+          const bin = atob(input.value.trim());
+          const bytes = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+          output.value = new TextDecoder().decode(bytes);
+        } catch (e) {
+          err.textContent = "Invalid Base64 input.";
+          output.value = "";
+        }
+      };
+
+      enc.addEventListener("click", encode);
+      dec.addEventListener("click", decode);
+      swap.addEventListener("click", () => {
+        const a = input.value;
+        input.value = output.value;
+        output.value = a;
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", run);
+    } else {
+      run();
+    }
+  })();
+</script>

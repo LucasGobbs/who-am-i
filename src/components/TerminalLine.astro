@@ -1,0 +1,9 @@
+---
+// Command line inside <Terminal>. Renders prompt + content span (the part
+// that gets copied) — the copy button is injected by Terminal's script.
+interface Props {
+  prompt?: string;
+}
+const { prompt = "$" } = Astro.props as Props;
+---
+<code class="term-line"><span class="term-prompt">{prompt}</span><span class="term-content"><slot /></span></code>

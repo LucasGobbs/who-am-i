@@ -1,0 +1,300 @@
+@import "tailwindcss";
+
+/* Libre Caslon Display — display serif, characterful. */
+@import "@fontsource/libre-caslon-display/400.css";
+/* Hanken Grotesk — warm humanist sans, weights 300/400/500/600/700. */
+@import "@fontsource/hanken-grotesk/300.css";
+@import "@fontsource/hanken-grotesk/400.css";
+@import "@fontsource/hanken-grotesk/500.css";
+@import "@fontsource/hanken-grotesk/600.css";
+@import "@fontsource/hanken-grotesk/700.css";
+/* Spline Sans Mono — characterful mono for metadata + terminal. */
+@import "@fontsource/spline-sans-mono/400.css";
+@import "@fontsource/spline-sans-mono/500.css";
+@import "@fontsource/spline-sans-mono/600.css";
+
+/* Design tokens — Hand-Bound Zine. Edit here to retheme the whole site. */
+:root {
+  /* Paper ladder */
+  --paper: #f7f2e8;
+  --paper-deep: #efe7d5;
+  --paper-edge: #e4d9c2;
+  --paper-recess: #e9dfc9;
+
+  /* Ink ladder */
+  --ink: #1a1714;
+  --ink-soft: #3a322b;
+  --ink-mute: #6b6155;
+  --ink-faint: #9a8f7f;
+
+  /* Accent — oxblood, used ≤10% per screen */
+  --accent: #7c2d12;
+  --accent-soft: #9a4226;
+
+  /* Terminal (the one dark surface) */
+  --terminal-bg: #050505;
+  --terminal-ink: #e7e5e4;
+  --terminal-prompt: #22c55e;
+  --terminal-mute: #a8a29e;
+
+  /* Fonts */
+  --font-display: "Libre Caslon Display", "Iowan Old Style", Georgia,
+    "Times New Roman", serif;
+  --font-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, "SF Mono", Menlo, Consolas,
+    monospace;
+
+  /* Type scale — ≥1.25 step */
+  --step-display: clamp(2rem, 5vw, 3rem);
+  --step-headline: 1.5rem;
+  --step-title: 1.2rem;
+  --step-body: 1.05rem;
+  --step-label: 0.8rem;
+  --step-mono: 0.88rem;
+
+  /* Spacing rhythm */
+  --gap-xs: 0.25rem;
+  --gap-sm: 0.5rem;
+  --gap-md: 1rem;
+  --gap-lg: 1.5rem;
+  --gap-xl: 2.5rem;
+  --gap-xxl: 4rem;
+
+  /* Radii */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* ease-out-quint */
+  --dur-fast: 120ms;
+  --dur-med: 240ms;
+}
+
+html {
+  font-family: var(--font-body);
+  font-size: 17px;
+  background-color: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--paper);
+  /* Subtle paper grain via layered gradients. Cheap, no image request. */
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(124, 45, 18, 0.015) 0, transparent 38%),
+    radial-gradient(circle at 88% 82%, rgba(58, 50, 43, 0.02) 0, transparent 42%);
+  background-attachment: fixed;
+}
+
+main {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 72ch;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 2rem);
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+}
+
+/* Headings: the serif speaks. */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  line-height: 1.15;
+}
+
+h1 {
+  font-size: var(--step-display);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--gap-md);
+}
+h2 {
+  font-size: var(--step-headline);
+  margin: var(--gap-xl) 0 var(--gap-md);
+}
+h3 {
+  font-size: var(--step-title);
+  margin: var(--gap-lg) 0 var(--gap-sm);
+}
+
+p {
+  margin: var(--gap-md) 0;
+  line-height: 1.7;
+  max-width: 70ch;
+}
+
+/* Links: ink at rest, oxblood on visited, underline grows on hover. */
+a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--ink-mute);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-thickness var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+a:visited {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+a:hover {
+  text-decoration-thickness: 2px;
+  color: var(--ink);
+}
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* Mono for code, dates, tags. */
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
+  font-size: var(--step-mono);
+}
+
+/* Labels: mono, tracked. */
+.eyebrow, .label {
+  font-family: var(--font-mono);
+  font-size: var(--step-label);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* Section rhythm — vary, don't be monotone. */
+section {
+  margin-block: var(--gap-xl);
+}
+section:first-child {
+  margin-top: 0;
+}
+section:last-child {
+  margin-bottom: 0;
+}
+
+/* Hairline rules: paper-edge, never hard black. */
+hr {
+  border: 0;
+  border-top: 1px solid var(--paper-edge);
+  margin-block: var(--gap-xl);
+}
+
+/* Lists: generous line height, ink bullets. */
+ul, ol {
+  margin: var(--gap-md) 0;
+  padding-left: 1.5rem;
+}
+li {
+  margin: 0.4rem 0;
+  line-height: 1.65;
+}
+li::marker {
+  color: var(--ink-mute);
+}
+
+/* Inline code: paper-deep chip, not a hard box. */
+:not(pre) > code {
+  background: var(--paper-deep);
+  padding: 0.12em 0.4em;
+  border-radius: var(--radius-sm);
+  font-size: 0.92em;
+  color: var(--ink-soft);
+}
+
+/* Fenced code: paper-deep block. */
+pre {
+  background: var(--paper-deep);
+  color: var(--ink);
+  padding: var(--gap-md) var(--gap-lg);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  line-height: 1.55;
+  border: 1px solid var(--paper-edge);
+}
+pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font-size: var(--step-mono);
+}
+
+/* Blockquote: paper-recess ground, ink-soft text, no side stripe. */
+blockquote {
+  margin: var(--gap-lg) 0;
+  padding: var(--gap-md) var(--gap-lg);
+  background: var(--paper-recess);
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* Images: rounded softly, never overflow. */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
+/* Tables: paper-deep header, hairlines. */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--gap-lg) 0;
+  font-size: var(--step-mono);
+}
+th, td {
+  border-bottom: 1px solid var(--paper-edge);
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+}
+th {
+  background: var(--paper-deep);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: var(--step-label);
+  color: var(--ink-mute);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* Motion: support meaning, respect reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Subtle scroll fade for thought lists. Opt-in via .fade-in. */
+.fade-in {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--dur-med) var(--ease-out),
+    transform var(--dur-med) var(--ease-out);
+}
+.fade-in.is-visible {
+  opacity: 1;
+  transform: none;
+}

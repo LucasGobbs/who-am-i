@@ -1,0 +1,66 @@
+---
+title: "Flowing from Aseprite to Unity: My workflow to send assets to Unity"
+description: "What's possible inside a thought post — terminals, canvas, quotes, asides, sized text, images, and code."
+date: 2024-03-26
+tags:
+  - tools
+  - integration
+  - aseprite
+  - gamedev
+thumbnail: "/favicon.svg"
+thumbnailAlt: "Square zine mark: italic lg on cream paper."
+interest: "gamedev"
+---
+
+import Terminal from "../../components/Terminal.astro";
+import TerminalLine from "../../components/TerminalLine.astro";
+import TerminalOutput from "../../components/TerminalOutput.astro";
+import Callout from "../../components/Callout.astro";
+import Pullquote from "../../components/Pullquote.astro";
+import Sized from "../../components/Sized.astro";
+import Figure from "../../components/Figure.astro";
+import Canvas from "../../components/Canvas.astro";
+import Section from "../../components/Section.astro";
+import Divider from "../../components/Divider.astro";
+
+<Callout kind="note">
+  This post is a port of an medium post https://medium.com/@tinoakstudios/flowing-from-aseprite-to-unity-61e6fa4f73e0
+</Callout>
+Hello everyone,
+
+Over the past six years or more, I've relied on Aseprite for the bulk of my creative projects. Throughout this time, one consistent challenge has been the transition from creating sprites in Aseprite to integrating them into game engines.
+
+However, I've continually found ways to optimize my workflow, employing various tricks and scripts to mitigate these challenges. With the recent introduction of the Aseprite importer plugin and the refinement of my own scripts and techniques, I've managed to develop a highly efficient process.
+
+This flow virtually eliminates the overhead traditionally associated with iterating on my artwork, allowing me to focus more on the creative process itself.
+
+<Divider variant="dots" space="lg" />
+
+For context, currently I'm in the development of a project titled VoidBite, a top-down shooter featuring spaceships and elements of bullet hell. During the development, I encountered significant challenges when transferring sprites to Unity. Mainly because despite finding an art style that I quite liked, all the sprites and elements tended to blend together on the game screen, which detracted from the visual “coolness” of the game.
+
+To address this issue, I adopted a highly iterative approach to creating the artwork.
+
+This involved:
+1. Generating a base sprite
+2. Integrating it into Unity (In the beginning using sprite atlas)
+3. Checking its visual impact
+4. Refining
+5. Step 2 AGAIN A LOT OF TIMES
+
+Ensuring that each sprite contributed effectively to the overall visual composition.
+
+> In the initial stages, integrating the different components was a **tedious** and **time-consuming** process. In addition, the fact that most game elements exhibited similar behavior only exacerbated the **redundancy** of the work
+
+With these challenges in mind, I devised a workflow aimed at facilitating rapid iterations and implementing generic animation behaviors. This approach not only expedited the development process but also ensured consistency and cohesion across all elements of the game.
+
+<br />
+Here's how the process unfolds:
+
+<Section title="Using the plugin Aseprite Import Unity (Initial Workflow)">
+  Normal Markdown works everywhere: **bold**, *italic*, `inline code`,
+  [links](https://example.com), and lists.
+
+  <Sized as="h3" size="lg" align="center" serif>A large centered heading</Sized>
+
+  <Sized size="sm" color="mute" align="center">fine print, smaller and muted</Sized>
+</Section>

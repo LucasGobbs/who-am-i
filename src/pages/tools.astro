@@ -1,0 +1,93 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { SITE_AUTHOR } from "../consts";
+
+export type Tool = {
+  name: string;
+  description: string;
+  href: string;
+  kind: "static" | "interactive";
+  tag?: string;
+};
+
+const TOOLS: Tool[] = [
+  {
+    name: "QR Code Generator",
+    description:
+      "Paste a URL or text, get a scannable QR code. Runs entirely in your browser, no server roundtrip.",
+    href: "/tools/qr",
+    kind: "interactive",
+    tag: "Generator",
+  },
+  {
+    name: "Base64 Encode / Decode",
+    description:
+      "Convert text to Base64 and back. Handles UTF-8 correctly, client-side only.",
+    href: "/tools/base64",
+    kind: "interactive",
+    tag: "Converter",
+  },
+  {
+    name: "Unix Time Converter",
+    description:
+      "Convert between Unix timestamps and human-readable dates across timezones.",
+    href: "/tools/unix-time",
+    kind: "interactive",
+    tag: "Converter",
+  },
+];
+---
+
+<PageLayout
+  title={`Tools — ${SITE_AUTHOR}`}
+  description="Small, single-purpose browser tools. No servers, no tracking."
+>
+  <p class="label" style="margin: 0 0 0.5rem;">Workshop</p>
+  <h1 style="margin: 0 0 var(--gap-lg);">Tools</h1>
+  <p style="color: var(--ink-mute); margin: 0 0 var(--gap-xl); font-size: 0.98rem; max-width: 56ch;">
+    Small, single-purpose browser tools. Each one does one thing, runs client-side,
+    and has no backend. Built mostly to scratch my own itches.
+  </p>
+
+  <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: var(--gap-md);">
+    {
+      TOOLS.map((t) => (
+        <li>
+          <a
+            href={t.href}
+            style="display: block; text-decoration: none; color: inherit; border: 1px solid var(--paper-edge); border-radius: var(--radius-md); background: var(--paper-deep); padding: var(--gap-lg); transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);"
+            class="tool-card"
+          >
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--gap-sm); margin: 0 0 0.4rem;">
+              <h2 style="margin: 0; font-size: var(--step-title); color: var(--ink); font-family: var(--font-display);">
+                {t.name}
+              </h2>
+              {t.tag && (
+                <span style="font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-faint); padding: 0.15rem 0.55rem; border: 1px solid var(--paper-edge); border-radius: var(--radius-pill); background: var(--paper);">
+                  {t.tag}
+                </span>
+              )}
+            </div>
+            <p style="margin: 0; color: var(--ink-soft); font-size: 0.95rem; line-height: 1.55;">
+              {t.description}
+            </p>
+            <p style="margin: var(--gap-sm) 0 0; font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-mute); letter-spacing: 0.04em;">
+              {t.kind === "interactive" ? "client-side · runs in browser" : "static"}
+            </p>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p style="margin: var(--gap-xl) 0 0; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-faint); letter-spacing: 0.04em;">
+    More tools added as I need them. Suggestions welcome via the links in the footer.
+  </p>
+</PageLayout>
+
+<style>
+  .tool-card:hover {
+    border-color: var(--ink-mute);
+    background: var(--paper);
+  }
+</style>

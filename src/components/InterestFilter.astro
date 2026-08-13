@@ -1,0 +1,91 @@
+---
+import { INTERESTS, type Interest } from "../consts";
+
+interface Props {
+  current: "all" | Interest;
+  basePath: string;
+}
+const { current, basePath } = Astro.props;
+
+const pills: { id: "all" | Interest; label: string }[] = [
+  { id: "all", label: "All" },
+  ...INTERESTS.map((i) => ({ id: i.id, label: i.label })),
+];
+---
+
+<form
+  data-interest-filter
+  data-base-path={basePath}
+  style="margin: 0 0 var(--gap-lg); display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;"
+>
+  <span class="label" style="color: var(--ink-faint); margin-right: 0.3rem;">Filter</span>
+  {
+    pills.map((p) => (
+      <button
+        type="button"
+        data-interest={p.id}
+        aria-pressed={p.id === current ? "true" : "false"}
+        style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: var(--radius-pill); border: 1px solid var(--paper-edge); background: var(--paper-deep); color: var(--ink-mute); cursor: pointer; transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);"
+      >
+        {p.label}
+      </button>
+    ))
+  }
+</form>
+
+<style is:global>
+  [data-interest-list] [data-interest-item][hidden] {
+    display: none !important;
+  }
+  [data-interest-filter] button[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  [data-interest-filter] button:hover {
+    color: var(--ink);
+    border-color: var(--ink-mute);
+  }
+  [data-interest-filter] button[aria-pressed="true"]:hover {
+    color: var(--paper);
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const run = () => {
+    const form = document.querySelector("[data-interest-filter]");
+    if (!form) return;
+    const list = document.querySelector("[data-interest-list]");
+    if (!list) return;
+    const params = new URLSearchParams(window.location.search);
+    const current = params.get("i") || "all";
+
+    const apply = (id) => {
+      list.querySelectorAll("[data-interest-item]").forEach((el) => {
+        const matches = id === "all" || el.dataset.interest === id;
+        if (matches) { el.removeAttribute("hidden"); }
+        else { el.setAttribute("hidden", ""); }
+      });
+      form.querySelectorAll("button[data-interest]").forEach((b) => {
+        b.setAttribute("aria-pressed", b.dataset.interest === id ? "true" : "false");
+      });
+      const url = id === "all" ? form.dataset.basePath : `${form.dataset.basePath}?i=${id}`;
+      window.history.replaceState({}, "", url);
+    };
+
+    form.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-interest]");
+      if (!btn) return;
+      apply(btn.dataset.interest);
+    });
+
+    apply(current);
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", run);
+    } else {
+      run();
+    }
+  })();
+</script>

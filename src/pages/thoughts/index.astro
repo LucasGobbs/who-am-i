@@ -1,0 +1,58 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import NoteCard from "../../components/NoteCard.astro";
+import InterestFilter from "../../components/InterestFilter.astro";
+import { getSortedThoughts } from "../../lib/thoughts";
+import { INTERESTS, SITE_AUTHOR, type Interest } from "../../consts";
+
+const requested = Astro.url.searchParams.get("i") as Interest | null;
+const validIds = new Set<Interest>(INTERESTS.map((i) => i.id));
+const current: "all" | Interest =
+  requested && validIds.has(requested) ? requested : "all";
+
+const all = await getSortedThoughts();
+
+const byYear = new Map<number, typeof all>();
+for (const t of all) {
+  const y = t.data.date.getFullYear();
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(t);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+
+<PageLayout
+  title={`Thoughts — ${SITE_AUTHOR}`}
+  description="Small posts and notes, mostly for future me."
+>
+  <p class="label" style="margin: 0 0 0.5rem;">Notebook</p>
+  <h1 style="margin: 0 0 var(--gap-sm);">Thoughts</h1>
+  <p style="color: var(--ink-mute); margin: 0 0 var(--gap-lg); font-size: 0.98rem;">
+    Small posts and notes, mostly for future me.
+  </p>
+
+  <InterestFilter current={current} basePath="/thoughts" />
+
+  <div data-interest-list>
+    {
+      years.map((year) => (
+        <section style="margin: var(--gap-xl) 0;">
+          <h2
+            style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500; color: var(--ink-mute); letter-spacing: 0.06em; margin: 0 0 var(--gap-md); padding-bottom: 0.4rem; border-bottom: 1px solid var(--paper-edge);"
+          >
+            {year}
+          </h2>
+          {byYear.get(year)!.map((entry) => (
+            <div
+              data-interest-item
+              data-interest={entry.data.interest ?? "development"}
+              hidden={current !== "all" && entry.data.interest !== current ? "" : undefined}
+            >
+              <NoteCard entry={entry} />
+            </div>
+          ))}
+        </section>
+      ))
+    }
+  </div>
+</PageLayout>

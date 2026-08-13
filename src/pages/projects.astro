@@ -1,0 +1,35 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import InterestFilter from "../components/InterestFilter.astro";
+import { PROJECTS, INTERESTS, SITE_AUTHOR, type Interest } from "../consts";
+
+const requested = Astro.url.searchParams.get("i") as Interest | null;
+const validIds = new Set<Interest>(INTERESTS.map((i) => i.id));
+const current: "all" | Interest =
+  requested && validIds.has(requested) ? requested : "all";
+---
+
+<PageLayout
+  title={`Projects — ${SITE_AUTHOR}`}
+  description="Things I have built."
+>
+  <p class="label" style="margin: 0 0 0.5rem;">Work</p>
+  <h1 style="margin: 0 0 var(--gap-lg);">Projects</h1>
+
+  <InterestFilter current={current} basePath="/projects" />
+
+  <div data-interest-list style="display: grid; gap: var(--gap-md);">
+    {
+      PROJECTS.map((p) => (
+        <div
+          data-interest-item
+          data-interest={p.interest ?? "development"}
+          hidden={current !== "all" && p.interest !== current ? "" : undefined}
+        >
+          <ProjectCard project={p} />
+        </div>
+      ))
+    }
+  </div>
+</PageLayout>

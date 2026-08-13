@@ -1,0 +1,127 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { SITE_AUTHOR } from "../../consts";
+---
+
+<PageLayout
+  title={`QR Code Generator — ${SITE_AUTHOR}`}
+  description="Generate a QR code from any text or URL. Runs in your browser."
+>
+  <p class="label" style="margin: 0 0 0.5rem;">
+    <a href="/tools" style="text-decoration: none; color: var(--ink-mute);">← Tools</a>
+  </p>
+  <h1 style="margin: 0 0 var(--gap-lg);">QR Code Generator</h1>
+
+  <label
+    for="qr-input"
+    style="display: block; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 var(--gap-xs);"
+  >
+    Text or URL
+  </label>
+  <textarea
+    id="qr-input"
+    rows="3"
+    placeholder="https://example.com or any text"
+    style="width: 100%; max-width: 56ch; box-sizing: border-box; font-family: var(--font-mono); font-size: 0.9rem; padding: var(--gap-sm) var(--gap-md); border: 1px solid var(--paper-edge); border-radius: var(--radius-md); background: var(--paper); color: var(--ink); resize: vertical;"
+  ></textarea>
+
+  <div style="display: flex; align-items: center; gap: var(--gap-md); margin: var(--gap-md) 0; flex-wrap: wrap;">
+    <label
+      for="qr-size"
+      style="font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-mute);"
+    >
+      Size
+    </label>
+    <input
+      id="qr-size"
+      type="range"
+      min="128"
+      max="512"
+      step="32"
+      value="256"
+      style="accent-color: var(--ink);"
+    />
+    <span
+      id="qr-size-val"
+      style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-faint); min-width: 3.5rem;"
+    >256px</span>
+  </div>
+
+  <div
+    id="qr-output"
+    style="margin: var(--gap-md) 0; padding: var(--gap-md); border: 1px solid var(--paper-edge); border-radius: var(--radius-md); background: var(--paper-deep); display: inline-block; min-height: 128px;"
+  >
+    <p style="margin: 0; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-faint);">
+      Type something to generate a QR code.
+    </p>
+  </div>
+
+  <p style="margin: var(--gap-md) 0;">
+    <button
+      id="qr-download"
+      type="button"
+      disabled
+      style="font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.4rem 0.9rem; border: 1px solid var(--paper-edge); border-radius: var(--radius-pill); background: var(--paper); color: var(--ink-mute); cursor: pointer; transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);"
+    >
+      Download PNG
+    </button>
+  </p>
+</PageLayout>
+
+<script is:inline>
+  (() => {
+    const run = async () => {
+      const input = document.getElementById("qr-input");
+      const output = document.getElementById("qr-output");
+      const size = document.getElementById("qr-size");
+      const sizeVal = document.getElementById("qr-size-val");
+      const dl = document.getElementById("qr-download");
+      if (!input || !output || !size || !sizeVal || !dl) return;
+
+      let canvas = null;
+
+      const render = async () => {
+        const text = input.value.trim();
+        const px = Number(size.value);
+        sizeVal.textContent = `${px}px`;
+        if (!text) {
+          output.innerHTML = '<p style="margin:0;font-family:var(--font-mono);font-size:0.78rem;color:var(--ink-faint);">Type something to generate a QR code.</p>';
+          dl.disabled = true;
+          canvas = null;
+          return;
+        }
+        try {
+          const mod = await import("https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm");
+          canvas = document.createElement("canvas");
+          canvas.width = px;
+          canvas.height = px;
+          canvas.style.display = "block";
+          canvas.style.maxWidth = "100%";
+          canvas.style.height = "auto";
+          await mod.toCanvas(canvas, text, { width: px, margin: 1, color: { dark: "#1a1714", light: "#f7f2e8" } });
+          output.innerHTML = "";
+          output.appendChild(canvas);
+          dl.disabled = false;
+        } catch (e) {
+          output.innerHTML = '<p style="margin:0;font-family:var(--font-mono);font-size:0.78rem;color:var(--accent);">Failed to load QR library. Check your connection.</p>';
+          dl.disabled = true;
+        }
+      };
+
+      input.addEventListener("input", render);
+      size.addEventListener("input", render);
+      dl.addEventListener("click", () => {
+        if (!canvas) return;
+        const a = document.createElement("a");
+        a.download = "qr-code.png";
+        a.href = canvas.toDataURL("image/png");
+        a.click();
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", run);
+    } else {
+      run();
+    }
+  })();
+</script>

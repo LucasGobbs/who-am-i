@@ -1,0 +1,34 @@
+---
+import { SOCIAL_LINKS, SITE_AUTHOR } from "../consts";
+const year = new Date().getFullYear();
+---
+
+<footer
+  style="border-top: 1px solid var(--paper-edge); margin-top: auto; background: var(--paper);"
+>
+  <div
+    style="max-width: 72ch; margin-inline: auto; padding: 1.5rem clamp(1.25rem, 5vw, 2rem); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: baseline;"
+  >
+    <p
+      style="margin: 0; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-mute); letter-spacing: 0.04em;"
+    >
+      &copy; {year} {SITE_AUTHOR}
+    </p>
+    <ul
+      style="list-style: none; padding: 0; margin: 0; display: flex; gap: 1.1rem; flex-wrap: wrap;"
+    >
+      {
+        SOCIAL_LINKS.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              style="font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-decoration: none; color: var(--ink-soft); transition: color var(--dur-fast) var(--ease-out);"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</footer>

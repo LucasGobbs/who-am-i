@@ -1,0 +1,62 @@
+---
+import { NAV_LINKS, SITE_AUTHOR, SITE_ROLE } from "../consts";
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path.startsWith(href);
+---
+
+<header
+  style="border-bottom: 1px solid var(--paper-edge); background: var(--paper); position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(1.1);"
+>
+  <div
+    style="max-width: 72ch; margin-inline: auto; padding: 1rem clamp(1.25rem, 5vw, 2rem); display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;"
+  >
+    <a
+      href="/"
+      style="text-decoration: none; font-family: var(--font-display); font-size: 1.15rem; letter-spacing: -0.01em; color: var(--ink);"
+    >
+      {SITE_AUTHOR}
+      <span
+        style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-mute); margin-left: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500;"
+      >
+        {SITE_ROLE}
+      </span>
+    </a>
+    <nav aria-label="Primary">
+      <ul
+        style="list-style: none; padding: 0; margin: 0; display: flex; gap: 1.4rem; flex-wrap: wrap;"
+      >
+        {
+          NAV_LINKS.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                aria-current={isActive(link.href) ? "page" : undefined}
+                style="font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; text-decoration: none; color: var(--ink-soft); transition: color var(--dur-fast) var(--ease-out);"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  a[aria-current="page"] {
+    color: var(--ink) !important;
+    text-decoration: underline;
+    text-decoration-color: var(--ink);
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+  }
+  nav a:hover {
+    color: var(--ink) !important;
+    text-decoration: underline;
+    text-decoration-color: var(--ink-mute);
+    text-underline-offset: 0.3em;
+  }
+</style>

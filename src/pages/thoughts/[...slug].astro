@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from "astro:content";
+import NoteLayout from "../../layouts/NoteLayout.astro";
+
+export async function getStaticPaths() {
+  const thoughts = (await getCollection("thoughts"))
+    .filter((t) => !t.data.draft)
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+  return thoughts.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      prev: thoughts[i + 1]
+        ? { slug: thoughts[i + 1].id, title: thoughts[i + 1].data.title }
+        : null,
+      next: thoughts[i - 1]
+        ? { slug: thoughts[i - 1].id, title: thoughts[i - 1].data.title }
+        : null,
+    },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<NoteLayout entry={entry} prev={prev} next={next}>
+  <Content />
+</NoteLayout>

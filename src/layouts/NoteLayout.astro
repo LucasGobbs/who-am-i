@@ -1,0 +1,446 @@
+---
+import PageLayout from "./PageLayout.astro";
+import Tag from "../components/Tag.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"thoughts">;
+  prev?: { slug: string; title: string } | null;
+  next?: { slug: string; title: string } | null;
+}
+
+const { entry, prev, next } = Astro.props;
+const { title, date, tags, description } = entry.data;
+
+const dateFormatted = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+}).format(date);
+
+const titleAttr = description ?? title;
+---
+
+<PageLayout title={title} description={titleAttr} canonical={`/thoughts/${entry.id}/`}>
+  <div class="note-shell">
+    <article class="note-article">
+      <header style="margin-bottom: var(--gap-xl);">
+        <p class="label" style="margin: 0 0 0.75rem;">
+          <a href="/thoughts" style="text-decoration: none; color: var(--ink-mute);">← Thoughts</a>
+        </p>
+        <h1 style="margin: 0 0 0.4rem; font-size: var(--step-display);">{title}</h1>
+        <p
+          class="label"
+          style="margin: 0; color: var(--ink-mute);"
+        >
+          <time datetime={date.toISOString()}>{dateFormatted}</time>
+        </p>
+        {
+          tags.length > 0 && (
+            <ul
+              style="list-style: none; padding: 0; margin: var(--gap-md) 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem;"
+            >
+              {tags.map((t) => (
+                <li>
+                  <Tag>{t}</Tag>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </header>
+
+      <div class="prose-thoughts">
+        <slot />
+      </div>
+
+      <nav
+        style="margin-top: var(--gap-xxl); padding-top: var(--gap-lg); border-top: 1px solid var(--paper-edge); display: flex; justify-content: space-between; gap: var(--gap-md); flex-wrap: wrap;"
+        aria-label="Post navigation"
+      >
+        <div style="flex: 1; min-width: 0;">
+          {prev ? (
+            <a href={`/thoughts/${prev.slug}/`} rel="prev" style="text-decoration: none;">
+              <span class="label" style="display: block; color: var(--ink-faint); margin-bottom: 0.2rem;">Older</span>
+              <span style="font-family: var(--font-display); color: var(--ink-soft);">← {prev.title}</span>
+            </a>
+          ) : (
+            <span class="label" style="color: var(--ink-faint);">← Older</span>
+          )}
+        </div>
+        <div style="flex: 1; min-width: 0; text-align: right;">
+          {next ? (
+            <a href={`/thoughts/${next.slug}/`} rel="next" style="text-decoration: none;">
+              <span class="label" style="display: block; color: var(--ink-faint); margin-bottom: 0.2rem;">Newer</span>
+              <span style="font-family: var(--font-display); color: var(--ink-soft);">{next.title} →</span>
+            </a>
+          ) : (
+            <span class="label" style="color: var(--ink-faint);">Newer →</span>
+          )}
+        </div>
+      </nav>
+    </article>
+
+    <button type="button" data-toc-toggle aria-label="Open sections" aria-expanded="false" class="toc-toggle">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="8" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="4" y1="12" x2="5.5" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="11" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="4" y1="18" x2="8.5" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <aside class="note-toc" aria-label="Sections" data-toc-aside>
+      <div class="toc-head">
+        <p class="label" style="margin: 0; color: var(--ink-faint);">Sections</p>
+        <button type="button" data-toc-close aria-label="Close" class="toc-close">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <ol data-section-toc style="list-style: none; padding: 0; margin: var(--gap-sm) 0 0;"></ol>
+      <noscript>
+        <p style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); margin: var(--gap-sm) 0 0;">
+          Section list visible with JavaScript.
+        </p>
+      </noscript>
+    </aside>
+
+    <div data-toc-overlay class="toc-overlay" hidden></div>
+  </div>
+</PageLayout>
+
+<script is:inline>
+  (() => {
+    const run = () => {
+      const article = document.querySelector(".note-article");
+      if (!article) return;
+      const toc = document.querySelector("[data-section-toc]");
+      const aside = document.querySelector("[data-toc-aside]");
+      const toggle = document.querySelector("[data-toc-toggle]");
+      const closeBtn = document.querySelector("[data-toc-close]");
+      const overlay = document.querySelector("[data-toc-overlay]");
+      const sections = [...article.querySelectorAll("[data-section-level]")];
+
+      if (sections.length === 0) {
+        if (aside) aside.hidden = true;
+        if (toggle) toggle.hidden = true;
+        return;
+      }
+
+      let h1 = 0;
+      let h2 = 0;
+      const items = [];
+      sections.forEach((sec) => {
+        const level = Number(sec.dataset.sectionLevel);
+        if (level === 1) { h1 += 1; h2 = 0; }
+        else { h2 += 1; }
+        const num = level === 1 ? `${h1}` : `${h1}.${h2}`;
+        const numSpan = sec.querySelector("[data-section-number]");
+        if (numSpan) numSpan.textContent = `${num}  `;
+        items.push({ num, title: sec.dataset.sectionTitle, id: sec.id, level });
+      });
+
+      if (toc) {
+        toc.innerHTML = items.map((it) => `
+          <li style="margin: 0 0 0.4rem; padding-left: ${it.level === 1 ? "0" : "0.9rem"};">
+            <a href="#${it.id}" data-toc-link="${it.id}" style="font-family: var(--font-mono); font-size: 0.78rem; text-decoration: none; color: var(--ink-mute); line-height: 1.4; display: inline-block; transition: color var(--dur-fast) var(--ease-out);">
+              <span style="color: var(--ink-faint); margin-right: 0.4rem;">${it.num}</span>${it.title}
+            </a>
+          </li>
+        `).join("");
+      }
+
+      // Scroll-spy: highlight the section currently in view.
+      const links = new Map();
+      document.querySelectorAll("[data-toc-link]").forEach((a) => {
+        links.set(a.dataset.tocLink, a);
+      });
+      let activeLink = null;
+      const setActive = (id) => {
+        if (activeLink) activeLink.style.color = "var(--ink-mute)";
+        const next = links.get(id);
+        if (next) next.style.color = "var(--ink)";
+        activeLink = next || null;
+      };
+      const spy = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id);
+      }, { rootMargin: "-20% 0px -70% 0px", threshold: 0 });
+      sections.forEach((sec) => spy.observe(sec));
+
+      // Mobile drawer open / close.
+      const open = () => {
+        if (!aside || !toggle || !overlay) return;
+        aside.setAttribute("data-open", "");
+        overlay.hidden = false;
+        toggle.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+      };
+      const close = () => {
+        if (!aside || !toggle || !overlay) return;
+        aside.removeAttribute("data-open");
+        overlay.hidden = true;
+        toggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      };
+      if (toggle) toggle.addEventListener("click", open);
+      if (closeBtn) closeBtn.addEventListener("click", close);
+      if (overlay) overlay.addEventListener("click", close);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") close();
+      });
+      toc?.addEventListener("click", (e) => {
+        if (e.target.closest("[data-toc-link]")) close();
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", run);
+    } else {
+      run();
+    }
+  })();
+</script>
+
+<style>
+  .note-shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap-xl);
+    position: relative;
+  }
+  .prose-thoughts {
+    margin-top: var(--gap-lg);
+    line-height: 1.7;
+    font-size: var(--step-body);
+    color: var(--ink-soft);
+  }
+  .prose-thoughts :global(h2) {
+    margin-top: var(--gap-xl);
+    margin-bottom: var(--gap-sm);
+    color: var(--ink);
+  }
+  .prose-thoughts :global(h3) {
+    margin-top: var(--gap-lg);
+    margin-bottom: var(--gap-xs);
+    color: var(--ink);
+  }
+  .prose-thoughts :global(p) {
+    margin: var(--gap-md) 0;
+    color: var(--ink-soft);
+  }
+  .prose-thoughts :global(ul),
+  .prose-thoughts :global(ol) {
+    margin: var(--gap-md) 0;
+    padding-left: 1.5rem;
+    color: var(--ink-soft);
+  }
+  .prose-thoughts :global(li) {
+    margin: 0.4rem 0;
+  }
+  .prose-thoughts :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--paper-deep);
+    padding: 0.12em 0.4em;
+    border-radius: var(--radius-sm);
+    color: var(--ink-soft);
+  }
+  /* Don't style code inside the terminal block — it has its own colors. */
+  .prose-thoughts :global(.terminal code) {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    color: inherit;
+  }
+  .prose-thoughts :global(pre) {
+    background: var(--paper-deep);
+    padding: var(--gap-md) var(--gap-lg);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    border: 1px solid var(--paper-edge);
+  }
+  .prose-thoughts :global(.terminal pre) {
+    background: #0c0a09;
+    border: 0;
+    border-radius: 0;
+    color: var(--terminal-ink);
+  }
+  .prose-thoughts :global(.terminal pre code) {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+  .prose-thoughts :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: var(--ink);
+  }
+  .prose-thoughts :global(blockquote) {
+    background: var(--paper-recess);
+    padding: var(--gap-md) var(--gap-lg);
+    border-radius: var(--radius-sm);
+    color: var(--ink-soft);
+    margin: var(--gap-lg) 0;
+    font-style: italic;
+    border: 0;
+  }
+  .prose-thoughts :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+  }
+  .prose-thoughts :global(hr) {
+    border: 0;
+    border-top: 1px solid var(--paper-edge);
+    margin: var(--gap-xl) 0;
+  }
+  .prose-thoughts :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--gap-lg) 0;
+    font-size: var(--step-mono);
+  }
+  .prose-thoughts :global(th),
+  .prose-thoughts :global(td) {
+    border: 1px solid var(--paper-edge);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+  .prose-thoughts :global(th) {
+    background: var(--paper-deep);
+    color: var(--ink-mute);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: var(--step-label);
+  }
+  .prose-thoughts :global([data-section-number]) {
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    color: var(--ink-faint);
+    font-weight: 400;
+    margin-right: 0.5em;
+  }
+  .prose-thoughts :global(section[data-section-level="2"] > h3) {
+    margin-top: var(--gap-lg);
+    margin-bottom: var(--gap-xs);
+    color: var(--ink);
+  }
+
+  /* TOC shared */
+  .note-toc {
+    font-family: var(--font-mono);
+  }
+  .note-toc ol a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+  .toc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Toggle button: floating on mobile, hidden on desktop. */
+  .toc-toggle {
+    display: none;
+  }
+
+  /* Overlay: mobile only. */
+  .toc-overlay {
+    display: none;
+  }
+
+  /* Desktop: sticky aside that follows scroll. */
+  @media (min-width: 1024px) {
+    .note-shell {
+      grid-template-columns: 1fr 16rem;
+      gap: var(--gap-xxl);
+    }
+    .note-toc {
+      align-self: start;
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .toc-close { display: none; }
+  }
+
+  /* Mobile: off-canvas drawer triggered by floating button. */
+  @media (max-width: 1023px) {
+    .toc-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      right: 1rem;
+      bottom: 1.25rem;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 999px;
+      border: 1px solid var(--paper-edge);
+      background: var(--paper);
+      color: var(--ink-soft);
+      box-shadow: 0 1px 6px rgba(26, 23, 20, 0.12);
+      cursor: pointer;
+      z-index: 40;
+      transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+    }
+    .toc-toggle:hover {
+      color: var(--ink);
+      border-color: var(--ink-mute);
+    }
+    .toc-toggle[aria-expanded="true"] {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+    .toc-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--paper-edge);
+      background: var(--paper);
+      color: var(--ink-mute);
+      cursor: pointer;
+    }
+    .toc-close:hover { color: var(--ink); }
+    .toc-overlay {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 23, 20, 0.32);
+      z-index: 50;
+    }
+    .toc-overlay[hidden] { display: none; }
+    .note-toc {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100dvh;
+      width: min(80vw, 18rem);
+      background: var(--paper);
+      border-left: 1px solid var(--paper-edge);
+      padding: 1.25rem 1.25rem var(--gap-xl);
+      transform: translateX(100%);
+      transition: transform var(--dur) var(--ease-out);
+      z-index: 60;
+      overflow-y: auto;
+      box-shadow: -8px 0 24px rgba(26, 23, 20, 0.08);
+    }
+    .note-toc[data-open] {
+      transform: translateX(0);
+    }
+  }
+</style>

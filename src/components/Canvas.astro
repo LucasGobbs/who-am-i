@@ -1,0 +1,68 @@
+---
+// Inline animated canvas. Tiny script, scoped to canvas id.
+interface Props {
+  id: string;
+  width?: number;
+  height?: number;
+  draw: string;
+  caption?: string;
+}
+const {
+  id,
+  width = 600,
+  height = 200,
+  draw,
+  caption,
+} = Astro.props;
+---
+
+<figure style="margin: var(--gap-xl) 0; text-align: center;">
+  <canvas
+    id={id}
+    width={width}
+    height={height}
+    style="max-width: 100%; height: auto; border: 1px solid var(--paper-edge); border-radius: var(--radius-md); background: var(--paper-deep); display: inline-block;"
+  >
+    Canvas not supported.
+  </canvas>
+  {
+    caption && (
+      <figcaption
+        style="margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-mute); letter-spacing: 0.03em;"
+      >
+        {caption}
+      </figcaption>
+    )
+  }
+  <script is:inline define:vars={{ canvasId: id, w: width, h: height, drawSrc: draw }}>
+    (() => {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      const fn = new Function("return (" + drawSrc + ")")();
+      let raf = 0;
+      let start = performance.now();
+      const loop = (now) => {
+        const t = now - start;
+        try { fn(ctx, t, w, h); } catch (e) { console.error(e); return; }
+        raf = requestAnimationFrame(loop);
+      };
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting && !reduce) {
+            if (!raf) { start = performance.now(); raf = requestAnimationFrame(loop); }
+          } else if (raf) {
+            cancelAnimationFrame(raf);
+            raf = 0;
+          }
+        }
+      }, { threshold: 0.01 });
+      io.observe(canvas);
+      if (reduce) {
+        try { fn(ctx, 0, w, h); } catch (e) { console.error(e); }
+      }
+    })();
+  </script>
+</figure>

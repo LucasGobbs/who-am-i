@@ -1,0 +1,20 @@
+---
+// Auto-numbered section heading. Use level={1} for Section, level={2} for Subsection.
+// Numbers are assigned client-side in document order (1, 1.1, 1.2, 2, 2.1, ...).
+// Side TOC is populated from these sections in NoteLayout.
+interface Props {
+  title: string;
+  level?: 1 | 2;
+  id?: string;
+}
+const { title, level = 1, id } = Astro.props;
+const slug = id ?? title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const Tag = level === 1 ? "h2" : "h3";
+---
+
+<section data-section-level={level} data-section-title={title} id={slug} style="scroll-margin-top: 6rem;">
+  <Tag style="margin: var(--gap-xl) 0 var(--gap-sm);">
+    <span data-section-number></span>{title}
+  </Tag>
+  <slot />
+</section>

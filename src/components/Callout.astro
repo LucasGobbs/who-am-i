@@ -1,0 +1,26 @@
+---
+// Callout / aside box. note / warn / tip.
+interface Props {
+  kind?: "note" | "warn" | "tip";
+  title?: string;
+}
+const { kind = "note", title } = Astro.props;
+
+const palette: Record<string, { bg: string; fg: string; label: string }> = {
+  note: { bg: "#fbf3d0", fg: "#4a3a12", label: "Note" },
+  warn: { bg: "#f5d8c8", fg: "#5a1d0c", label: "Warning" },
+  tip: { bg: "#e8eee5", fg: "#28402a", label: "Tip" },
+};
+const p = palette[kind];
+---
+
+<aside
+  style={`margin: var(--gap-lg) 0; padding: var(--gap-md) var(--gap-lg); border-radius: var(--radius-sm); background: ${p.bg}; color: ${p.fg};`}
+>
+  <p class="label" style={`margin: 0 0 0.4rem; color: ${p.fg}; opacity: 0.7;`}>
+    {title ?? p.label}
+  </p>
+  <div style="margin: 0; font-size: 0.96rem; line-height: 1.6;">
+    <slot />
+  </div>
+</aside>

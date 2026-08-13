@@ -1,0 +1,80 @@
+---
+// Academic reference list. Place at the bottom of a thought.
+// Pass `items` prop: array of { id, html }.
+// Numbers are assigned in order (1, 2, 3...) and auto-filled into <Cite> links.
+interface Item {
+  id: string;
+  html: string;
+}
+interface Props {
+  items?: Item[];
+}
+const { items = [] } = Astro.props;
+const numbered = items.map((it, i) => ({ ...it, n: i + 1 }));
+---
+
+<section
+  class="references"
+  data-references
+  style="margin-top: var(--gap-xxl); padding-top: var(--gap-lg); border-top: 1px solid var(--paper-edge);"
+>
+  <h2
+    style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 var(--gap-md);"
+  >
+    References
+  </h2>
+  <ol
+    class="ref-list"
+    style="list-style: none; padding: 0; margin: 0;"
+  >
+    <slot />
+    {numbered.map((it) => (
+      <li
+        id={`ref-${it.id}`}
+        data-ref-id={it.id}
+        data-ref-n={it.n}
+        style="display: flex; gap: 0.6rem; margin: 0 0 var(--gap-sm); font-size: 0.9rem; line-height: 1.55; color: var(--ink-soft);"
+      >
+        <span
+          class="ref-num"
+          style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-faint); min-width: 1.6rem; flex-shrink: 0;"
+        >[{it.n}]</span>
+        <span set:html={it.html} />
+      </li>
+    ))}
+  </ol>
+</section>
+
+<script is:inline>
+  (() => {
+    const run = () => {
+      const refs = document.querySelectorAll("[data-ref-id]");
+      if (!refs.length) return;
+      const map = new Map();
+      refs.forEach((li) => {
+        map.set(li.dataset.refId, li.dataset.refN);
+      });
+      document.querySelectorAll(".cite[data-cite]").forEach((a) => {
+        const id = a.getAttribute("data-cite");
+        const manual = a.getAttribute("data-cite-n");
+        const n = manual || map.get(id);
+        if (n) a.textContent = `[${n}]`;
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", run);
+    } else {
+      run();
+    }
+  })();
+</script>
+
+<style is:global>
+  .references a[href^="#ref-"] {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .references a[href^="#ref-"]:hover {
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,23 @@
+---
+// Minimal section separator. variant: "line" | "dots" | "dotted" | "space".
+interface Props {
+  variant?: "line" | "dots" | "dotted" | "space";
+  space?: "sm" | "md" | "lg";
+}
+const { variant = "line", space = "md" } = Astro.props;
+const spaceMap = { sm: "var(--gap-md)", md: "var(--gap-xl)", lg: "var(--gap-xxl)" };
+const margin = spaceMap[space];
+---
+
+<div style={`margin: ${margin} 0;`} data-divider={variant}>
+  {variant === "line" && (
+    <hr style="border: 0; border-top: 1px solid var(--paper-edge); margin: 0;" />
+  )}
+  {variant === "dotted" && (
+    <hr style="border: 0; border-top: 1px dotted var(--ink-faint); margin: 0;" />
+  )}
+  {variant === "dots" && (
+    <div style="text-align: center; letter-spacing: 0.5em; color: var(--ink-faint); font-family: var(--font-mono); font-size: 0.8rem; line-height: 1;">· · ·</div>
+  )}
+  {variant === "space" && <div></div>}
+</div>

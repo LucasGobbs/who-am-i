@@ -1,0 +1,63 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import NoteCard from "../components/NoteCard.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import ExperienceTimeline from "../components/ExperienceTimeline.astro";
+import {
+  SITE_AUTHOR,
+  SITE_ROLE,
+  SITE_LOCATION,
+  EXPERIENCES,
+  PROJECTS,
+  SITE_DESCRIPTION,
+} from "../consts";
+import { getSortedThoughts } from "../lib/thoughts";
+
+const thoughts = (await getSortedThoughts()).slice(0, 3);
+---
+
+<PageLayout title={`${SITE_AUTHOR} — ${SITE_ROLE}`} description={SITE_DESCRIPTION}>
+  <section>
+    <p class="label" style="margin: 0 0 0.75rem;">Notebook · Resume · Projects</p>
+    <h1 style="margin: 0 0 0.5rem;">{SITE_AUTHOR}</h1>
+    <p style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-mute); margin: 0 0 var(--gap-lg); letter-spacing: 0.03em;">
+      {SITE_ROLE} · {SITE_LOCATION}
+    </p>
+    <p style="font-size: 1.1rem; line-height: 1.65; max-width: 60ch; color: var(--ink-soft);">
+      Software developer with 5+ years across backend, frontend, and DevOps.
+      I build integrations and care about boring, observable, maintainable
+      infrastructure. This site is my resume, my projects, and a small
+      notebook of thoughts.
+    </p>
+  </section>
+
+  <section>
+    <h2 style="margin-bottom: var(--gap-md);">Experience</h2>
+    <ExperienceTimeline experiences={EXPERIENCES.slice(0, 1)} />
+    <p style="margin-top: var(--gap-md);">
+      <a href="/resume">Full resume →</a>
+    </p>
+  </section>
+
+  <section>
+    <h2 style="margin-bottom: var(--gap-md);">Selected projects</h2>
+    <div style="display: grid; gap: var(--gap-md);">
+      {PROJECTS.slice(0, 2).map((p) => <ProjectCard project={p} />)}
+    </div>
+    <p style="margin-top: var(--gap-md);">
+      <a href="/projects">All projects →</a>
+    </p>
+  </section>
+
+  <section>
+    <h2 style="margin-bottom: var(--gap-md);">Latest thoughts</h2>
+    {thoughts.length === 0 ? (
+      <p style="color: var(--ink-mute);">No thoughts yet.</p>
+    ) : (
+      thoughts.map((entry) => <NoteCard entry={entry} />)
+    )}
+    <p style="margin-top: var(--gap-md);">
+      <a href="/thoughts">All thoughts →</a>
+    </p>
+  </section>
+</PageLayout>
