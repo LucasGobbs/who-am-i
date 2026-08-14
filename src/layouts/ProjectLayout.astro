@@ -4,13 +4,13 @@ import Tag from "../components/Tag.astro";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
-  entry: CollectionEntry<"thoughts">;
+  entry: CollectionEntry<"projects">;
   prev?: { slug: string; title: string } | null;
   next?: { slug: string; title: string } | null;
 }
 
 const { entry, prev, next } = Astro.props;
-const { title, date, tags, description } = entry.data;
+const { title, date, tech, role, links, tags, description } = entry.data;
 
 const dateFormatted = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
@@ -21,12 +21,12 @@ const dateFormatted = new Intl.DateTimeFormat("en-US", {
 const titleAttr = description ?? title;
 ---
 
-<PageLayout title={title} description={titleAttr} canonical={`/thoughts/${entry.id}/`}>
+<PageLayout title={title} description={titleAttr} canonical={`/projects/${entry.id}/`}>
   <div class="note-shell">
     <article class="note-article">
       <header style="margin-bottom: var(--gap-xl);">
         <p class="label" style="margin: 0 0 0.75rem;">
-          <a href={`${import.meta.env.BASE_URL}thoughts/`} style="text-decoration: none; color: var(--ink-mute);">← Thoughts</a>
+          <a href={`${import.meta.env.BASE_URL}projects/`} style="text-decoration: none; color: var(--ink-mute);">← Projects</a>
         </p>
         <h1 style="margin: 0 0 0.4rem; font-size: var(--step-display);">{title}</h1>
         <p
@@ -34,18 +34,39 @@ const titleAttr = description ?? title;
           style="margin: 0; color: var(--ink-mute);"
         >
           <time datetime={date.toISOString()}>{dateFormatted}</time>
+          <span style="color: var(--ink-faint); margin: 0 0.5rem;">·</span>
+          Role · {role}
         </p>
         {
-          tags.length > 0 && (
+          (tech.length > 0 || tags.length > 0) && (
             <ul
               style="list-style: none; padding: 0; margin: var(--gap-md) 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem;"
             >
+              {tech.map((t) => (
+                <li>
+                  <Tag>{t}</Tag>
+                </li>
+              ))}
               {tags.map((t) => (
                 <li>
                   <Tag>{t}</Tag>
                 </li>
               ))}
             </ul>
+          )
+        }
+        {
+          links.length > 0 && (
+            <p style="margin: var(--gap-md) 0 0; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;">
+              {links.map((link, i) => (
+                <>
+                  {i > 0 && <span style="color: var(--paper-edge); margin: 0 0.5rem;">/</span>}
+                  <a href={link.href} style="text-decoration: none; color: var(--ink-soft);">
+                    {link.label}
+                  </a>
+                </>
+              ))}
+            </p>
           )
         }
       </header>
@@ -56,11 +77,11 @@ const titleAttr = description ?? title;
 
       <nav
         style="margin-top: var(--gap-xxl); padding-top: var(--gap-lg); border-top: 1px solid var(--paper-edge); display: flex; justify-content: space-between; gap: var(--gap-md); flex-wrap: wrap;"
-        aria-label="Post navigation"
+        aria-label="Project navigation"
       >
         <div style="flex: 1; min-width: 0;">
           {prev ? (
-            <a href={`${import.meta.env.BASE_URL}thoughts/${prev.slug}/`} rel="prev" style="text-decoration: none;">
+            <a href={`${import.meta.env.BASE_URL}projects/${prev.slug}/`} rel="prev" style="text-decoration: none;">
               <span class="label" style="display: block; color: var(--ink-faint); margin-bottom: 0.2rem;">Older</span>
               <span style="font-family: var(--font-display); color: var(--ink-soft);">← {prev.title}</span>
             </a>
@@ -70,7 +91,7 @@ const titleAttr = description ?? title;
         </div>
         <div style="flex: 1; min-width: 0; text-align: right;">
           {next ? (
-            <a href={`${import.meta.env.BASE_URL}thoughts/${next.slug}/`} rel="next" style="text-decoration: none;">
+            <a href={`${import.meta.env.BASE_URL}projects/${next.slug}/`} rel="next" style="text-decoration: none;">
               <span class="label" style="display: block; color: var(--ink-faint); margin-bottom: 0.2rem;">Newer</span>
               <span style="font-family: var(--font-display); color: var(--ink-soft);">{next.title} →</span>
             </a>
@@ -154,7 +175,6 @@ const titleAttr = description ?? title;
         `).join("");
       }
 
-      // Scroll-spy: highlight the section currently in view.
       const links = new Map();
       document.querySelectorAll("[data-toc-link]").forEach((a) => {
         links.set(a.dataset.tocLink, a);
@@ -174,7 +194,6 @@ const titleAttr = description ?? title;
       }, { rootMargin: "-20% 0px -70% 0px", threshold: 0 });
       sections.forEach((sec) => spy.observe(sec));
 
-      // Mobile drawer open / close.
       const open = () => {
         if (!aside || !toggle || !overlay) return;
         aside.setAttribute("data-open", "");
@@ -251,7 +270,6 @@ const titleAttr = description ?? title;
     border-radius: var(--radius-sm);
     color: var(--ink-soft);
   }
-  /* Don't style code inside the terminal block — it has its own colors. */
   .prose-thoughts :global(.terminal code) {
     background: transparent;
     padding: 0;
@@ -334,7 +352,6 @@ const titleAttr = description ?? title;
     color: var(--ink);
   }
 
-  /* TOC shared */
   .note-toc {
     font-family: var(--font-mono);
   }
@@ -348,17 +365,14 @@ const titleAttr = description ?? title;
     justify-content: space-between;
   }
 
-  /* Toggle button: floating on mobile, hidden on desktop. */
   .toc-toggle {
     display: none;
   }
 
-  /* Overlay: mobile only. */
   .toc-overlay {
     display: none;
   }
 
-  /* Desktop: sticky aside that follows scroll. */
   @media (min-width: 1024px) {
     .note-shell {
       grid-template-columns: 1fr 18rem;
@@ -395,12 +409,11 @@ const titleAttr = description ?? title;
       font-size: 1.12rem;
       max-width: 76ch;
     }
-    nav[aria-label="Post navigation"] {
+    nav[aria-label="Project navigation"] {
       gap: var(--gap-xl) !important;
     }
   }
 
-  /* Mobile: off-canvas drawer triggered by floating button. */
   @media (max-width: 1023px) {
     .toc-toggle {
       display: inline-flex;

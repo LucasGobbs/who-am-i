@@ -16,22 +16,83 @@ const pills: { id: "all" | Interest; label: string }[] = [
 <form
   data-interest-filter
   data-base-path={basePath}
-  style="margin: 0 0 var(--gap-lg); display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;"
+  class="interest-filter"
 >
-  <span class="label" style="color: var(--ink-faint); margin-right: 0.3rem;">Filter</span>
+  <span class="label filter-label">Filter</span>
   {
     pills.map((p) => (
       <button
         type="button"
         data-interest={p.id}
         aria-pressed={p.id === current ? "true" : "false"}
-        style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: var(--radius-pill); border: 1px solid var(--paper-edge); background: var(--paper-deep); color: var(--ink-mute); cursor: pointer; transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);"
+        class="filter-pill"
       >
         {p.label}
       </button>
     ))
   }
 </form>
+
+<style>
+  .interest-filter {
+    margin: 0 0 var(--gap-lg);
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    color: var(--ink-faint);
+    margin-right: 0.3rem;
+  }
+
+  .filter-pill {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--paper-edge);
+    background: var(--paper-deep);
+    color: var(--ink-mute);
+    cursor: pointer;
+    transition: background var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  /* Larger screens: bigger touch targets and more breathing room */
+  @media (min-width: 1024px) {
+    .interest-filter {
+      gap: 0.65rem;
+      margin-bottom: var(--gap-xl);
+    }
+
+    .filter-label {
+      font-size: 0.78rem;
+      margin-right: 0.5rem;
+    }
+
+    .filter-pill {
+      font-size: 0.76rem;
+      padding: 0.35rem 0.9rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .interest-filter {
+      gap: 0.75rem;
+    }
+
+    .filter-pill {
+      font-size: 0.78rem;
+      padding: 0.4rem 1rem;
+    }
+  }
+</style>
 
 <style is:global>
   [data-interest-list] [data-interest-item][hidden] {
