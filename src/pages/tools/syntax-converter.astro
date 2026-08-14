@@ -1,0 +1,688 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="MDX Post Editor | Tools"
+  description="Write post shorthand and convert it to MDX components."
+>
+  <div class="syntax-tool">
+    <header class="syntax-toolbar">
+      <div class="syntax-title-group">
+        <a href={`${import.meta.env.BASE_URL}tools/`} class="syntax-back">Tools</a>
+        <span class="syntax-divider" aria-hidden="true">/</span>
+        <h1>MDX Post Editor</h1>
+        <span id="syntax-status" class="syntax-status" aria-live="polite">Ready</span>
+      </div>
+
+      <div class="syntax-actions">
+        <button id="copy-url" type="button" class="syntax-button syntax-button-primary">
+          Copy save URL
+        </button>
+        <button id="clear-editor" type="button" class="syntax-button">
+          Clear
+        </button>
+      </div>
+    </header>
+
+    <div class="syntax-workspace">
+      <section class="syntax-pane syntax-source-pane" aria-labelledby="source-heading">
+        <div class="syntax-pane-header">
+          <div>
+            <h2 id="source-heading">Source</h2>
+            <p>Shorthand input</p>
+          </div>
+          <span class="syntax-format">.md</span>
+        </div>
+
+        <div class="syntax-editor-wrap">
+          <label for="source-editor" class="sr-only">Post source</label>
+          <textarea
+            id="source-editor"
+            class="syntax-editor"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            placeholder="Start writing, or type $ for syntax commands"
+            aria-describedby="source-help"
+          ></textarea>
+
+          <div id="completion-menu" class="syntax-completion" role="listbox" aria-label="Syntax commands" hidden></div>
+        </div>
+
+        <div class="syntax-source-footer">
+          <p id="source-help" class="syntax-help">Type <kbd>$</kbd> to browse components</p>
+          <p id="warning-summary" class="syntax-warning-summary" aria-live="polite"></p>
+        </div>
+        <ul id="warning-list" class="syntax-warning-list" aria-label="Syntax warnings"></ul>
+      </section>
+
+      <section class="syntax-pane syntax-output-pane" aria-labelledby="output-heading">
+        <div class="syntax-pane-header">
+          <div>
+            <h2 id="output-heading">Generated MDX</h2>
+            <p>Component output</p>
+          </div>
+          <button id="copy-mdx" type="button" class="syntax-text-button">Copy MDX</button>
+        </div>
+
+        <pre id="mdx-output" class="syntax-output" tabindex="0" aria-label="Generated MDX output"></pre>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (() => {
+    const source = document.getElementById("source-editor");
+    const output = document.getElementById("mdx-output");
+    const status = document.getElementById("syntax-status");
+    const copyUrl = document.getElementById("copy-url");
+    const copyMdx = document.getElementById("copy-mdx");
+    const clearEditor = document.getElementById("clear-editor");
+    const completionMenu = document.getElementById("completion-menu");
+    const warningSummary = document.getElementById("warning-summary");
+    const warningList = document.getElementById("warning-list");
+    const sourceHelp = document.getElementById("source-help");
+
+    if (!source || !output || !status || !copyUrl || !copyMdx || !clearEditor || !completionMenu || !warningSummary || !warningList || !sourceHelp) return;
+
+    const commands = [
+      { name: "http", label: "$http", hint: "METHOD > ROUTE", template: "$http > GET > /route" },
+      { name: "callout", label: "$callout", hint: "TYPE > CONTENT", template: "$callout info > Note" },
+      { name: "cite", label: "$cite", hint: "TEXT", template: "$cite > Quoted text" },
+      { name: "figure", label: "$figure", hint: "SRC > ALT", template: "$figure > /images/example.png > Description" },
+    ];
+
+    const methods = new Set(["GET", "POST", "PUT", "PATCH"]);
+    const calloutTypes = new Set(["info", "warning", "error", "tip"]);
+    let activeSuggestion = 0;
+    let currentSuggestions = [];
+
+    const escapeAttribute = (value) => value
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+
+    const makeWarning = (line, message) => ({ line, message });
+
+    function convert(input) {
+      const warnings = [];
+      const lines = input.split("\n");
+      const converted = lines.map((line, index) => {
+        const lineNumber = index + 1;
+        const trimmed = line.trim();
+
+        if (!trimmed.startsWith("$")) return line;
+
+        const commandMatch = /^\$([a-z]+)\b/i.exec(trimmed);
+        if (!commandMatch) {
+          warnings.push(makeWarning(lineNumber, "Expected a command after $"));
+          return line;
+        }
+
+        const command = commandMatch[1].toLowerCase();
+        const rest = trimmed.slice(commandMatch[0].length).trim();
+
+        if (!commands.some((item) => item.name === command)) {
+          warnings.push(makeWarning(lineNumber, `Unknown syntax: $${command}`));
+          return line;
+        }
+
+        if (command === "http") {
+          const parts = rest.split(">").map((part) => part.trim());
+          if (parts.length !== 3 || parts[0] || !methods.has(parts[1]) || !parts[2]) {
+            warnings.push(makeWarning(lineNumber, "Expected: $http > METHOD > ROUTE"));
+            return line;
+          }
+          return `<HttpRequest method="${parts[1]}" route="${escapeAttribute(parts[2])}" />`;
+        }
+
+        if (command === "callout") {
+          const parts = rest.split(">").map((part) => part.trim());
+          if (parts.length !== 2 || !calloutTypes.has(parts[0]) || !parts[1]) {
+            warnings.push(makeWarning(lineNumber, "Expected: $callout TYPE > CONTENT"));
+            return line;
+          }
+          return `<Callout type="${parts[0]}">\n  ${parts[1]}\n</Callout>`;
+        }
+
+        if (command === "cite") {
+          if (!rest.startsWith(">") || !rest.slice(1).trim()) {
+            warnings.push(makeWarning(lineNumber, "Expected: $cite > TEXT"));
+            return line;
+          }
+          return `<Cite>${rest.slice(1).trim()}</Cite>`;
+        }
+
+        const figureParts = rest.split(">").map((part) => part.trim());
+        if (figureParts.length !== 3 || figureParts[0] || !figureParts[1] || !figureParts[2]) {
+          warnings.push(makeWarning(lineNumber, "Expected: $figure > SRC > ALT"));
+          return line;
+        }
+        return `<Figure src="${escapeAttribute(figureParts[1])}" alt="${escapeAttribute(figureParts[2])}" />`;
+      });
+
+      return { output: converted.join("\n"), warnings };
+    }
+
+    function encodeBase64Url(value) {
+      const bytes = new TextEncoder().encode(value);
+      let binary = "";
+      bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+      return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
+    }
+
+    function decodeBase64Url(value) {
+      const base64 = value.replaceAll("-", "+").replaceAll("_", "/");
+      const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
+      const binary = atob(padded);
+      const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+      return new TextDecoder().decode(bytes);
+    }
+
+    function getCompletionState() {
+      const cursor = source.selectionStart;
+      const beforeCursor = source.value.slice(0, cursor);
+      const currentLine = beforeCursor.slice(beforeCursor.lastIndexOf("\n") + 1);
+      const tokenMatch = /(?:^|\s)(\$[a-z]*)$/i.exec(currentLine);
+      if (!tokenMatch) return null;
+
+      const query = tokenMatch[1].slice(1).toLowerCase();
+      const start = cursor - tokenMatch[1].length;
+      const suggestions = commands.filter((command) => command.name.startsWith(query));
+      return { start, end: cursor, suggestions };
+    }
+
+    function renderCompletion() {
+      const state = getCompletionState();
+      currentSuggestions = state?.suggestions ?? [];
+      if (!state || !currentSuggestions.length) {
+        completionMenu.hidden = true;
+        sourceHelp.innerHTML = 'Type <kbd>$</kbd> to browse components';
+        return;
+      }
+
+      activeSuggestion = Math.min(activeSuggestion, currentSuggestions.length - 1);
+      completionMenu.innerHTML = currentSuggestions.map((command, index) => `
+        <button type="button" class="syntax-completion-item${index === activeSuggestion ? " is-active" : ""}" role="option" aria-selected="${index === activeSuggestion}" data-command="${command.name}">
+          <span class="syntax-completion-label">${command.label}</span>
+          <span class="syntax-completion-hint">${command.hint}</span>
+        </button>
+      `).join("");
+      completionMenu.hidden = false;
+      sourceHelp.innerHTML = `Enter <kbd>↵</kbd> to insert <strong>${currentSuggestions[activeSuggestion].hint}</strong>`;
+
+      completionMenu.querySelectorAll("[data-command]").forEach((button) => {
+        button.addEventListener("mousedown", (event) => event.preventDefault());
+        button.addEventListener("click", () => insertSuggestion(button.dataset.command));
+      });
+    }
+
+    function insertSuggestion(name) {
+      const state = getCompletionState();
+      const command = commands.find((item) => item.name === name);
+      if (!state || !command) return;
+      source.value = source.value.slice(0, state.start) + command.template + source.value.slice(state.end);
+      const cursor = state.start + command.template.length;
+      source.focus();
+      source.setSelectionRange(cursor, cursor);
+      completionMenu.hidden = true;
+      update();
+    }
+
+    function renderWarnings(warnings) {
+      warningList.innerHTML = warnings.map((warning) => `
+        <li><span>line ${warning.line}</span>${warning.message}</li>
+      `).join("");
+      warningSummary.textContent = warnings.length ? `${warnings.length} warning${warnings.length === 1 ? "" : "s"}` : "";
+      status.textContent = warnings.length ? "Needs attention" : "Ready";
+      status.classList.toggle("is-warning", warnings.length > 0);
+    }
+
+    function update() {
+      const result = convert(source.value);
+      output.textContent = result.output;
+      renderWarnings(result.warnings);
+      renderCompletion();
+    }
+
+    function setTemporaryLabel(button, label) {
+      const original = button.textContent;
+      button.textContent = label;
+      window.setTimeout(() => { button.textContent = original; }, 1400);
+    }
+
+    source.addEventListener("input", update);
+    source.addEventListener("click", renderCompletion);
+    source.addEventListener("keyup", (event) => {
+      if (!["ArrowDown", "ArrowUp", "Enter", "Tab", "Escape"].includes(event.key)) renderCompletion();
+    });
+    source.addEventListener("keydown", (event) => {
+      if (completionMenu.hidden || !currentSuggestions.length) return;
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        activeSuggestion = (activeSuggestion + 1) % currentSuggestions.length;
+        renderCompletion();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        activeSuggestion = (activeSuggestion - 1 + currentSuggestions.length) % currentSuggestions.length;
+        renderCompletion();
+      } else if (event.key === "Enter" || event.key === "Tab") {
+        event.preventDefault();
+        insertSuggestion(currentSuggestions[activeSuggestion].name);
+      } else if (event.key === "Escape") {
+        completionMenu.hidden = true;
+        sourceHelp.innerHTML = 'Type <kbd>$</kbd> to browse components';
+      }
+    });
+
+    copyUrl.addEventListener("click", async () => {
+      const url = new URL(window.location.href);
+      url.search = source.value ? `?draft=${encodeBase64Url(source.value)}` : "";
+      await navigator.clipboard.writeText(url.toString());
+      setTemporaryLabel(copyUrl, "URL copied");
+    });
+
+    copyMdx.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(output.textContent || "");
+      setTemporaryLabel(copyMdx, "Copied");
+    });
+
+    clearEditor.addEventListener("click", () => {
+      source.value = "";
+      const url = new URL(window.location.href);
+      url.search = "";
+      window.history.replaceState({}, "", url);
+      source.focus();
+      update();
+    });
+
+    const draft = new URLSearchParams(window.location.search).get("draft");
+    if (draft) {
+      try {
+        source.value = decodeBase64Url(draft);
+      } catch {
+        warningSummary.textContent = "Could not decode draft URL";
+        status.textContent = "Invalid draft";
+        status.classList.add("is-warning");
+      }
+    }
+
+    update();
+  })();
+</script>
+
+<style>
+  .syntax-tool {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .syntax-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem clamp(1rem, 3vw, 2rem);
+    border-bottom: 1px solid var(--paper-edge);
+  }
+
+  .syntax-title-group,
+  .syntax-actions,
+  .syntax-pane-header,
+  .syntax-source-footer {
+    display: flex;
+    align-items: center;
+  }
+
+  .syntax-title-group {
+    min-width: 0;
+    gap: 0.6rem;
+  }
+
+  .syntax-title-group h1 {
+    margin: 0;
+    overflow: hidden;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .syntax-back,
+  .syntax-divider,
+  .syntax-status,
+  .syntax-format,
+  .syntax-pane-header p,
+  .syntax-help,
+  .syntax-warning-summary,
+  .syntax-warning-list,
+  .syntax-button,
+  .syntax-text-button,
+  .syntax-completion,
+  .syntax-completion-hint {
+    font-family: var(--font-mono);
+  }
+
+  .syntax-back {
+    color: var(--ink-mute);
+    font-size: 0.72rem;
+    text-decoration: none;
+  }
+
+  .syntax-back:hover {
+    color: var(--accent);
+  }
+
+  .syntax-divider {
+    color: var(--paper-edge);
+    font-size: 0.8rem;
+  }
+
+  .syntax-status {
+    color: var(--ink-faint);
+    font-size: 0.68rem;
+  }
+
+  .syntax-status::before {
+    display: inline-block;
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-right: 0.35rem;
+    border-radius: 50%;
+    background: #4d7c0f;
+    content: "";
+  }
+
+  .syntax-status.is-warning {
+    color: var(--accent);
+  }
+
+  .syntax-status.is-warning::before {
+    background: var(--accent);
+  }
+
+  .syntax-actions {
+    flex-shrink: 0;
+    gap: 0.5rem;
+  }
+
+  .syntax-button,
+  .syntax-text-button {
+    cursor: pointer;
+    border: 1px solid var(--paper-edge);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink-soft);
+    font-size: 0.7rem;
+    line-height: 1;
+    transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .syntax-button {
+    padding: 0.65rem 0.8rem;
+  }
+
+  .syntax-button-primary {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .syntax-button:hover,
+  .syntax-text-button:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .syntax-button-primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+
+  .syntax-button:focus-visible,
+  .syntax-text-button:focus-visible,
+  .syntax-back:focus-visible,
+  .syntax-completion-item:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .syntax-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    flex: 1;
+    min-height: 0;
+  }
+
+  .syntax-pane {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  .syntax-source-pane {
+    background: var(--paper-deep);
+  }
+
+  .syntax-output-pane {
+    background: var(--paper);
+  }
+
+  .syntax-pane + .syntax-pane {
+    border-left: 1px solid var(--paper-edge);
+  }
+
+  .syntax-pane-header {
+    justify-content: space-between;
+    min-height: 3.8rem;
+    padding: 0.8rem 1.1rem;
+    border-bottom: 1px solid var(--paper-edge);
+  }
+
+  .syntax-pane-header h2 {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .syntax-pane-header p {
+    margin: 0.2rem 0 0;
+    color: var(--ink-faint);
+    font-size: 0.65rem;
+  }
+
+  .syntax-format {
+    color: var(--ink-faint);
+    font-size: 0.65rem;
+  }
+
+  .syntax-text-button {
+    padding: 0.45rem 0.6rem;
+    border-color: transparent;
+    color: var(--ink-mute);
+  }
+
+  .syntax-editor-wrap {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 28rem;
+    flex-direction: column;
+  }
+
+  .syntax-editor,
+  .syntax-output {
+    box-sizing: border-box;
+    width: 100%;
+    flex: 1;
+    min-height: 28rem;
+    margin: 0;
+    padding: 1.25rem;
+    border: 0;
+    border-radius: 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.75;
+    tab-size: 2;
+  }
+
+  .syntax-editor {
+    resize: none;
+    background: var(--terminal-bg);
+    color: var(--terminal-ink);
+    caret-color: var(--accent-faint);
+    outline: none;
+  }
+
+  .syntax-editor::selection {
+    background: #713f12;
+    color: var(--paper);
+  }
+
+  .syntax-editor::placeholder {
+    color: var(--terminal-mute);
+    opacity: 0.65;
+  }
+
+  .syntax-output {
+    overflow: auto;
+    background: var(--paper);
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .syntax-output:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  .syntax-completion {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 2;
+    overflow: hidden;
+    border: 1px solid #57534e;
+    border-radius: var(--radius-sm);
+    background: #1c1917;
+  }
+
+  .syntax-completion-item {
+    display: flex;
+    width: 100%;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    cursor: pointer;
+    padding: 0.65rem 0.8rem;
+    border: 0;
+    background: transparent;
+    color: var(--terminal-ink);
+    text-align: left;
+  }
+
+  .syntax-completion-item:hover,
+  .syntax-completion-item.is-active {
+    background: #292524;
+  }
+
+  .syntax-completion-label {
+    color: #fdba74;
+    font-size: 0.75rem;
+  }
+
+  .syntax-completion-hint {
+    color: var(--terminal-mute);
+    font-size: 0.65rem;
+  }
+
+  .syntax-source-footer {
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 1.1rem;
+    border-top: 1px solid var(--paper-edge);
+  }
+
+  .syntax-help,
+  .syntax-warning-summary {
+    margin: 0;
+    color: var(--ink-mute);
+    font-size: 0.65rem;
+  }
+
+  .syntax-help kbd {
+    padding: 0.1rem 0.25rem;
+    border: 1px solid var(--paper-edge);
+    border-radius: 2px;
+    background: var(--paper);
+    color: var(--ink-soft);
+    font-size: 0.62rem;
+  }
+
+  .syntax-warning-summary {
+    color: var(--accent);
+  }
+
+  .syntax-warning-list {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0 1.1rem 0.8rem;
+    list-style: none;
+    color: var(--accent);
+    font-size: 0.65rem;
+  }
+
+  .syntax-warning-list:empty {
+    display: none;
+  }
+
+  .syntax-warning-list li span {
+    margin-right: 0.7rem;
+    color: var(--ink-mute);
+  }
+
+  @media (max-width: 700px) {
+    .syntax-toolbar {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .syntax-actions {
+      width: 100%;
+    }
+
+    .syntax-button {
+      flex: 1;
+    }
+
+    .syntax-workspace {
+      grid-template-columns: 1fr;
+    }
+
+    .syntax-pane + .syntax-pane {
+      border-top: 1px solid var(--paper-edge);
+      border-left: 0;
+    }
+
+    .syntax-editor-wrap,
+    .syntax-editor,
+    .syntax-output {
+      min-height: 20rem;
+    }
+  }
+</style>
