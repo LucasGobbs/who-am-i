@@ -1,56 +1,396 @@
 ---
 import type { Experience } from "../consts";
-import { formatExperienceRange } from "../consts";
+import { formatExperienceRange, formatMonthYear } from "../consts";
 
 interface Props {
   experiences: Experience[];
 }
 const { experiences } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const resolveProjectSrc = (src: string) =>
+  /^(?:https?:|data:)/.test(src) ? src : `${base}${src.replace(/^\/+/, "")}`;
 
-const years = [
-  ...new Set(experiences.map((e) => e.startYear)),
-].sort((a, b) => a - b);
+const renderRichText = (text: string): string => {
+  const escaped = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+  return escaped
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>");
+};
+
+const allRoles = experiences.flatMap((experience) => experience.roles);
+const years = [...new Set(allRoles.map((role) => role.startYear))].sort(
+  (a, b) => a - b
+);
+const yearsDisplay: (number | string)[] = allRoles.some(
+  (role) => role.endYear === null
+)
+  ? [...years, "present"]
+  : years;
 ---
 
 <p class="kicker m-0 mb-8">
-  {years.join("  ·  ")}
+  {yearsDisplay.join("  ·  ")}
 </p>
 
-<ol class="relative m-0 list-none p-0 before:absolute before:top-0 before:bottom-0 before:left-3 before:w-px before:bg-stone-300">
+<ol class="experience-timeline m-0 list-none p-0">
   {
-    experiences.map((e, i) => (
-      <li class="relative pb-16 pl-10 last:pb-0">
-        <span
-          class="absolute top-1.5 left-0 flex size-6 items-center justify-center rounded-full border-2 border-orange-600 bg-stone-50 font-mono text-xs font-semibold text-orange-600"
-          aria-hidden="true"
-        >{String(i + 1).padStart(2, "0")}</span>
-        <p class="label m-0 mb-2 font-semibold text-orange-600">
-          {formatExperienceRange(e)}
-        </p>
-        <h3 class="m-0 mb-2 text-xl leading-tight">
-          {e.role}
-        </h3>
-        <p class="m-0 mb-4 font-mono text-sm tracking-wide text-stone-500 uppercase">
-          {e.company}
-        </p>
-        <p class="m-0 mb-6 text-base leading-relaxed text-stone-700">
-          {e.summary}
-        </p>
-        <ul class="my-4 pl-5 text-sm leading-relaxed text-stone-700">
-          {e.highlights.map((h) => (
-            <li class="my-2">{h}</li>
-          ))}
-        </ul>
-        {e.tech.length > 0 && (
-          <ul class="m-0 mt-6 flex list-none flex-wrap gap-2 p-0">
-            {e.tech.map((t) => (
-              <li class="rounded-full border border-stone-300 bg-stone-100 px-2 py-0.5 font-mono text-xs font-medium tracking-wide text-stone-700">
-                {t}
-              </li>
-            ))}
-          </ul>
-        )}
-      </li>
-    ))
+    experiences.map((experience, index) => {
+      const latestRole = experience.roles[0];
+      const firstRole = experience.roles[experience.roles.length - 1];
+      const companyStart = formatMonthYear(
+        firstRole.startYear,
+        firstRole.startMonth
+      );
+      const companyEnd =
+        latestRole.endYear === null || latestRole.endMonth === null
+          ? "present"
+          : formatMonthYear(latestRole.endYear, latestRole.endMonth);
+
+      return (
+        <li class="experience-entry">
+          <span class="experience-number" aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+
+          <article class="experience-card">
+            <header class="experience-header">
+              <div>
+                <h3>{latestRole.title}</h3>
+                <p class="experience-company">{experience.company}</p>
+              </div>
+              <p class="experience-range">
+                {companyStart} – {companyEnd}
+              </p>
+            </header>
+
+            <div class="experience-role-content">
+              <p class="experience-summary" set:html={renderRichText(latestRole.summary)}></p>
+              {latestRole.highlights.length > 0 && (
+                <ul class="experience-highlights">
+                  {latestRole.highlights.map((highlight) => (
+                    <li set:html={renderRichText(highlight)}></li>
+                  ))}
+                </ul>
+              )}
+              {latestRole.tech.length > 0 && (
+                <p class="experience-tech">
+                  <strong>Stack</strong>
+                  <span>{latestRole.tech.join(" · ")}</span>
+                </p>
+              )}
+            </div>
+
+            {experience.roles.length > 1 && (
+              <section class="experience-progression" aria-label={`Role progression at ${experience.company}`}>
+                <p class="experience-progression-label">Progression</p>
+                <ol>
+                  {experience.roles.map((role, roleIndex) => (
+                    <li>
+                      <span class="experience-progression-dot" aria-hidden="true"></span>
+                      <h4>
+                        {role.title}
+                        {roleIndex === 0 && <span class="experience-current-role">Current role</span>}
+                      </h4>
+                      <p class="experience-range">{formatExperienceRange(role)}</p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
+
+            {experience.projects && experience.projects.length > 0 && (
+              <ul class="experience-projects" aria-label={`Projects at ${experience.company}`}>
+                {experience.projects.map((project) => (
+                  <li>
+                    {project.href ? (
+                      <a href={project.href}>
+                        <img src={resolveProjectSrc(project.src)} alt={project.alt} loading="lazy" />
+                      </a>
+                    ) : (
+                      <img src={resolveProjectSrc(project.src)} alt={project.alt} loading="lazy" />
+                    )}
+                    {project.caption && <p set:html={renderRichText(project.caption)}></p>}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </article>
+        </li>
+      );
+    })
   }
 </ol>
+
+<style>
+  .experience-timeline {
+    position: relative;
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .experience-timeline::before {
+    position: absolute;
+    top: 0.75rem;
+    bottom: 0;
+    left: 0.75rem;
+    width: 1px;
+    background: var(--paper-edge);
+    content: "";
+  }
+
+  .experience-entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+
+  .experience-number {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 1.5rem;
+    height: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+  }
+
+  .experience-card {
+    min-width: 0;
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+    border-bottom: 1px dotted var(--paper-edge);
+  }
+
+  .experience-entry:last-child .experience-card {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .experience-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .experience-header h3 {
+    margin: 0;
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    line-height: 1.12;
+  }
+
+  .experience-company {
+    margin: 0.35rem 0 0;
+    color: var(--ink-mute);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .experience-range {
+    flex-shrink: 0;
+    margin: 0;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .experience-role-content {
+    max-width: 70ch;
+  }
+
+  .experience-summary {
+    margin: 0 0 1rem;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    font-style: italic;
+    line-height: 1.65;
+  }
+
+  .experience-highlights {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .experience-highlights li {
+    position: relative;
+    padding-left: 1rem;
+  }
+
+  .experience-highlights li::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--accent);
+    content: "·";
+    font-weight: 700;
+  }
+
+  .experience-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.8rem;
+    margin: 1.25rem 0 0;
+    color: var(--ink-mute);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.55;
+  }
+
+  .experience-tech strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .experience-progression {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px dotted var(--paper-edge);
+  }
+
+  .experience-progression-label {
+    margin: 0 0 0.8rem;
+    color: var(--ink-mute);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .experience-progression ol {
+    position: relative;
+    display: grid;
+    gap: 0.85rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .experience-progression ol::before {
+    position: absolute;
+    top: 0.45rem;
+    bottom: 0.45rem;
+    left: 0.2rem;
+    border-left: 1px dotted var(--paper-edge);
+    content: "";
+  }
+
+  .experience-progression li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 0.4rem minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.7rem;
+  }
+
+  .experience-progression-dot {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 0.4rem;
+    height: 0.4rem;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    background: var(--paper);
+  }
+
+  .experience-progression h4 {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .experience-current-role {
+    margin-left: 0.6rem;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .experience-projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 1rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .experience-projects img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--paper-edge);
+    border-radius: var(--radius-md);
+    object-fit: cover;
+  }
+
+  .experience-projects a {
+    display: block;
+  }
+
+  .experience-projects a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .experience-projects p {
+    margin: 0.5rem 0 0;
+    color: var(--ink-mute);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 600px) {
+    .experience-header {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .experience-progression li {
+      grid-template-columns: 0.4rem minmax(0, 1fr);
+      gap: 0.7rem;
+    }
+
+    .experience-progression .experience-range {
+      grid-column: 2;
+    }
+
+    .experience-entry {
+      gap: 0.85rem;
+    }
+  }
+</style>

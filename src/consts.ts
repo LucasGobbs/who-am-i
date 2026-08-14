@@ -8,7 +8,7 @@ export const SITE_DESCRIPTION =
 export const SITE_URL = "https://lucasgobbs.github.io/who-am-i";
 export const SITE_AUTHOR = "Lucas Gobbi";
 export const SITE_ROLE = "Software Developer";
-export const SITE_LOCATION = "Espírito Santo, Brazil";
+export const SITE_LOCATION = "Rio de Janeiro, Brazil";
 
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -26,9 +26,8 @@ export const SOCIAL_LINKS = [
   { href: "rss.xml", label: "RSS" },
 ] as const;
 
-export type Experience = {
-  company: string;
-  role: string;
+export type ExperienceRole = {
+  title: string;
   startYear: number;
   startMonth: number; // 1-12
   endYear: number | null; // null = current
@@ -36,6 +35,19 @@ export type Experience = {
   summary: string;
   highlights: string[];
   tech: string[];
+};
+
+export type ExperienceProject = {
+  src: string;
+  alt: string;
+  caption?: string;
+  href?: string;
+};
+
+export type Experience = {
+  company: string;
+  roles: ExperienceRole[]; // newest first
+  projects?: ExperienceProject[];
 };
 
 const MONTHS = [
@@ -48,108 +60,151 @@ export function formatMonthYear(year: number, month: number | null): string {
   return `${MONTHS[month - 1]} ${year}`;
 }
 
-export function formatExperienceRange(e: Experience): string {
-  const start = formatMonthYear(e.startYear, e.startMonth);
+export function formatExperienceRange(role: ExperienceRole): string {
+  const start = formatMonthYear(role.startYear, role.startMonth);
   const end =
-    e.endYear === null || e.endMonth === null
+    role.endYear === null || role.endMonth === null
       ? "present"
-      : formatMonthYear(e.endYear, e.endMonth);
+      : formatMonthYear(role.endYear, role.endMonth);
   return `${start} – ${end}`;
 }
 
 export const EXPERIENCES: Experience[] = [
   {
     company: "Tractian",
-    role: "Senior Software Engineer",
-    startYear: 2024,
-    startMonth: 9,
-    endYear: null,
-    endMonth: null,
-    summary:
-      "Systems Integration Department. Building integrations between our CMMS and leading ERP solutions such as SAP.",
-    highlights: [
-      "Create integrations between the CMMS platform and market-leading ERPs (SAP).",
-      "Script across Python, JavaScript/TypeScript (Node.js), and Go.",
-      "Use Kafka, Docker, GitHub Actions, MongoDB, and Python FastAPI.",
-      "Professional engagements with customers in English.",
-    ],
-    tech: [
-      "Python",
-      "TypeScript",
-      "Node.js",
-      "Go",
-      "Kafka",
-      "Docker",
-      "MongoDB",
-      "FastAPI",
-      "GitHub Actions",
+    roles: [
+      {
+        title: "Senior Software Engineer",
+        startYear: 2024,
+        startMonth: 9,
+        endYear: null,
+        endMonth: null,
+        summary:
+          "Systems Integration Department. Building integrations between our CMMS and leading ERP solutions such as SAP.",
+        highlights: [
+          "Create integrations between the CMMS platform and market-leading ERPs (Mainly **SAP**).",
+          "Script across Python, JavaScript/TypeScript (Node.js), and Go.",
+          "Use Kafka, Docker, GitHub Actions, MongoDB, and Python FastAPI.",
+          "Professional engagements with customers in English.",
+        ],
+        tech: [
+          "Python",
+          "TypeScript",
+          "Node.js",
+          "Go",
+          "Kafka",
+          "Docker",
+          "MongoDB",
+          "FastAPI",
+          "SAP",
+        ],
+      },
     ],
   },
   {
     company: "Semantix",
-    role: "Software Engineer",
-    startYear: 2021,
-    startMonth: 11,
-    endYear: 2024,
-    endMonth: 9,
-    summary:
-      "Data Integration Department. Custom integrations between services for customers across ERPs, APIs, and platforms.",
-    highlights: [
-      "Built customized integrations between services for customers.",
-      "Worked with databases, ERPs, and APIs: SAP, Protheus, VTEX, Zendesk, Magento, UnicoRH, LG, and more.",
-      "Scripting with JavaScript/TypeScript (Node.js).",
-      "Docker and Kubernetes; Agile with SCRUM.",
-      "Built internal tools with Flutter, Vue.js, and AngularJS.",
-      "Professional engagements with customers in English and Spanish.",
-    ],
-    tech: [
-      "TypeScript",
-      "Node.js",
-      "Docker",
-      "Kubernetes",
-      "Vue.js",
-      "AngularJS",
-      "Flutter",
-      "SCRUM",
+    roles: [
+      {
+        title: "Software Engineer",
+        startYear: 2022,
+        startMonth: 4,
+        endYear: 2024,
+        endMonth: 9,
+        summary:
+          "Data Integration Department. Custom integrations between services for customers across ERPs, APIs, and platforms.",
+        highlights: [
+          "Built customized integrations between services for customers.",
+          "Worked with databases, ERPs, and APIs: SAP, Protheus, VTEX, Zendesk, Magento, UnicoRH, LG, and more.",
+          "Scripting with JavaScript/TypeScript (Node.js).",
+          "Docker and Kubernetes; Agile with SCRUM.",
+          "Built internal tools with Flutter, Vue.js, and AngularJS.",
+          "Professional engagements with customers in English and Spanish.",
+        ],
+        tech: [
+          "TypeScript",
+          "Node.js",
+          "Docker",
+          "Kubernetes",
+          "Vue.js",
+          "AngularJS",
+          "Flutter",
+          "SCRUM",
+        ],
+      },
+      {
+        title: "Analyst Backend Developer Jr | Linkapi Solutions",
+        startYear: 2021,
+        startMonth: 11,
+        endYear: 2022,
+        endMonth: 4,
+        summary:
+          "Data Integration Department. Custom integrations between services for customers across ERPs, APIs, and platforms.",
+        highlights: [
+          "Built customized integrations between services for customers.",
+          "Worked with databases, ERPs, and APIs: SAP, Protheus, VTEX, Zendesk, Magento, UnicoRH, LG, and more.",
+          "Scripting with JavaScript/TypeScript (Node.js).",
+          "Docker and Kubernetes; Agile with SCRUM.",
+          "Built internal tools with Flutter, Vue.js, and AngularJS.",
+          "Professional engagements with customers in English and Spanish.",
+        ],
+        tech: [
+          "TypeScript",
+          "Node.js",
+          "Docker",
+          "Kubernetes",
+          "Vue.js",
+          "AngularJS",
+          "Flutter",
+          "SCRUM",
+        ],
+      },
     ],
   },
   {
     company: "Gerpos Sistemas",
-    role: "Frontend Developer (Internship)",
-    startYear: 2021,
-    startMonth: 8,
-    endYear: 2021,
-    endMonth: 11,
-    summary: "Automating development and deploy pipelines in GitLab.",
-    highlights: [
-      "Automated development and deployment workflows in GitLab.",
-      "Scripting with Flutter.",
+    roles: [
+      {
+        title: "Frontend Developer (Internship)",
+        startYear: 2021,
+        startMonth: 8,
+        endYear: 2021,
+        endMonth: 11,
+        summary: "Automating development and deploy pipelines in GitLab.",
+        highlights: [
+          "Automated development and deployment workflows in GitLab.",
+          "Scripting with Flutter.",
+        ],
+        tech: ["Flutter", "GitLab CI"],
+      },
     ],
-    tech: ["Flutter", "GitLab CI"],
   },
   {
     company: "Olá Wolff",
-    role: "Backend Developer (Internship)",
-    startYear: 2020,
-    startMonth: 9,
-    endYear: 2021,
-    endMonth: 8,
-    summary:
-      "Backend of published mobile apps (e-commerce, store/business management).",
-    highlights: [
-      "Worked on the backend of published mobile apps using Node.js, TypeScript, PostgreSQL, and Jest.",
-      "Developed and deployed microservices with Docker on AWS.",
-      "Integrated payment APIs: Zoop, Stone Open Bank, and PagarMe.",
-      "Agile with SCRUM.",
-    ],
-    tech: [
-      "Node.js",
-      "TypeScript",
-      "PostgreSQL",
-      "Jest",
-      "Docker",
-      "AWS",
-      "SCRUM",
+    roles: [
+      {
+        title: "Backend Developer Jr",
+        startYear: 2020,
+        startMonth: 9,
+        endYear: 2021,
+        endMonth: 8,
+        summary:
+          "Backend of published mobile apps (e-commerce, store/business management).",
+        highlights: [
+          "Worked on the backend of published mobile apps using Node.js, TypeScript, PostgreSQL, and Jest.",
+          "Developed and deployed microservices with Docker on AWS.",
+          "Integrated payment APIs: Zoop, Stone Open Bank, and PagarMe.",
+          "Agile with SCRUM.",
+        ],
+        tech: [
+          "Node.js",
+          "TypeScript",
+          "PostgreSQL",
+          "Jest",
+          "Docker",
+          "AWS",
+          "SCRUM",
+        ],
+      },
     ],
   },
 ];

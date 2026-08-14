@@ -40,7 +40,10 @@ const isActive = (href: string) => {
                 <a
                   href={href}
                   aria-current={isActive(href) ? "page" : undefined}
-                  class="font-mono text-xs font-semibold uppercase tracking-wider text-stone-700 no-underline transition-colors duration-150 ease-out hover:text-stone-950 aria-[current=page]:text-orange-600"
+                  class:list={[
+                    "font-mono text-xs font-semibold uppercase tracking-wider no-underline transition-colors duration-150 ease-out hover:text-stone-950",
+                    isActive(href) ? "text-stone-950" : "text-stone-700",
+                  ]}
                 >
                   {link.label}
                 </a>
