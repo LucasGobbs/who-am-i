@@ -25,26 +25,40 @@ const {
   >
     Canvas not supported.
   </canvas>
-  {
-    caption && (
-      <figcaption
-        class="mt-2 font-mono text-xs tracking-wide text-stone-500"
-      >
-        {caption}
-      </figcaption>
-    )
-  }
+  <figcaption
+    class="mt-2 flex items-center justify-center gap-2 font-mono text-xs tracking-wide text-stone-500"
+  >
+    {caption && <span>{caption}</span>}
+    <button
+      type="button"
+      class="inline-flex size-6 items-center justify-center rounded-full border border-stone-300 bg-stone-100 text-stone-600 transition-colors hover:border-stone-500 hover:text-stone-950"
+      data-canvas-toggle={id}
+      aria-label="Pause animation"
+      aria-pressed="false"
+    >
+      <svg data-canvas-pause-icon viewBox="0 0 24 24" class="size-3.5 fill-current" aria-hidden="true">
+        <path d="M7 5h3v14H7zM14 5h3v14h-3z" />
+      </svg>
+    </button>
+  </figcaption>
   <script is:inline define:vars={{ canvasId: id, w: width, h: height, drawSrc: draw }}>
     (() => {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
+      const toggle = document.querySelector(`[data-canvas-toggle="${canvasId}"]`);
+      const icon = toggle?.querySelector("[data-canvas-pause-icon]");
+      if (!canvas || !toggle || !icon) return;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       const fn = new Function("return (" + drawSrc + ")")();
       let raf = 0;
+      let paused = false;
       let start = performance.now();
       const loop = (now) => {
+        if (paused) {
+          raf = 0;
+          return;
+        }
         const t = now - start;
         try { fn(ctx, t, w, h); } catch (e) { console.error(e); return; }
         raf = requestAnimationFrame(loop);
@@ -59,6 +73,28 @@ const {
           }
         }
       }, { threshold: 0.01 });
+      toggle.addEventListener("click", () => {
+        paused = !paused;
+        toggle.setAttribute("aria-label", paused ? "Resume animation" : "Pause animation");
+        toggle.setAttribute("aria-pressed", String(paused));
+        icon.innerHTML = paused
+          ? '<path d="m8 5 11 7-11 7z" />'
+          : '<path d="M7 5h3v14H7zM14 5h3v14h-3z" />';
+        if (paused && raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        } else if (!paused && !reduce) {
+          start = performance.now();
+          raf = requestAnimationFrame(loop);
+        }
+      });
+      if (reduce) {
+        toggle.setAttribute("aria-label", "Animation paused");
+        toggle.setAttribute("aria-pressed", "true");
+        icon.innerHTML = '<path d="m8 5 11 7-11 7z" />';
+        toggle.disabled = true;
+        paused = true;
+      }
       io.observe(canvas);
       if (reduce) {
         try { fn(ctx, 0, w, h); } catch (e) { console.error(e); }

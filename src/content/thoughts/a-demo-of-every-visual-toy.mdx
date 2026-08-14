@@ -88,11 +88,20 @@ below into a new `.mdx` file and edit it.
     <TerminalOutput>Everything is fine.</TerminalOutput>
     <TerminalLine prompt="$">echo "probably fine"</TerminalLine>
     <TerminalOutput>probably fine</TerminalOutput>
+    <TerminalLine>git status --short</TerminalLine>
+    <TerminalOutput>working tree clean</TerminalOutput>
   </Terminal>
 </Section>
 
 <Section title="HTTP Requests">
-  Demonstrate API interactions with POST to log thoughts:
+  Demonstrate API interactions with various methods. Compact mode shows method and route only; full mode includes request body and mocked response.
+
+  <HttpRequest
+    method="GET"
+    route="/api/thoughts"
+    body={{}}
+    compact
+  />
 
   <HttpRequest
     method="POST"
@@ -107,6 +116,26 @@ below into a new `.mdx` file and edit it.
       status: "created",
       createdAt: "2026-08-14T10:30:00Z"
     }}
+  />
+
+  <HttpRequest
+    method="PATCH"
+    route="/api/thoughts/67a8f42b"
+    body={{
+      published: false
+    }}
+    compact
+  />
+
+  <HttpRequest
+    method="PUT"
+    route="/api/thoughts/67a8f42b"
+    body={{
+      title: "Updated thought",
+      tags: ["api", "demo", "updated"],
+      published: true
+    }}
+    compact
   />
 </Section>
 

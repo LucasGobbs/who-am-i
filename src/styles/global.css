@@ -604,7 +604,7 @@ th {
 
   .terminal .term-line { display: flex; align-items: baseline; gap: 0.5rem; white-space: pre-wrap; word-break: break-word; }
   .terminal .term-content { flex: 1; min-width: 0; }
-  .terminal .term-prompt { color: var(--terminal-prompt); user-select: none; flex-shrink: 0; }
+  .terminal .term-prompt { color: #86efac; user-select: none; flex-shrink: 0; }
   .terminal .term-output { color: var(--terminal-mute); white-space: pre-wrap; word-break: break-word; display: block; }
   .terminal .term-copy { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; margin: 0; background: transparent; border: 0; border-radius: var(--radius-sm); color: #57534e; cursor: pointer; opacity: 0; transition: opacity var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out); }
   .terminal .term-line:hover .term-copy, .terminal .term-copy:focus-visible { opacity: 1; }

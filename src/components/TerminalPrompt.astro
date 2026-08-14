@@ -1,0 +1,9 @@
+---
+// Renders a colorized terminal prompt ($). Used as default in TerminalLine.
+interface Props {
+  text?: string;
+}
+const { text = "$" } = Astro.props;
+---
+
+<span class="term-prompt">{text}</span>
