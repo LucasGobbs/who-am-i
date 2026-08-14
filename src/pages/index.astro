@@ -20,15 +20,15 @@ const rest = SITE_AUTHOR.slice(1);
 ---
 
 <PageLayout title={`${SITE_AUTHOR} — ${SITE_ROLE}`} description={SITE_DESCRIPTION}>
-  <section class="hero" style="margin: 0 0 var(--gap-xxl);">
-    <p class="kicker" style="margin: 0 0 1.2rem;">Notebook · Resume · Projects</p>
-    <h1 class="mega-name" style="margin: 0; font-size: var(--step-mega); line-height: 0.9; letter-spacing: -0.04em;">
-      <span style="color: var(--accent);">{first}</span><span>{rest}</span>
+  <section class="hero mb-[var(--gap-xxl)]">
+    <p class="kicker mb-[1.2rem]">Notebook · Resume · Projects</p>
+    <h1 class="mega-name text-[length:var(--step-mega)] leading-[0.9] tracking-[-0.04em]">
+      <span class="text-[var(--accent)]">{first}</span><span>{rest}</span>
     </h1>
-    <p style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--ink-mute); margin: 1.2rem 0 0; letter-spacing: 0.04em;">
+    <p class="mt-[1.2rem] font-[family-name:var(--font-mono)] text-[0.9rem] tracking-[0.04em] text-[var(--ink-mute)]">
       {SITE_ROLE} · {SITE_LOCATION}
     </p>
-    <p class="drop-cap" style="font-size: 1.15rem; line-height: 1.68; max-width: 58ch; color: var(--ink-soft); margin: var(--gap-xl) 0 0;">
+    <p class="drop-cap mt-[var(--gap-xl)] max-w-[58ch] text-[1.15rem] leading-[1.68] text-[var(--ink-soft)]">
       Software developer with 5+ years across backend, frontend, and DevOps.
       I build integrations and care about boring, observable, maintainable
       infrastructure. This site is my resume, my projects, and a small
@@ -40,33 +40,33 @@ const rest = SITE_AUTHOR.slice(1);
 
   <section>
     <p class="section-num">01</p>
-    <h2 style="margin: 0 0 var(--gap-lg);">Experience</h2>
+    <h2 class="mb-[var(--gap-lg)]">Experience</h2>
     <ExperienceTimeline experiences={EXPERIENCES.slice(0, 1)} />
-    <p style="margin-top: var(--gap-md);">
+    <p class="mt-[var(--gap-md)]">
       <a href={`${import.meta.env.BASE_URL}resume/`}>Full resume →</a>
     </p>
   </section>
 
   <section>
     <p class="section-num">02</p>
-    <h2 style="margin: 0 0 var(--gap-lg);">Selected projects</h2>
-    <div style="display: flex; flex-direction: column; gap: var(--gap-md);">
+    <h2 class="mb-[var(--gap-lg)]">Selected projects</h2>
+    <div class="flex flex-col gap-[var(--gap-md)]">
       {projects.map((entry) => <ProjectEntryCard entry={entry} />)}
     </div>
-    <p style="margin-top: var(--gap-md);">
+    <p class="mt-[var(--gap-md)]">
       <a href={`${import.meta.env.BASE_URL}projects/`}>All projects →</a>
     </p>
   </section>
 
   <section>
     <p class="section-num">03</p>
-    <h2 style="margin: 0 0 var(--gap-lg);">Latest thoughts</h2>
+    <h2 class="mb-[var(--gap-lg)]">Latest thoughts</h2>
     {thoughts.length === 0 ? (
-      <p style="color: var(--ink-mute);">No thoughts yet.</p>
+      <p class="text-[var(--ink-mute)]">No thoughts yet.</p>
     ) : (
       thoughts.map((entry) => <NoteCard entry={entry} />)
     )}
-    <p style="margin-top: var(--gap-md);">
+    <p class="mt-[var(--gap-md)]">
       <a href={`${import.meta.env.BASE_URL}thoughts/`}>All thoughts →</a>
     </p>
   </section>

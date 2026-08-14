@@ -25,73 +25,22 @@ const years = [...byYear.keys()].sort((a, b) => b - a);
   title={`Projects — ${SITE_AUTHOR}`}
   description="Things I have built."
 >
-  <p class="label" style="margin: 0 0 0.5rem;">Work</p>
-  <h1 style="margin: 0 0 var(--gap-sm);">Projects</h1>
-  <p style="color: var(--ink-mute); margin: 0 0 var(--gap-lg); font-size: 0.98rem;">
+  <p class="label mb-2">Work</p>
+  <h1 class="mb-[var(--gap-sm)]">Projects</h1>
+  <p class="mb-[var(--gap-lg)] text-[0.98rem] text-[var(--ink-mute)]">
     Things I have built.
   </p>
 
   <InterestFilter current={current} basePath={`${import.meta.env.BASE_URL}projects`} />
 
-  <style>
-    .year-heading {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--ink-mute);
-      letter-spacing: 0.06em;
-      margin: 0 0 var(--gap-md);
-      padding-bottom: 0.4rem;
-      border-bottom: 1px solid var(--paper-edge);
-    }
-
-    .year-section {
-      margin: var(--gap-xl) 0;
-    }
-
-    .year-cards {
-      display: flex;
-      flex-direction: column;
-      gap: var(--gap-md);
-    }
-
-    /* Larger screens: wider layout, generous card gaps */
-    @media (min-width: 1024px) {
-      .year-heading {
-        font-size: 0.9rem;
-        letter-spacing: 0.07em;
-        margin-bottom: var(--gap-lg);
-        padding-bottom: 0.5rem;
-      }
-
-      .year-section {
-        margin: var(--gap-xxl) 0;
-      }
-
-      .year-cards {
-        gap: var(--gap-lg);
-      }
-    }
-
-    @media (min-width: 1440px) {
-      .year-heading {
-        font-size: 0.92rem;
-      }
-
-      .year-cards {
-        gap: calc(var(--gap-lg) + 0.25rem);
-      }
-    }
-  </style>
-
   <div data-interest-list class="project-list">
     {
       years.map((year) => (
-        <section class="year-section">
-          <h2 class="year-heading">
+        <section class="my-[var(--gap-xl)] lg:my-[var(--gap-xxl)]">
+          <h2 class="mb-[var(--gap-md)] border-b border-[var(--paper-edge)] pb-[0.4rem] font-[family-name:var(--font-mono)] text-[0.85rem] font-medium tracking-[0.06em] text-[var(--ink-mute)] lg:mb-[var(--gap-lg)] lg:pb-2 lg:text-[0.9rem] lg:tracking-[0.07em] min-[1440px]:text-[0.92rem]">
             {year}
           </h2>
-          <div class="year-cards">
+          <div class="flex flex-col gap-[var(--gap-md)] lg:gap-[var(--gap-lg)] min-[1440px]:gap-[calc(var(--gap-lg)+0.25rem)]">
             {byYear.get(year)!.map((entry) => (
               <div
                 data-interest-item

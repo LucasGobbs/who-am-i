@@ -17,18 +17,17 @@ const { block = false, label } = Astro.props;
 {
   block ? (
     <figure
-      class="math-block"
+      class="my-[var(--gap-lg)] w-full min-w-0 max-w-[var(--readable-max)] overflow-x-auto text-center"
       id={label ? `eq-${label}` : undefined}
-      style="margin: var(--gap-lg) 0; text-align: center; overflow-x: auto;"
     >
       <div
-        style="font-family: 'Libre Caslon Display', 'Iowan Old Style', Georgia, serif; font-size: 1.15rem; font-style: italic; color: var(--ink); line-height: 1.8; padding: var(--gap-sm) var(--gap-md); display: inline-block;"
+        class="inline-block min-w-max p-[clamp(0.25rem,1.5vw,var(--gap-sm))_clamp(0.5rem,3vw,var(--gap-md))] font-[var(--font-display)] text-[clamp(1rem,2.5vw,1.2rem)] italic leading-[1.8] text-[var(--ink)] [&_sub]:align-sub [&_sub]:text-[0.7em] [&_sub]:not-italic [&_sup]:align-super [&_sup]:text-[0.7em] [&_sup]:not-italic"
       >
         <slot />
       </div>
       {label && (
         <span
-          style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-faint); margin-left: 1rem; vertical-align: middle;"
+          class="ml-4 align-middle font-[var(--font-mono)] text-[0.75rem] text-[var(--ink-faint)]"
         >
           ({label.replace(/^eq:/, "")})
         </span>
@@ -36,25 +35,9 @@ const { block = false, label } = Astro.props;
     </figure>
   ) : (
     <span
-      class="math-inline"
-      style="font-family: 'Libre Caslon Display', 'Iowan Old Style', Georgia, serif; font-style: italic; font-size: 1.05em; color: var(--ink); padding: 0 0.15em;"
+      class="break-words px-[0.15em] font-[var(--font-display)] text-[1.05em] italic text-[var(--ink)] [&_sub]:align-sub [&_sub]:text-[0.7em] [&_sub]:not-italic [&_sup]:align-super [&_sup]:text-[0.7em] [&_sup]:not-italic"
     >
       <slot />
     </span>
   )
 }
-
-<style is:global>
-  .math-block sup,
-  .math-inline sup {
-    font-size: 0.7em;
-    vertical-align: super;
-    font-style: normal;
-  }
-  .math-block sub,
-  .math-inline sub {
-    font-size: 0.7em;
-    vertical-align: sub;
-    font-style: normal;
-  }
-</style>

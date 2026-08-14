@@ -33,7 +33,8 @@ const family = serif ? "var(--font-display)" : "var(--font-body)";
 ---
 
 <Tag
-  style={`font-family: ${family}; font-size: ${sizes[size]}; line-height: 1.5; text-align: ${align}; color: ${colors[color]}; margin: var(--gap-md) 0; display: block;`}
+  class="my-[var(--gap-md)] block font-[family-name:var(--sized-font)] text-[length:var(--sized-size)] leading-[1.5] text-[var(--sized-color)] [text-align:var(--sized-align)]"
+  style={`--sized-font: ${family}; --sized-size: ${sizes[size]}; --sized-color: ${colors[color]}; --sized-align: ${align};`}
 >
   <slot />
 </Tag>

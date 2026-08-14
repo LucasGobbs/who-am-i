@@ -10,18 +10,18 @@ const base = import.meta.env.BASE_URL;
 const resolved = src.startsWith("/") ? `${base}${src.replace(/^\//, "")}` : src;
 ---
 
-<figure style="margin: var(--gap-xl) 0; text-align: center;">
+<figure class="my-[var(--gap-xl)] text-center">
   <img
     src={resolved}
     alt={alt}
     loading="lazy"
     decoding="async"
-    style="max-width: 100%; height: auto; border-radius: var(--radius-md); border: 1px solid var(--paper-edge); display: inline-block;"
+    class="inline-block h-auto max-w-full rounded-[var(--radius-md)] border border-[var(--paper-edge)]"
   />
   {
     caption && (
       <figcaption
-        style="margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-mute); letter-spacing: 0.03em;"
+        class="mt-2 font-[family-name:var(--font-mono)] text-[0.78rem] tracking-[0.03em] text-[var(--ink-mute)]"
       >
         {caption}
       </figcaption>

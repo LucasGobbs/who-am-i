@@ -15,12 +15,13 @@ const p = palette[kind];
 ---
 
 <aside
-  style={`margin: var(--gap-lg) 0; padding: var(--gap-md) var(--gap-lg); border-radius: var(--radius-sm); background: ${p.bg}; color: ${p.fg};`}
+  class="my-[var(--gap-lg)] min-w-0 max-w-full break-words rounded-[var(--radius-sm)] px-[var(--gap-md)] py-[var(--gap-md)] text-[var(--callout-fg)] [background:var(--callout-bg)] sm:px-[var(--gap-lg)] [&_ol]:max-w-full [&_p]:max-w-full [&_pre]:max-w-full [&_table]:max-w-full [&_ul]:max-w-full"
+  style={`--callout-bg: ${p.bg}; --callout-fg: ${p.fg};`}
 >
-  <p class="label" style={`margin: 0 0 0.4rem; color: ${p.fg}; opacity: 0.7;`}>
+  <p class="label m-0 mb-[0.4rem] text-[var(--callout-fg)] opacity-70">
     {title ?? p.label}
   </p>
-  <div style="margin: 0; font-size: 0.96rem; line-height: 1.6;">
+  <div class="m-0 text-[0.96rem] leading-[1.6]">
     <slot />
   </div>
 </aside>

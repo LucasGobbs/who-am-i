@@ -5,19 +5,22 @@ interface Props {
   space?: "sm" | "md" | "lg";
 }
 const { variant = "line", space = "md" } = Astro.props;
-const spaceMap = { sm: "var(--gap-md)", md: "var(--gap-xl)", lg: "var(--gap-xxl)" };
-const margin = spaceMap[space];
+const spaceClasses = {
+  sm: "my-[var(--gap-md)]",
+  md: "my-[var(--gap-xl)]",
+  lg: "my-[var(--gap-xxl)]",
+};
 ---
 
-<div style={`margin: ${margin} 0;`} data-divider={variant}>
+<div class={spaceClasses[space]} data-divider={variant}>
   {variant === "line" && (
-    <hr style="border: 0; border-top: 1px solid var(--paper-edge); margin: 0;" />
+    <hr class="m-0 border-0 border-t border-[var(--paper-edge)]" />
   )}
   {variant === "dotted" && (
-    <hr style="border: 0; border-top: 1px dotted var(--ink-faint); margin: 0;" />
+    <hr class="m-0 border-0 border-t border-dotted border-[var(--ink-faint)]" />
   )}
   {variant === "dots" && (
-    <div style="text-align: center; letter-spacing: 0.5em; color: var(--ink-faint); font-family: var(--font-mono); font-size: 0.8rem; line-height: 1;">· · ·</div>
+    <div class="text-center font-[family-name:var(--font-mono)] text-[0.8rem] leading-none tracking-[0.5em] text-[var(--ink-faint)]">· · ·</div>
   )}
   {variant === "space" && <div></div>}
 </div>

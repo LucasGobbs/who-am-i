@@ -14,18 +14,16 @@ const numbered = items.map((it, i) => ({ ...it, n: i + 1 }));
 ---
 
 <section
-  class="references"
+  class="references mt-[var(--gap-xxl)] border-t border-[var(--paper-edge)] pt-[var(--gap-lg)] [&_a[href^='#ref-']]:text-[var(--accent)] [&_a[href^='#ref-']]:no-underline [&_a[href^='#ref-']:hover]:underline"
   data-references
-  style="margin-top: var(--gap-xxl); padding-top: var(--gap-lg); border-top: 1px solid var(--paper-edge);"
 >
   <h2
-    style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 var(--gap-md);"
+    class="mb-[var(--gap-md)] mt-0 font-[family-name:var(--font-mono)] text-[0.8rem] font-medium uppercase tracking-[0.06em] text-[var(--ink-mute)]"
   >
     References
   </h2>
   <ol
-    class="ref-list"
-    style="list-style: none; padding: 0; margin: 0;"
+    class="ref-list m-0 list-none p-0"
   >
     <slot />
     {numbered.map((it) => (
@@ -33,11 +31,10 @@ const numbered = items.map((it, i) => ({ ...it, n: i + 1 }));
         id={`ref-${it.id}`}
         data-ref-id={it.id}
         data-ref-n={it.n}
-        style="display: flex; gap: 0.6rem; margin: 0 0 var(--gap-sm); font-size: 0.9rem; line-height: 1.55; color: var(--ink-soft);"
+        class="mb-[var(--gap-sm)] flex gap-[0.6rem] text-[0.9rem] leading-[1.55] text-[var(--ink-soft)]"
       >
         <span
-          class="ref-num"
-          style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-faint); min-width: 1.6rem; flex-shrink: 0;"
+          class="ref-num min-w-[1.6rem] shrink-0 font-[family-name:var(--font-mono)] text-[0.82rem] text-[var(--ink-faint)]"
         >[{it.n}]</span>
         <span set:html={it.html} />
       </li>
@@ -68,13 +65,3 @@ const numbered = items.map((it, i) => ({ ...it, n: i + 1 }));
     }
   })();
 </script>
-
-<style is:global>
-  .references a[href^="#ref-"] {
-    color: var(--accent);
-    text-decoration: none;
-  }
-  .references a[href^="#ref-"]:hover {
-    text-decoration: underline;
-  }
-</style>

@@ -7,10 +7,10 @@ import { ABOUT_BIO, SITE_AUTHOR, SITE_ROLE, SITE_LOCATION } from "../consts";
   title={`About — ${SITE_AUTHOR}`}
   description="A longer note about who I am and what I care about."
 >
-  <p class="label" style="margin: 0 0 0.5rem;">Colophon</p>
-  <h1 style="margin: 0 0 var(--gap-lg);">About</h1>
-  <p style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-mute); margin: 0 0 var(--gap-lg); letter-spacing: 0.03em;">
+  <p class="label mb-2">Colophon</p>
+  <h1 class="mb-[var(--gap-lg)]">About</h1>
+  <p class="mb-[var(--gap-lg)] font-[family-name:var(--font-mono)] text-[0.85rem] tracking-[0.03em] text-[var(--ink-mute)]">
     {SITE_ROLE} · {SITE_LOCATION}
   </p>
-  {ABOUT_BIO.map((para) => <p style="margin: var(--gap-md) 0; line-height: 1.7; color: var(--ink-soft);">{para}</p>)}
+  {ABOUT_BIO.map((para) => <p class="my-[var(--gap-md)] leading-[1.7] text-[var(--ink-soft)]">{para}</p>)}
 </PageLayout>

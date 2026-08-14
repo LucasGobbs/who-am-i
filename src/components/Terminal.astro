@@ -8,91 +8,24 @@ const { title = "terminal" } = Astro.props;
 ---
 
 <figure
-  class="terminal"
+  class="terminal my-[var(--gap-xl)] min-w-0 max-w-full overflow-hidden rounded-[var(--radius-lg)] border border-[#1c1917] bg-[#050505] shadow-[0_8px_24px_rgba(28,23,20,0.12)]"
   data-terminal
-  style="margin: var(--gap-xl) 0; background: #050505; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid #1c1917; box-shadow: 0 8px 24px rgba(28,23,20,0.12);"
 >
   <figcaption
-    style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.8rem; background: #0a0a0a; border-bottom: 1px solid #1c1917; font-family: var(--font-mono); font-size: 0.72rem; color: var(--terminal-mute); letter-spacing: 0.04em;"
+    class="flex items-center gap-2 border-b border-[#1c1917] bg-[#0a0a0a] px-[0.8rem] py-2 font-[var(--font-mono)] text-[0.72rem] tracking-[0.04em] text-[var(--terminal-mute)]"
   >
-    <span
-      style="display: inline-flex; gap: 0.35rem;"
-      aria-hidden="true"
-    >
-      <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444;"></span>
-      <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></span>
-      <span style="width: 10px; height: 10px; border-radius: 50%; background: #22c55e;"></span>
+    <span class="inline-flex gap-[0.35rem]" aria-hidden="true">
+      <span class="size-2.5 rounded-full bg-[#ef4444]"></span>
+      <span class="size-2.5 rounded-full bg-[#f59e0b]"></span>
+      <span class="size-2.5 rounded-full bg-[#22c55e]"></span>
     </span>
-    <span style="margin-left: 0.5rem; opacity: 0.9;">{title}</span>
+    <span class="ml-2 opacity-90">{title}</span>
   </figcaption>
   <pre
-    style="margin: 0; padding: var(--gap-md) var(--gap-lg); font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6; color: var(--terminal-ink); overflow-x: auto;"
+    class="m-0 min-w-0 max-w-full overflow-x-auto px-[var(--gap-lg)] py-[var(--gap-md)] font-[var(--font-mono)] text-[0.85rem] leading-[1.6] text-[var(--terminal-ink)] max-[480px]:px-[var(--gap-md)]"
   ><slot /></pre>
 </figure>
 
-<style>
-  :global(.terminal .term-line) {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  :global(.terminal .term-line .term-content) {
-    flex: 1;
-    min-width: 0;
-  }
-  :global(.terminal .term-prompt) {
-    color: var(--terminal-prompt);
-    user-select: none;
-    flex-shrink: 0;
-  }
-  :global(.terminal .term-output) {
-    color: var(--terminal-mute);
-    white-space: pre-wrap;
-    word-break: break-word;
-    display: block;
-  }
-  :global(.terminal .term-copy) {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    border: 0;
-    border-radius: var(--radius-sm);
-    color: #57534e;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
-  }
-  :global(.terminal .term-line:hover .term-copy),
-  :global(.terminal .term-copy:focus-visible) {
-    opacity: 1;
-  }
-  :global(.terminal .term-copy:hover) {
-    color: var(--terminal-ink);
-    background: #292524;
-  }
-  :global(.terminal .term-copy[data-copied="true"]) {
-    color: var(--terminal-prompt);
-    opacity: 1;
-  }
-  :global(.terminal .term-copy svg) {
-    width: 12px;
-    height: 12px;
-    display: block;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    :global(.terminal .term-copy) {
-      transition: none;
-    }
-  }
-</style>
 
 <script is:inline>
   (() => {

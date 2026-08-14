@@ -16,101 +16,22 @@ const pills: { id: "all" | Interest; label: string }[] = [
 <form
   data-interest-filter
   data-base-path={basePath}
-  class="interest-filter"
+  class="mb-[var(--gap-lg)] flex flex-wrap items-center gap-2 lg:mb-[var(--gap-xl)] lg:gap-[0.65rem] 2xl:gap-3"
 >
-  <span class="label filter-label">Filter</span>
+  <span class="label mr-[0.3rem] text-[var(--ink-faint)] lg:mr-2 lg:text-[0.78rem]">Filter</span>
   {
     pills.map((p) => (
       <button
         type="button"
         data-interest={p.id}
         aria-pressed={p.id === current ? "true" : "false"}
-        class="filter-pill"
+        class="min-h-11 cursor-pointer rounded-[var(--radius-pill)] border border-[var(--paper-edge)] bg-[var(--paper-deep)] px-[0.7rem] py-1 font-[var(--font-mono)] text-[0.72rem] font-medium uppercase tracking-[0.05em] text-[var(--ink-mute)] transition-[background,color,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--ink-mute)] hover:text-[var(--ink)] aria-pressed:bg-[var(--ink)] aria-pressed:text-[var(--paper)] aria-pressed:border-[var(--ink)] aria-pressed:hover:text-[var(--paper)] lg:min-h-10 lg:px-[0.9rem] lg:py-[0.35rem] lg:text-[0.76rem] 2xl:px-4 2xl:py-[0.4rem] 2xl:text-[0.78rem]"
       >
         {p.label}
       </button>
     ))
   }
 </form>
-
-<style>
-  .interest-filter {
-    margin: 0 0 var(--gap-lg);
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .filter-label {
-    color: var(--ink-faint);
-    margin-right: 0.3rem;
-  }
-
-  .filter-pill {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.7rem;
-    border-radius: var(--radius-pill);
-    border: 1px solid var(--paper-edge);
-    background: var(--paper-deep);
-    color: var(--ink-mute);
-    cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out),
-      border-color var(--dur-fast) var(--ease-out);
-  }
-
-  /* Larger screens: bigger touch targets and more breathing room */
-  @media (min-width: 1024px) {
-    .interest-filter {
-      gap: 0.65rem;
-      margin-bottom: var(--gap-xl);
-    }
-
-    .filter-label {
-      font-size: 0.78rem;
-      margin-right: 0.5rem;
-    }
-
-    .filter-pill {
-      font-size: 0.76rem;
-      padding: 0.35rem 0.9rem;
-    }
-  }
-
-  @media (min-width: 1440px) {
-    .interest-filter {
-      gap: 0.75rem;
-    }
-
-    .filter-pill {
-      font-size: 0.78rem;
-      padding: 0.4rem 1rem;
-    }
-  }
-</style>
-
-<style is:global>
-  [data-interest-list] [data-interest-item][hidden] {
-    display: none !important;
-  }
-  [data-interest-filter] button[aria-pressed="true"] {
-    background: var(--ink);
-    color: var(--paper);
-    border-color: var(--ink);
-  }
-  [data-interest-filter] button:hover {
-    color: var(--ink);
-    border-color: var(--ink-mute);
-  }
-  [data-interest-filter] button[aria-pressed="true"]:hover {
-    color: var(--paper);
-  }
-</style>
 
 <script is:inline>
   (() => {

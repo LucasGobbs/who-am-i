@@ -20,15 +20,15 @@ const email = SOCIAL_LINKS.find((s) => s.label === "Email")?.href ?? "";
   title={`Resume — ${SITE_AUTHOR}`}
   description="Professional experience, skills, education, and certifications."
 >
-  <section class="resume-hero" style="margin: 0 0 var(--gap-xxl);">
-    <p class="kicker" style="margin: 0 0 1rem;">Curriculum Vitae</p>
-    <h1 style="margin: 0 0 0.4rem; font-size: var(--step-display); line-height: 0.98;">
+  <section class="resume-hero mb-[var(--gap-xxl)]">
+    <p class="kicker mb-4">Curriculum Vitae</p>
+    <h1 class="mb-[0.4rem] text-[length:var(--step-display)] leading-[0.98]">
       {SITE_AUTHOR}
     </h1>
-    <p style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--ink-mute); margin: 0 0 var(--gap-md); letter-spacing: 0.05em; text-transform: uppercase;">
+    <p class="mb-[var(--gap-md)] font-[family-name:var(--font-mono)] text-[0.88rem] uppercase tracking-[0.05em] text-[var(--ink-mute)]">
       {SITE_ROLE} · {SITE_LOCATION}
     </p>
-    <p style="font-size: 1.08rem; line-height: 1.65; max-width: 58ch; color: var(--ink-soft); margin: var(--gap-md) 0 0;">
+    <p class="mt-[var(--gap-md)] max-w-[58ch] text-[1.08rem] leading-[1.65] text-[var(--ink-soft)]">
       Backend and integrations developer with 5+ years across DevOps, frontend,
       and platform tooling. I care about boring infrastructure, observable
       systems, and code that survives the person who wrote it.
@@ -39,21 +39,21 @@ const email = SOCIAL_LINKS.find((s) => s.label === "Email")?.href ?? "";
 
   <section>
     <p class="section-num">01</p>
-    <h2 style="margin: 0 0 var(--gap-lg);">Experience</h2>
+    <h2 class="mb-[var(--gap-lg)]">Experience</h2>
     <ExperienceTimeline experiences={EXPERIENCES} />
   </section>
 
   <section>
     <p class="section-num">02</p>
-    <h2 style="margin: 0 0 var(--gap-lg);">Skills</h2>
-    <dl style="margin: 0; display: grid; gap: var(--gap-md);">
+    <h2 class="mb-[var(--gap-lg)]">Skills</h2>
+    <dl class="grid gap-[var(--gap-md)]">
       {
         SKILLS.map((group) => (
-          <div style="display: grid; grid-template-columns: 9rem 1fr; gap: var(--gap-md); align-items: baseline; padding-bottom: var(--gap-md); border-bottom: 1px solid var(--paper-edge);">
-            <dt class="label" style="margin: 0; color: var(--accent); font-weight: 600;">
+          <div class="grid grid-cols-[9rem_1fr] items-baseline gap-[var(--gap-md)] border-b border-[var(--paper-edge)] pb-[var(--gap-md)]">
+            <dt class="label font-semibold text-[var(--accent)]">
               {group.group}
             </dt>
-            <dd style="margin: 0; font-size: 0.98rem; color: var(--ink-soft); line-height: 1.55;">
+            <dd class="text-[0.98rem] leading-[1.55] text-[var(--ink-soft)]">
               {group.items.join("  ·  ")}
             </dd>
           </div>
@@ -64,18 +64,18 @@ const email = SOCIAL_LINKS.find((s) => s.label === "Email")?.href ?? "";
 
   <section>
     <p class="section-num">03</p>
-    <h2 style="margin: 0 0 var(--gap-lg);">Education</h2>
-    <ul style="list-style: none; padding: 0; margin: 0;">
+    <h2 class="mb-[var(--gap-lg)]">Education</h2>
+    <ul class="list-none p-0">
       {
         EDUCATION.map((edu) => (
-          <li style="margin: var(--gap-md) 0; padding-bottom: var(--gap-md); border-bottom: 1px solid var(--paper-edge);">
-            <p class="label" style="margin: 0 0 0.3rem; color: var(--accent); font-weight: 600;">
+          <li class="my-[var(--gap-md)] border-b border-[var(--paper-edge)] pb-[var(--gap-md)]">
+            <p class="label mb-[0.3rem] font-semibold text-[var(--accent)]">
               {edu.startYear} – {edu.endYear ?? "present"}
             </p>
-            <p style="margin: 0; font-family: var(--font-display); font-size: 1.15rem; color: var(--ink); line-height: 1.25;">
+            <p class="font-[family-name:var(--font-display)] text-[1.15rem] leading-[1.25] text-[var(--ink)]">
               {edu.degree}
             </p>
-            <p style="margin: 0.2rem 0 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-mute); letter-spacing: 0.03em;">
+            <p class="mt-[0.2rem] font-[family-name:var(--font-mono)] text-[0.8rem] tracking-[0.03em] text-[var(--ink-mute)]">
               {edu.institution}
             </p>
           </li>
@@ -86,19 +86,19 @@ const email = SOCIAL_LINKS.find((s) => s.label === "Email")?.href ?? "";
 
   <section>
     <p class="section-num">04</p>
-    <h2 style="margin: 0 0 var(--gap-lg);">Certificates</h2>
-    <ul style="list-style: none; padding: 0; margin: 0;">
+    <h2 class="mb-[var(--gap-lg)]">Certificates</h2>
+    <ul class="list-none p-0">
       {
         CERTIFICATES.map((cert) => (
-          <li style="margin: var(--gap-sm) 0; display: flex; gap: var(--gap-md); align-items: baseline; flex-wrap: wrap; padding-bottom: var(--gap-sm); border-bottom: 1px solid var(--paper-edge);">
-            <span class="label" style="color: var(--accent); flex-shrink: 0; min-width: 3.5rem; font-weight: 600;">
+          <li class="my-[var(--gap-sm)] flex flex-wrap items-baseline gap-[var(--gap-md)] border-b border-[var(--paper-edge)] pb-[var(--gap-sm)]">
+            <span class="label min-w-[3.5rem] shrink-0 font-semibold text-[var(--accent)]">
               {cert.year}
             </span>
-            <span style="flex: 1; min-width: 0;">
-              <span style="font-family: var(--font-display); font-size: 1.05rem; color: var(--ink);">
+            <span class="min-w-0 flex-1">
+              <span class="font-[family-name:var(--font-display)] text-[1.05rem] text-[var(--ink)]">
                 {cert.name}
               </span>
-              <span style="color: var(--ink-mute); font-size: 0.85rem; margin-left: 0.5rem; font-family: var(--font-mono); letter-spacing: 0.03em;">
+              <span class="ml-2 font-[family-name:var(--font-mono)] text-[0.85rem] tracking-[0.03em] text-[var(--ink-mute)]">
                 {cert.issuer}
               </span>
             </span>
@@ -110,17 +110,16 @@ const email = SOCIAL_LINKS.find((s) => s.label === "Email")?.href ?? "";
 
   <section>
     <p class="section-num">05</p>
-    <h2 style="margin: 0 0 var(--gap-lg);">Contact</h2>
-    <p style="margin: 0 0 var(--gap-md); color: var(--ink-soft); font-size: 1rem;">
+    <h2 class="mb-[var(--gap-lg)]">Contact</h2>
+    <p class="mb-[var(--gap-md)] text-[1rem] text-[var(--ink-soft)]">
       Reach out for collaborations, questions, or just to say hello.
     </p>
     {
       email && (
-        <p style="margin: 0;">
+        <p>
           <a
             href={email.startsWith("mailto:") ? email : `mailto:${email}`}
-            style="font-family: var(--font-mono); font-size: 0.9rem; letter-spacing: 0.04em; color: var(--ink); text-decoration: none; border: 1px solid var(--ink); padding: 0.5rem 1.1rem; border-radius: var(--radius-pill); transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);"
-            class="contact-button"
+            class="inline-block rounded-[var(--radius-pill)] border border-[var(--ink)] px-[1.1rem] py-2 font-[family-name:var(--font-mono)] text-[0.9rem] tracking-[0.04em] text-[var(--ink)] no-underline transition-[background,color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:bg-[var(--ink)] hover:text-[var(--paper)]"
           >
             {email.replace(/^mailto:/, "")} →
           </a>
@@ -129,10 +128,3 @@ const email = SOCIAL_LINKS.find((s) => s.label === "Email")?.href ?? "";
     }
   </section>
 </PageLayout>
-
-<style>
-  .contact-button:hover {
-    background: var(--ink);
-    color: var(--paper) !important;
-  }
-</style>

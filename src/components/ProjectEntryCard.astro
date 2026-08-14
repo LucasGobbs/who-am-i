@@ -10,192 +10,52 @@ const { title, description, tech, tags, thumbnail, thumbnailAlt, date } = entry.
 const hasThumb = Boolean(thumbnail);
 ---
 
-<article class:list={["project-entry-card", { "has-thumb": hasThumb }]}>
-  <a href={`${import.meta.env.BASE_URL}projects/${entry.id}/`} class="card-link" aria-label={title}>
-    <div class="card-body">
-      <h3 class="card-title">{title}</h3>
-      {description && <p class="card-desc">{description}</p>}
+<article
+  class="group overflow-hidden rounded-[var(--radius-md)] border border-[var(--paper-edge)] bg-[var(--paper-deep)] transition-[border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--ink-mute)]"
+>
+  <a
+    href={`${import.meta.env.BASE_URL}projects/${entry.id}/`}
+    class:list={[
+      "flex text-inherit no-underline",
+      {
+        "min-h-[140px] items-stretch max-[640px]:min-h-0 max-[640px]:flex-col min-[1024px]:min-h-[180px] min-[1440px]:min-h-[200px]": hasThumb,
+      },
+    ]}
+    aria-label={title}
+  >
+    <div
+      class:list={[
+        "min-w-0",
+        {
+          "flex flex-1 flex-col justify-center p-[var(--gap-lg)] max-[640px]:px-[var(--gap-lg)] max-[640px]:py-[var(--gap-md)] min-[1024px]:py-[var(--gap-xl)] min-[1024px]:pr-[var(--gap-xl)] min-[1024px]:pl-[var(--gap-lg)] min-[1440px]:p-[var(--gap-xl)]": hasThumb,
+          "px-[var(--gap-lg)] py-[var(--gap-md)]": !hasThumb,
+        },
+      ]}
+    >
+      <h3 class="m-0 mb-[0.25rem] text-[var(--step-title,1.1rem)] leading-[1.3] text-[var(--ink)] min-[1024px]:text-[1.25rem]">{title}</h3>
+      {description && <p class="m-0 mb-[var(--gap-sm)] text-[0.92rem] leading-[1.55] text-[var(--ink-soft)] min-[1024px]:text-[1rem] min-[1024px]:leading-[1.62]">{description}</p>}
       {(tech.length > 0 || tags.length > 0) && (
-        <ul class="card-tags">
+        <ul class="m-0 mb-[var(--gap-sm)] flex list-none flex-wrap gap-[0.4rem] p-0">
           {tech.map((t) => <li><Tag>{t}</Tag></li>)}
           {tags.map((t) => <li><Tag>{t}</Tag></li>)}
         </ul>
       )}
-      <p class="card-date">
+      <p class="m-0 font-[var(--font-mono)] text-[0.75rem] tracking-[0.04em] text-[var(--ink-faint)]">
         <time datetime={date.toISOString()}>
           {new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short" }).format(date)}
         </time>
       </p>
     </div>
     {hasThumb && (
-      <div class="card-thumb">
+      <div class="flex min-h-full w-[200px] flex-none items-stretch overflow-hidden border-l border-[var(--paper-edge)] bg-[var(--paper)] max-[640px]:min-h-0 max-[640px]:w-full max-[640px]:border-t max-[640px]:border-l-0 min-[1024px]:w-[280px] min-[1440px]:w-[320px]">
         <img
           src={thumbnail!.startsWith("/") ? `${import.meta.env.BASE_URL}${thumbnail!.replace(/^\//, "")}` : thumbnail}
           alt={thumbnailAlt ?? title}
           loading="lazy"
           decoding="async"
+          class="block h-full w-full rounded-none object-cover transition-transform duration-[var(--dur-med)] ease-[var(--ease-out)] group-hover:scale-[1.03] max-[640px]:h-auto max-[640px]:aspect-video"
         />
       </div>
     )}
   </a>
 </article>
-
-<style>
-  .project-entry-card {
-    border: 1px solid var(--paper-edge);
-    border-radius: var(--radius-md);
-    background: var(--paper-deep);
-    overflow: hidden;
-    transition: border-color var(--dur-fast) var(--ease-out);
-  }
-
-  .project-entry-card:hover {
-    border-color: var(--ink-mute);
-  }
-
-  .card-link {
-    display: flex;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  /* No thumb: simple row */
-  .project-entry-card:not(.has-thumb) .card-body {
-    padding: var(--gap-md) var(--gap-lg);
-  }
-
-  /* With thumb: body left, image right */
-  .has-thumb .card-link {
-    flex-direction: row;
-    align-items: stretch;
-    min-height: 140px;
-  }
-
-  .has-thumb .card-body {
-    flex: 1 1 0%;
-    min-width: 0;
-    padding: var(--gap-lg);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .card-thumb {
-    flex: 0 0 auto;
-    width: 200px;
-    min-height: 100%;
-    overflow: hidden;
-    border-left: 1px solid var(--paper-edge);
-    background: var(--paper);
-    display: flex;
-    align-items: stretch;
-  }
-
-  .card-thumb img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform var(--dur-med) var(--ease-out);
-  }
-
-  .has-thumb:hover .card-thumb img {
-    transform: scale(1.03);
-  }
-
-
-  /* Shared body */
-  .card-title {
-    margin: 0 0 0.25rem;
-    font-size: var(--step-title, 1.1rem);
-    color: var(--ink);
-    line-height: 1.3;
-  }
-
-  .card-desc {
-    margin: 0 0 var(--gap-sm);
-    color: var(--ink-soft);
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-
-  .card-tags {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--gap-sm);
-    display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-  }
-
-  .card-date {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--ink-faint);
-    letter-spacing: 0.04em;
-  }
-
-  /* Large screens: bigger thumbnails, taller cards */
-  @media (min-width: 1024px) {
-    .has-thumb .card-link {
-      min-height: 180px;
-    }
-
-    .card-thumb {
-      width: 280px;
-    }
-
-    .has-thumb .card-body {
-      padding: var(--gap-xl) var(--gap-xl) var(--gap-xl) var(--gap-lg);
-    }
-
-    .card-title {
-      font-size: 1.25rem;
-    }
-
-    .card-desc {
-      font-size: 1rem;
-      line-height: 1.62;
-    }
-  }
-
-  /* Extra large screens: even more generous */
-  @media (min-width: 1440px) {
-    .has-thumb .card-link {
-      min-height: 200px;
-    }
-
-    .card-thumb {
-      width: 320px;
-    }
-
-    .has-thumb .card-body {
-      padding: var(--gap-xl);
-    }
-  }
-
-  /* Mobile: stack vertically */
-  @media (max-width: 640px) {
-    .has-thumb .card-link {
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .card-thumb {
-      width: 100%;
-      min-height: 0;
-      border-left: 0;
-      border-top: 1px solid var(--paper-edge);
-    }
-
-    .card-thumb img {
-      aspect-ratio: 16 / 9;
-      height: auto;
-    }
-
-    .has-thumb .card-body {
-      padding: var(--gap-md) var(--gap-lg);
-    }
-  }
-</style>

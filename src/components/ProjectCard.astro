@@ -10,26 +10,26 @@ const hasThumb = Boolean(project.thumbnail);
 ---
 
 <article
-  class:list={["project-card", { "has-thumb": hasThumb }]}
-  style="border: 1px solid var(--paper-edge); border-radius: var(--radius-md); background: var(--paper-deep); margin: var(--gap-md) 0; overflow: hidden;"
+  class:list={[
+    "border border-[var(--paper-edge)] rounded-[var(--radius-md)] bg-[var(--paper-deep)] my-[var(--gap-md)] overflow-hidden",
+    { "grid grid-cols-[1.4fr_1fr] items-stretch gap-0 max-[640px]:grid-cols-1": hasThumb },
+  ]}
 >
-  <div class="project-body" style="padding: var(--gap-lg);">
-    <div class="project-head">
-      <h3 style="margin: 0 0 0.4rem; font-size: var(--step-title); color: var(--ink);">
+  <div class="p-[var(--gap-lg)]">
+    <div>
+      <h3 class="m-0 mb-[0.4rem] text-[var(--step-title)] text-[var(--ink)]">
         {project.name}
       </h3>
-      <p class="label" style="margin: 0 0 var(--gap-sm); color: var(--ink-mute);">
+      <p class="label m-0 mb-[var(--gap-sm)] text-[var(--ink-mute)]">
         Role · {project.role}
       </p>
     </div>
-    <p style="margin: 0 0 var(--gap-sm); color: var(--ink-soft); font-size: 0.98rem; line-height: 1.55;">
+    <p class="m-0 mb-[var(--gap-sm)] text-[var(--ink-soft)] text-[0.98rem] leading-[1.55]">
       {project.description}
     </p>
     {
       project.tech.length > 0 && (
-        <ul
-          style="list-style: none; padding: 0; margin: 0 0 var(--gap-sm); display: flex; gap: 0.4rem; flex-wrap: wrap;"
-        >
+        <ul class="m-0 mb-[var(--gap-sm)] flex list-none flex-wrap gap-[0.4rem] p-0">
           {project.tech.map((t) => (
             <li>
               <Tag>{t}</Tag>
@@ -40,11 +40,11 @@ const hasThumb = Boolean(project.thumbnail);
     }
     {
       project.links.length > 0 && (
-        <p style="margin: var(--gap-sm) 0 0; font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;">
+        <p class="m-0 mt-[var(--gap-sm)] font-[var(--font-mono)] text-[0.78rem] tracking-[0.04em]">
           {project.links.map((link, i) => (
             <>
-              {i > 0 && <span style="color: var(--paper-edge); margin: 0 0.5rem;">/</span>}
-              <a href={link.href} style="text-decoration: none; color: var(--ink-soft);">
+              {i > 0 && <span class="mx-[0.5rem] text-[var(--paper-edge)]">/</span>}
+              <a href={link.href} class="text-[var(--ink-soft)] no-underline">
                 {link.label}
               </a>
             </>
@@ -55,52 +55,15 @@ const hasThumb = Boolean(project.thumbnail);
   </div>
   {
     hasThumb && (
-      <div class="project-thumb" style="border-top: 1px solid var(--paper-edge); background: var(--paper);">
+      <div class="flex items-stretch border-t-0 border-l border-[var(--paper-edge)] bg-[var(--paper)] max-[640px]:border-t max-[640px]:border-l-0">
         <img
           src={project.thumbnail!.startsWith("/") ? `${import.meta.env.BASE_URL}${project.thumbnail!.replace(/^\//, "")}` : project.thumbnail}
           alt={project.thumbnailAlt ?? project.name}
           loading="lazy"
           decoding="async"
-          style="display: block; width: 100%; height: auto; max-height: 280px; object-fit: cover;"
+          class="block h-full max-h-none w-full rounded-none object-cover max-[640px]:h-auto max-[640px]:max-h-[240px]"
         />
       </div>
     )
   }
 </article>
-
-<style>
-  .project-card.has-thumb {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 0;
-    align-items: stretch;
-  }
-  .project-card.has-thumb .project-body {
-    padding: var(--gap-lg);
-  }
-  .project-card.has-thumb .project-thumb {
-    border-top: 0;
-    border-left: 1px solid var(--paper-edge);
-    display: flex;
-    align-items: stretch;
-  }
-  .project-card.has-thumb .project-thumb img {
-    width: 100%;
-    height: 100%;
-    max-height: none;
-    object-fit: cover;
-    border-radius: 0;
-  }
-  @media (max-width: 640px) {
-    .project-card.has-thumb {
-      grid-template-columns: 1fr;
-    }
-    .project-card.has-thumb .project-thumb {
-      border-left: 0;
-      border-top: 1px solid var(--paper-edge);
-    }
-    .project-card.has-thumb .project-thumb img {
-      max-height: 240px;
-    }
-  }
-</style>

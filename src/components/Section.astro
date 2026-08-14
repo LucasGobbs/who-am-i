@@ -12,8 +12,8 @@ const slug = id ?? title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-
 const Tag = level === 1 ? "h2" : "h3";
 ---
 
-<section data-section-level={level} data-section-title={title} id={slug} style="scroll-margin-top: 6rem;">
-  <Tag style="margin: var(--gap-xl) 0 var(--gap-sm);">
+<section data-section-level={level} data-section-title={title} id={slug} class="scroll-mt-24">
+  <Tag class="mb-[var(--gap-sm)] mt-[var(--gap-xl)]">
     <span data-section-number></span>{title}
   </Tag>
   <slot />

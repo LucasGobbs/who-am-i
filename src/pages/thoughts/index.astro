@@ -25,9 +25,9 @@ const years = [...byYear.keys()].sort((a, b) => b - a);
   title={`Thoughts — ${SITE_AUTHOR}`}
   description="Small posts and notes, mostly for future me."
 >
-  <p class="label" style="margin: 0 0 0.5rem;">Notebook</p>
-  <h1 style="margin: 0 0 var(--gap-sm);">Thoughts</h1>
-  <p style="color: var(--ink-mute); margin: 0 0 var(--gap-lg); font-size: 0.98rem;">
+  <p class="label mb-2">Notebook</p>
+  <h1 class="mb-[var(--gap-sm)]">Thoughts</h1>
+  <p class="mb-[var(--gap-lg)] text-[0.98rem] text-[var(--ink-mute)]">
     Small posts and notes, mostly for future me.
   </p>
 
@@ -36,10 +36,8 @@ const years = [...byYear.keys()].sort((a, b) => b - a);
   <div data-interest-list>
     {
       years.map((year) => (
-        <section style="margin: var(--gap-xl) 0;">
-          <h2
-            style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500; color: var(--ink-mute); letter-spacing: 0.06em; margin: 0 0 var(--gap-md); padding-bottom: 0.4rem; border-bottom: 1px solid var(--paper-edge);"
-          >
+        <section class="my-[var(--gap-xl)]">
+          <h2 class="mb-[var(--gap-md)] border-b border-[var(--paper-edge)] pb-[0.4rem] font-[family-name:var(--font-mono)] text-[0.85rem] font-medium tracking-[0.06em] text-[var(--ink-mute)]">
             {year}
           </h2>
           {byYear.get(year)!.map((entry) => (
