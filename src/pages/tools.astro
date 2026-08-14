@@ -45,34 +45,34 @@ const TOOLS: Tool[] = [
   description="Small, single-purpose browser tools. No servers, no tracking."
 >
   <p class="label mb-2">Workshop</p>
-  <h1 class="mb-[var(--gap-lg)]">Tools</h1>
-  <p class="mb-[var(--gap-xl)] max-w-[56ch] text-[0.98rem] text-[var(--ink-mute)]">
+  <h1 class="mb-8">Tools</h1>
+  <p class="mb-10 max-w-2xl text-base text-stone-500">
     Small, single-purpose browser tools. Each one does one thing, runs client-side,
     and has no backend. Built mostly to scratch my own itches.
   </p>
 
-  <ul class="grid list-none gap-[var(--gap-md)] p-0">
+  <ul class="grid list-none gap-6 p-0">
     {
       TOOLS.map((t) => (
         <li>
           <a
             href={t.href}
-            class="tool-card block rounded-[var(--radius-md)] border border-[var(--paper-edge)] bg-[var(--paper-deep)] p-[var(--gap-lg)] text-inherit no-underline transition-[border-color,background] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--ink-mute)] hover:bg-[var(--paper)]"
+            class="tool-card block rounded-lg border border-stone-200 bg-stone-100 p-8 text-inherit no-underline transition-colors duration-150 ease-out hover:border-stone-500 hover:bg-stone-50"
           >
-            <div class="mb-[0.4rem] flex items-baseline justify-between gap-[var(--gap-sm)]">
-              <h2 class="font-[family-name:var(--font-display)] text-[length:var(--step-title)] text-[var(--ink)]">
+            <div class="mb-2 flex items-baseline justify-between gap-4">
+              <h2 class="font-serif text-2xl text-stone-900">
                 {t.name}
               </h2>
               {t.tag && (
-                <span class="rounded-[var(--radius-pill)] border border-[var(--paper-edge)] bg-[var(--paper)] px-[0.55rem] py-[0.15rem] font-[family-name:var(--font-mono)] text-[0.7rem] uppercase tracking-[0.05em] text-[var(--ink-faint)]">
+                <span class="rounded-full border border-stone-200 bg-stone-50 px-2 py-0.5 font-mono text-xs uppercase tracking-wider text-stone-400">
                   {t.tag}
                 </span>
               )}
             </div>
-            <p class="text-[0.95rem] leading-[1.55] text-[var(--ink-soft)]">
+            <p class="text-base leading-6 text-stone-700">
               {t.description}
             </p>
-            <p class="mt-[var(--gap-sm)] font-[family-name:var(--font-mono)] text-[0.76rem] tracking-[0.04em] text-[var(--ink-mute)]">
+            <p class="mt-4 font-mono text-xs tracking-wide text-stone-500">
               {t.kind === "interactive" ? "client-side · runs in browser" : "static"}
             </p>
           </a>
@@ -81,7 +81,7 @@ const TOOLS: Tool[] = [
     }
   </ul>
 
-  <p class="mt-[var(--gap-xl)] font-[family-name:var(--font-mono)] text-[0.75rem] tracking-[0.04em] text-[var(--ink-faint)]">
+  <p class="mt-10 font-mono text-xs tracking-wide text-stone-400">
     More tools added as I need them. Suggestions welcome via the links in the footer.
   </p>
 </PageLayout>

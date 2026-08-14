@@ -14,11 +14,11 @@ const numbered = items.map((it, i) => ({ ...it, n: i + 1 }));
 ---
 
 <section
-  class="references mt-[var(--gap-xxl)] border-t border-[var(--paper-edge)] pt-[var(--gap-lg)] [&_a[href^='#ref-']]:text-[var(--accent)] [&_a[href^='#ref-']]:no-underline [&_a[href^='#ref-']:hover]:underline"
+  class="references mt-16 border-t border-stone-300 pt-8 [&_a[href^='#ref-']]:text-orange-600 [&_a[href^='#ref-']]:no-underline [&_a[href^='#ref-']:hover]:underline"
   data-references
 >
   <h2
-    class="mb-[var(--gap-md)] mt-0 font-[family-name:var(--font-mono)] text-[0.8rem] font-medium uppercase tracking-[0.06em] text-[var(--ink-mute)]"
+    class="mb-6 mt-0 font-mono text-sm font-medium uppercase tracking-wider text-stone-500"
   >
     References
   </h2>
@@ -31,10 +31,10 @@ const numbered = items.map((it, i) => ({ ...it, n: i + 1 }));
         id={`ref-${it.id}`}
         data-ref-id={it.id}
         data-ref-n={it.n}
-        class="mb-[var(--gap-sm)] flex gap-[0.6rem] text-[0.9rem] leading-[1.55] text-[var(--ink-soft)]"
+        class="mb-4 flex gap-2 text-sm leading-relaxed text-stone-700"
       >
         <span
-          class="ref-num min-w-[1.6rem] shrink-0 font-[family-name:var(--font-mono)] text-[0.82rem] text-[var(--ink-faint)]"
+          class="ref-num min-w-6 shrink-0 font-mono text-sm text-stone-400"
         >[{it.n}]</span>
         <span set:html={it.html} />
       </li>

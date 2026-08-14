@@ -8,32 +8,32 @@ import { SITE_AUTHOR } from "../../consts";
   description="Convert text to Base64 and back. UTF-8 safe. Runs in your browser."
 >
   <p class="label mb-2">
-    <a href={`${import.meta.env.BASE_URL}tools/`} class="text-[var(--ink-mute)] no-underline">← Tools</a>
+    <a href={`${import.meta.env.BASE_URL}tools/`} class="text-stone-500 no-underline">← Tools</a>
   </p>
-  <h1 class="mb-[var(--gap-lg)]">Base64 Encode / Decode</h1>
+  <h1 class="mb-8">Base64 Encode / Decode</h1>
 
-  <div class="grid max-w-[56ch] gap-[var(--gap-md)]">
+  <div class="grid max-w-2xl gap-6">
     <div>
-      <label for="b64-input" class="mb-[var(--gap-xs)] block font-[family-name:var(--font-mono)] text-[0.78rem] uppercase tracking-[0.04em] text-[var(--ink-mute)]">
+      <label for="b64-input" class="mb-2 block font-mono text-xs uppercase tracking-wide text-stone-500">
         Input
       </label>
-      <textarea id="b64-input" rows="4" placeholder="Type text to encode, or Base64 to decode" class="box-border w-full resize-y rounded-[var(--radius-md)] border border-[var(--paper-edge)] bg-[var(--paper)] px-[var(--gap-md)] py-[var(--gap-sm)] font-[family-name:var(--font-mono)] text-[0.9rem] text-[var(--ink)]"></textarea>
+      <textarea id="b64-input" rows="4" placeholder="Type text to encode, or Base64 to decode" class="box-border w-full resize-y rounded-lg border border-stone-200 bg-stone-50 px-6 py-4 font-mono text-sm text-stone-900"></textarea>
     </div>
 
-    <div class="flex gap-[var(--gap-sm)]">
-      <button id="b64-encode" type="button" class="cursor-pointer rounded-[var(--radius-pill)] border border-[var(--paper-edge)] bg-[var(--paper-deep)] px-[0.9rem] py-[0.4rem] font-[family-name:var(--font-mono)] text-[0.78rem] uppercase tracking-[0.05em] text-[var(--ink-soft)] transition-[color,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)]">Encode →</button>
-      <button id="b64-decode" type="button" class="cursor-pointer rounded-[var(--radius-pill)] border border-[var(--paper-edge)] bg-[var(--paper-deep)] px-[0.9rem] py-[0.4rem] font-[family-name:var(--font-mono)] text-[0.78rem] uppercase tracking-[0.05em] text-[var(--ink-soft)] transition-[color,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)]">← Decode</button>
-      <button id="b64-swap" type="button" class="cursor-pointer rounded-[var(--radius-pill)] border border-[var(--paper-edge)] bg-[var(--paper)] px-[0.9rem] py-[0.4rem] font-[family-name:var(--font-mono)] text-[0.78rem] uppercase tracking-[0.05em] text-[var(--ink-mute)] transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)]">Swap ↑↓</button>
+    <div class="flex gap-4">
+      <button id="b64-encode" type="button" class="cursor-pointer rounded-full border border-stone-200 bg-stone-100 px-4 py-2 font-mono text-xs uppercase tracking-wider text-stone-700 transition-colors duration-150 ease-out">Encode →</button>
+      <button id="b64-decode" type="button" class="cursor-pointer rounded-full border border-stone-200 bg-stone-100 px-4 py-2 font-mono text-xs uppercase tracking-wider text-stone-700 transition-colors duration-150 ease-out">← Decode</button>
+      <button id="b64-swap" type="button" class="cursor-pointer rounded-full border border-stone-200 bg-stone-50 px-4 py-2 font-mono text-xs uppercase tracking-wider text-stone-500 transition-colors duration-150 ease-out">Swap ↑↓</button>
     </div>
 
     <div>
-      <label for="b64-output" class="mb-[var(--gap-xs)] block font-[family-name:var(--font-mono)] text-[0.78rem] uppercase tracking-[0.04em] text-[var(--ink-mute)]">
+      <label for="b64-output" class="mb-2 block font-mono text-xs uppercase tracking-wide text-stone-500">
         Output
       </label>
-      <textarea id="b64-output" rows="4" readonly class="box-border w-full resize-y rounded-[var(--radius-md)] border border-[var(--paper-edge)] bg-[var(--paper-deep)] px-[var(--gap-md)] py-[var(--gap-sm)] font-[family-name:var(--font-mono)] text-[0.9rem] text-[var(--ink)]"></textarea>
+      <textarea id="b64-output" rows="4" readonly class="box-border w-full resize-y rounded-lg border border-stone-200 bg-stone-100 px-6 py-4 font-mono text-sm text-stone-900"></textarea>
     </div>
 
-    <p id="b64-error" class="min-h-[1.2em] font-[family-name:var(--font-mono)] text-[0.75rem] text-[var(--accent)]"></p>
+    <p id="b64-error" class="min-h-5 font-mono text-xs text-orange-600"></p>
   </div>
 </PageLayout>
 

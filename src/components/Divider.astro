@@ -6,21 +6,21 @@ interface Props {
 }
 const { variant = "line", space = "md" } = Astro.props;
 const spaceClasses = {
-  sm: "my-[var(--gap-md)]",
-  md: "my-[var(--gap-xl)]",
-  lg: "my-[var(--gap-xxl)]",
+  sm: "my-6",
+  md: "my-12",
+  lg: "my-16",
 };
 ---
 
 <div class={spaceClasses[space]} data-divider={variant}>
   {variant === "line" && (
-    <hr class="m-0 border-0 border-t border-[var(--paper-edge)]" />
+    <hr class="m-0 border-0 border-t border-stone-300" />
   )}
   {variant === "dotted" && (
-    <hr class="m-0 border-0 border-t border-dotted border-[var(--ink-faint)]" />
+    <hr class="m-0 border-0 border-t border-dotted border-stone-400" />
   )}
   {variant === "dots" && (
-    <div class="text-center font-[family-name:var(--font-mono)] text-[0.8rem] leading-none tracking-[0.5em] text-[var(--ink-faint)]">· · ·</div>
+    <div class="text-center font-mono text-sm leading-none tracking-widest text-stone-400">· · ·</div>
   )}
   {variant === "space" && <div></div>}
 </div>

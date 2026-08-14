@@ -22,21 +22,21 @@ const titleAttr = description ?? title;
 ---
 
 <PageLayout title={title} description={titleAttr} canonical={`/projects/${entry.id}/`}>
-  <div class="relative grid min-w-0 grid-cols-1 gap-xl toc:grid-cols-[minmax(0,1fr)_18rem] toc:gap-xxl wide:grid-cols-[minmax(0,1fr)_20rem] wide:gap-[calc(var(--gap-xxl)+1rem)]">
-    <article class="note-article min-w-0 max-w-full">
-      <header class="min-w-0 mb-xl [overflow-wrap:anywhere] toc:mb-xxl">
+  <div class="relative grid min-w-0 grid-cols-1 gap-10 xl:grid-cols-4 xl:gap-16 2xl:grid-cols-5 2xl:gap-20">
+    <article class="note-article min-w-0 max-w-full xl:col-span-3 2xl:col-span-4">
+      <header class="mb-10 min-w-0 break-words xl:mb-16">
         <p class="label mb-3 mt-0">
-          <a href={`${import.meta.env.BASE_URL}projects/`} class="text-ink-mute no-underline">← Projects</a>
+          <a href={`${import.meta.env.BASE_URL}projects/`} class="text-stone-500 no-underline">← Projects</a>
         </p>
-        <h1 class="mb-[0.4rem] mt-0 min-w-0 text-display [overflow-wrap:anywhere] toc:text-[clamp(2.5rem,6vw,4rem)]">{title}</h1>
-        <p class="label m-0 text-ink-mute">
+        <h1 class="mb-2 mt-0 min-w-0 font-serif text-4xl break-words xl:text-5xl">{title}</h1>
+        <p class="label m-0 text-stone-500">
           <time datetime={date.toISOString()}>{dateFormatted}</time>
-          <span class="mx-sm text-ink-faint">·</span>
+          <span class="mx-2 text-stone-400">·</span>
           Role · {role}
         </p>
         {
           (tech.length > 0 || tags.length > 0) && (
-            <ul class="mt-md flex list-none flex-wrap gap-sm p-0">
+            <ul class="mt-6 flex list-none flex-wrap gap-4 p-0">
               {tech.map((t) => (
                 <li>
                   <Tag>{t}</Tag>
@@ -52,11 +52,11 @@ const titleAttr = description ?? title;
         }
         {
           links.length > 0 && (
-            <p class="mt-md font-mono text-[0.78rem] tracking-[0.04em]">
+            <p class="mt-6 font-mono text-xs tracking-wide">
               {links.map((link, i) => (
                 <>
-                  {i > 0 && <span class="mx-sm text-paper-edge">/</span>}
-                  <a href={link.href} class="text-ink-soft no-underline">
+                  {i > 0 && <span class="mx-4 text-stone-200">/</span>}
+                  <a href={link.href} class="text-stone-700 no-underline">
                     {link.label}
                   </a>
                 </>
@@ -70,25 +70,25 @@ const titleAttr = description ?? title;
         <slot />
       </div>
 
-      <nav class="mt-xxl flex flex-wrap justify-between gap-md border-t border-paper-edge pt-lg wide:gap-xl" aria-label="Project navigation">
+      <nav class="mt-16 flex flex-wrap justify-between gap-6 border-t border-stone-200 pt-8 xl:gap-10" aria-label="Project navigation">
         <div class="min-w-0 flex-1">
           {prev ? (
-            <a href={`${import.meta.env.BASE_URL}projects/${prev.slug}/`} rel="prev" class="min-w-0 no-underline [overflow-wrap:anywhere]">
-              <span class="label mb-[0.2rem] block text-ink-faint">Older</span>
-              <span class="font-display text-ink-soft">← {prev.title}</span>
+            <a href={`${import.meta.env.BASE_URL}projects/${prev.slug}/`} rel="prev" class="min-w-0 break-words no-underline">
+              <span class="label mb-1 block text-stone-400">Older</span>
+              <span class="font-serif text-stone-700">← {prev.title}</span>
             </a>
           ) : (
-            <span class="label text-ink-faint">← Older</span>
+            <span class="label text-stone-400">← Older</span>
           )}
         </div>
         <div class="min-w-0 flex-1 text-right">
           {next ? (
-            <a href={`${import.meta.env.BASE_URL}projects/${next.slug}/`} rel="next" class="min-w-0 no-underline [overflow-wrap:anywhere]">
-              <span class="label mb-[0.2rem] block text-ink-faint">Newer</span>
-              <span class="font-display text-ink-soft">{next.title} →</span>
+            <a href={`${import.meta.env.BASE_URL}projects/${next.slug}/`} rel="next" class="min-w-0 break-words no-underline">
+              <span class="label mb-1 block text-stone-400">Newer</span>
+              <span class="font-serif text-stone-700">{next.title} →</span>
             </a>
           ) : (
-            <span class="label text-ink-faint">Newer →</span>
+            <span class="label text-stone-400">Newer →</span>
           )}
         </div>
       </nav>
@@ -106,7 +106,7 @@ const titleAttr = description ?? title;
 
     <aside class="font-mono" aria-label="Sections" data-toc-aside>
       <div class="flex items-center justify-between">
-        <p class="label m-0 text-ink-faint">Sections</p>
+        <p class="label m-0 text-stone-400">Sections</p>
         <button type="button" data-toc-close aria-label="Close">
           <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
             <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
@@ -114,9 +114,9 @@ const titleAttr = description ?? title;
           </svg>
         </button>
       </div>
-      <ol data-section-toc class="mt-sm list-none p-0"></ol>
+      <ol data-section-toc class="mt-2 list-none p-0"></ol>
       <noscript>
-        <p class="mt-sm font-mono text-[0.7rem] text-ink-faint">Section list visible with JavaScript.</p>
+        <p class="mt-2 font-mono text-xs text-stone-400">Section list visible with JavaScript.</p>
       </noscript>
     </aside>
 

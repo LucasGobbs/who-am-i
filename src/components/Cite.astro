@@ -12,7 +12,7 @@ const { id, n } = Astro.props;
 
 <a
   href={`#ref-${id}`}
-  class="cite ml-[0.1em] align-super font-[family-name:var(--font-mono)] text-[0.78em] leading-none text-[var(--accent)] no-underline transition-colors [transition-duration:var(--dur-fast)] [transition-timing-function:var(--ease-out)]"
+  class="cite ml-px align-super font-mono text-xs leading-none text-orange-600 no-underline transition-colors duration-150 ease-out"
   data-cite={id}
   data-cite-n={n ?? undefined}
 >[{n ?? "?"}]</a>

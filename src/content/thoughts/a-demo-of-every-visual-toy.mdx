@@ -23,6 +23,7 @@ import Divider from "../../components/Divider.astro";
 import Cite from "../../components/Cite.astro";
 import References from "../../components/References.astro";
 import Math from "../../components/Math.astro";
+import HttpRequest from "../../components/HttpRequest.astro";
 
 This post exists to show what you can do inside a thought. Copy any block
 below into a new `.mdx` file and edit it.
@@ -88,6 +89,25 @@ below into a new `.mdx` file and edit it.
     <TerminalLine prompt="$">echo "probably fine"</TerminalLine>
     <TerminalOutput>probably fine</TerminalOutput>
   </Terminal>
+</Section>
+
+<Section title="HTTP Requests">
+  Demonstrate API interactions with POST to log thoughts:
+
+  <HttpRequest
+    method="POST"
+    route="/api/thoughts"
+    body={{
+      title: "A new thought",
+      tags: ["api", "demo"],
+      published: true
+    }}
+    response={{
+      id: "67a8f42b",
+      status: "created",
+      createdAt: "2026-08-14T10:30:00Z"
+    }}
+  />
 </Section>
 
 <Divider variant="line" space="lg" />

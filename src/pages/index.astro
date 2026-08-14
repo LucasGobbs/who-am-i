@@ -20,15 +20,15 @@ const rest = SITE_AUTHOR.slice(1);
 ---
 
 <PageLayout title={`${SITE_AUTHOR} — ${SITE_ROLE}`} description={SITE_DESCRIPTION}>
-  <section class="hero mb-[var(--gap-xxl)]">
-    <p class="kicker mb-[1.2rem]">Notebook · Resume · Projects</p>
-    <h1 class="mega-name text-[length:var(--step-mega)] leading-[0.9] tracking-[-0.04em]">
-      <span class="text-[var(--accent)]">{first}</span><span>{rest}</span>
+  <section class="hero mb-16">
+    <p class="kicker mb-5">Notebook · Resume · Projects</p>
+    <h1 class="mega-name text-6xl leading-none tracking-tight">
+      <span class="text-orange-600">{first}</span><span>{rest}</span>
     </h1>
-    <p class="mt-[1.2rem] font-[family-name:var(--font-mono)] text-[0.9rem] tracking-[0.04em] text-[var(--ink-mute)]">
+    <p class="mt-5 font-mono text-sm tracking-wide text-stone-500">
       {SITE_ROLE} · {SITE_LOCATION}
     </p>
-    <p class="drop-cap mt-[var(--gap-xl)] max-w-[58ch] text-[1.15rem] leading-[1.68] text-[var(--ink-soft)]">
+    <p class="drop-cap mt-10 max-w-2xl text-lg leading-7 text-stone-700">
       Software developer with 5+ years across backend, frontend, and DevOps.
       I build integrations and care about boring, observable, maintainable
       infrastructure. This site is my resume, my projects, and a small
@@ -40,33 +40,33 @@ const rest = SITE_AUTHOR.slice(1);
 
   <section>
     <p class="section-num">01</p>
-    <h2 class="mb-[var(--gap-lg)]">Experience</h2>
+    <h2 class="mb-8">Experience</h2>
     <ExperienceTimeline experiences={EXPERIENCES.slice(0, 1)} />
-    <p class="mt-[var(--gap-md)]">
+    <p class="mt-6">
       <a href={`${import.meta.env.BASE_URL}resume/`}>Full resume →</a>
     </p>
   </section>
 
   <section>
     <p class="section-num">02</p>
-    <h2 class="mb-[var(--gap-lg)]">Selected projects</h2>
-    <div class="flex flex-col gap-[var(--gap-md)]">
+    <h2 class="mb-8">Selected projects</h2>
+    <div class="flex flex-col gap-6">
       {projects.map((entry) => <ProjectEntryCard entry={entry} />)}
     </div>
-    <p class="mt-[var(--gap-md)]">
+    <p class="mt-6">
       <a href={`${import.meta.env.BASE_URL}projects/`}>All projects →</a>
     </p>
   </section>
 
   <section>
     <p class="section-num">03</p>
-    <h2 class="mb-[var(--gap-lg)]">Latest thoughts</h2>
+    <h2 class="mb-8">Latest thoughts</h2>
     {thoughts.length === 0 ? (
-      <p class="text-[var(--ink-mute)]">No thoughts yet.</p>
+      <p class="text-stone-500">No thoughts yet.</p>
     ) : (
       thoughts.map((entry) => <NoteCard entry={entry} />)
     )}
-    <p class="mt-[var(--gap-md)]">
+    <p class="mt-6">
       <a href={`${import.meta.env.BASE_URL}thoughts/`}>All thoughts →</a>
     </p>
   </section>

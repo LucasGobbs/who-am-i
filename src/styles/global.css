@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+@theme {
+  --color-stone-50: var(--paper);
+  --color-stone-100: var(--paper-deep);
+  --color-stone-200: var(--paper-edge);
+  --color-stone-300: var(--paper-edge);
+  --color-stone-400: var(--ink-faint);
+  --color-stone-500: var(--ink-mute);
+  --color-stone-600: var(--ink-soft);
+  --color-stone-700: var(--ink-soft);
+  --color-stone-900: var(--ink);
+  --color-stone-950: var(--ink);
+  --color-orange-600: var(--accent);
+}
+
 /* Libre Caslon Display — display serif, characterful. */
 @import "@fontsource/libre-caslon-display/400.css";
 /* Hanken Grotesk — warm humanist sans, weights 300/400/500/600/700. */
@@ -83,63 +97,6 @@
   --dur-slow: 600ms;
 }
 
-@theme inline {
-  --color-paper: var(--paper);
-  --color-paper-deep: var(--paper-deep);
-  --color-paper-edge: var(--paper-edge);
-  --color-paper-recess: var(--paper-recess);
-  --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
-  --color-ink-mute: var(--ink-mute);
-  --color-ink-faint: var(--ink-faint);
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --color-accent-faint: var(--accent-faint);
-  --color-terminal-bg: var(--terminal-bg);
-  --color-terminal-ink: var(--terminal-ink);
-  --color-terminal-prompt: var(--terminal-prompt);
-  --color-terminal-mute: var(--terminal-mute);
-
-  --font-display: var(--font-display);
-  --font-body: var(--font-body);
-  --font-mono: var(--font-mono);
-
-  --spacing-xs: var(--gap-xs);
-  --spacing-sm: var(--gap-sm);
-  --spacing-md: var(--gap-md);
-  --spacing-lg: var(--gap-lg);
-  --spacing-xl: var(--gap-xl);
-  --spacing-xxl: var(--gap-xxl);
-
-  --radius-none: var(--radius-none);
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-  --radius-pill: var(--radius-pill);
-
-  --text-mega: var(--step-mega);
-  --text-display: var(--step-display);
-  --text-headline: var(--step-headline);
-  --text-title: var(--step-title);
-  --text-body: var(--step-body);
-  --text-label: var(--step-label);
-  --text-mono: var(--step-mono);
-
-  --ease-out: var(--ease-out);
-  --duration-fast: var(--dur-fast);
-  --duration-med: var(--dur-med);
-  --duration-slow: var(--dur-slow);
-
-  --container-shell: var(--shell-max);
-  --container-readable: var(--readable-max);
-
-  --breakpoint-xs: 480px;
-  --breakpoint-sm: 640px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-toc: 1200px;
-  --breakpoint-wide: 1440px;
-}
-
 html {
   font-family: var(--font-body);
   font-size: 17px;
@@ -180,13 +137,13 @@ main {
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1280px) {
   :root {
     --shell-max: 72rem;
   }
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 1536px) {
   :root {
     --shell-max: 76rem;
   }
@@ -332,7 +289,7 @@ pre code {
   font-size: var(--step-mono);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   pre,
   blockquote {
     padding-inline: var(--gap-md);
@@ -611,14 +568,14 @@ th {
     display: none;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 640px) {
     .prose-thoughts pre,
     .prose-thoughts blockquote {
       padding-inline: var(--gap-md);
     }
   }
 
-  @media (min-width: 1200px) {
+  @media (min-width: 1280px) {
     .prose-thoughts {
       max-width: 70ch;
       font-size: 1.08rem;
@@ -638,7 +595,7 @@ th {
     }
   }
 
-  @media (min-width: 1440px) {
+  @media (min-width: 1536px) {
     .prose-thoughts {
       max-width: 70ch;
       font-size: 1.12rem;
@@ -657,7 +614,7 @@ th {
 
   @media (prefers-reduced-motion: reduce) { .terminal .term-copy { transition: none; } }
 
-  @media (max-width: 1199px) {
+  @media (max-width: 1279px) {
     [data-toc-toggle] {
       position: fixed;
       right: 1rem;

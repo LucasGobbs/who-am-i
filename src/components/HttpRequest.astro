@@ -1,0 +1,163 @@
+---
+// HTTP request display with optional mocked response toggle.
+// Render accessible terminal-styled section with color-coded method badge,
+// pretty-printed JSON body and response (if provided).
+
+type Method = "GET" | "POST" | "PATCH" | "PUT";
+
+interface Props {
+  method?: Method;
+  route: string;
+  body: unknown;
+  response?: unknown;
+}
+
+const {
+  method = "GET",
+  route,
+  body,
+  response,
+} = Astro.props;
+
+// Escape HTML special characters for safe rendering.
+const escapeHtml = (str: string): string =>
+  str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+// Helper to colorize JSON with distinct classes for keys, strings, numbers, booleans, null.
+const colorizeJson = (obj: unknown, indent = 0): string => {
+  const indentStr = " ".repeat(indent);
+  const nextIndentStr = " ".repeat(indent + 2);
+
+  if (obj === null) {
+    return `<span class="text-amber-400">null</span>`;
+  }
+
+  if (typeof obj === "boolean") {
+    return `<span class="text-amber-400">${obj}</span>`;
+  }
+
+  if (typeof obj === "number") {
+    return `<span class="text-emerald-400">${obj}</span>`;
+  }
+
+  if (typeof obj === "string") {
+    return `<span class="text-orange-400">"${escapeHtml(obj)}"</span>`;
+  }
+
+  if (Array.isArray(obj)) {
+    if (obj.length === 0) return "[]";
+    const items = obj
+      .map((item) => `${nextIndentStr}${colorizeJson(item, indent + 2)}`)
+      .join(",\n");
+    return `[\n${items}\n${indentStr}]`;
+  }
+
+  if (typeof obj === "object") {
+    const keys = Object.keys(obj);
+    if (keys.length === 0) return "{}";
+    const items = keys
+      .map((key) => {
+        const coloredKey = `<span class="text-blue-400">"${escapeHtml(key)}"</span>`;
+        const coloredValue = colorizeJson(
+          obj[key as keyof typeof obj],
+          indent + 2
+        );
+        return `${nextIndentStr}${coloredKey}: ${coloredValue}`;
+      })
+      .join(",\n");
+    return `{\n${items}\n${indentStr}}`;
+  }
+
+  return String(obj);
+};
+
+const bodyJson = colorizeJson(body);
+const responseJson = response === undefined ? null : colorizeJson(response);
+
+const methodColors: Record<Method, string> = {
+  GET: "bg-blue-600 text-white",
+  POST: "bg-emerald-600 text-white",
+  PATCH: "bg-amber-600 text-white",
+  PUT: "bg-purple-600 text-white",
+};
+
+const instanceId = `http-request-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<figure
+  class="my-12 min-w-0 max-w-full overflow-hidden rounded-lg border border-stone-900 bg-stone-950 shadow-lg"
+  data-http-request
+>
+  <figcaption
+    class="flex items-center gap-3 border-b border-stone-900 bg-stone-950 px-3 py-2 font-mono text-xs tracking-wide text-stone-400"
+  >
+    <span class:list={["rounded px-2 py-1 text-xs font-bold", methodColors[method]]}>
+      {method}
+    </span>
+    <span class="font-mono text-xs text-stone-500">{route}</span>
+  </figcaption>
+
+  <div class="px-8 py-6 sm:px-6">
+    <div class="mb-4">
+      <div
+        class="mb-2 text-xs uppercase tracking-widest text-stone-400"
+        data-body-label={instanceId}
+      >
+        Request Body
+      </div>
+      <pre
+        class="m-0 max-h-64 min-w-0 max-w-full overflow-x-auto overflow-y-auto rounded border border-stone-800 bg-stone-900/50 px-4 py-3 font-mono text-sm leading-relaxed text-stone-100"
+        data-body={instanceId}
+        set:html={bodyJson}
+      ></pre>
+    </div>
+
+    {
+      responseJson && (
+        <button
+          class="rounded border border-stone-700 bg-stone-900 px-2 py-1 font-mono text-xs font-semibold text-stone-400 transition-colors hover:border-stone-600 hover:bg-stone-800 hover:text-stone-100"
+          type="button"
+          data-toggle-response={instanceId}
+          aria-expanded="false"
+        >
+          Show mocked response
+        </button>
+      )
+    }
+  </div>
+</figure>
+
+{
+  responseJson && (
+    <script is:inline define:vars={{ instanceId, bodyJson, responseJson }}>
+      (() => {
+        const toggleBtn = document.querySelector(
+          `[data-toggle-response="${instanceId}"]`
+        );
+        const body = document.querySelector(
+          `[data-body="${instanceId}"]`
+        );
+        const bodyLabel = document.querySelector(
+          `[data-body-label="${instanceId}"]`
+        );
+
+        if (!toggleBtn || !body || !bodyLabel) return;
+
+        toggleBtn.addEventListener("click", () => {
+          const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
+          toggleBtn.setAttribute("aria-expanded", isExpanded ? "false" : "true");
+          toggleBtn.textContent = isExpanded
+            ? "Show mocked response"
+            : "Show request body";
+          bodyLabel.textContent = isExpanded ? "Request Body" : "Mocked Response";
+          body.innerHTML = isExpanded ? bodyJson : responseJson;
+        });
+      })();
+    </script>
+  )
+}

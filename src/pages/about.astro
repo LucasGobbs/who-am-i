@@ -8,9 +8,9 @@ import { ABOUT_BIO, SITE_AUTHOR, SITE_ROLE, SITE_LOCATION } from "../consts";
   description="A longer note about who I am and what I care about."
 >
   <p class="label mb-2">Colophon</p>
-  <h1 class="mb-[var(--gap-lg)]">About</h1>
-  <p class="mb-[var(--gap-lg)] font-[family-name:var(--font-mono)] text-[0.85rem] tracking-[0.03em] text-[var(--ink-mute)]">
+  <h1 class="mb-8">About</h1>
+  <p class="mb-8 font-mono text-sm tracking-wide text-stone-500">
     {SITE_ROLE} · {SITE_LOCATION}
   </p>
-  {ABOUT_BIO.map((para) => <p class="my-[var(--gap-md)] leading-[1.7] text-[var(--ink-soft)]">{para}</p>)}
+  {ABOUT_BIO.map((para) => <p class="my-6 leading-7 text-stone-700">{para}</p>)}
 </PageLayout>

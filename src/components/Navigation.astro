@@ -12,25 +12,25 @@ const isActive = (href: string) => {
 ---
 
 <header
-  class="sticky top-0 z-10 border-b border-[var(--ink)] bg-[var(--paper)] [backdrop-filter:saturate(1.1)]"
+  class="sticky top-0 z-10 border-b border-stone-950 bg-stone-50 backdrop-saturate-100"
 >
   <div
-    class="mx-auto flex w-full max-w-[var(--shell-max)] flex-wrap items-baseline justify-between gap-4 px-[var(--page-padding)] py-[0.9rem]"
+    class="mx-auto flex w-full max-w-7xl flex-wrap items-baseline justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8"
   >
     <a
       href={base}
-      class="font-[var(--font-display)] text-[1.3rem] font-normal tracking-[-0.02em] text-[var(--ink)] no-underline"
+      class="font-serif text-xl font-normal tracking-tight text-stone-950 no-underline"
     >
-      <span class="text-[var(--accent)]">L</span><span>ucas&nbsp;Gobbi</span>
+      <span class="text-orange-600">L</span><span>ucas&nbsp;Gobbi</span>
       <span
-        class="ml-[0.7rem] align-[0.1em] font-[var(--font-mono)] text-[0.68rem] font-medium uppercase tracking-[0.1em] text-[var(--ink-mute)]"
+        class="ml-3 align-baseline font-mono text-xs font-medium uppercase tracking-widest text-stone-500"
       >
         {SITE_ROLE}
       </span>
     </a>
     <nav aria-label="Primary">
       <ul
-        class="m-0 flex list-none flex-wrap gap-[1.3rem] p-0"
+        class="m-0 flex list-none flex-wrap gap-5 p-0"
       >
         {
           NAV_LINKS.map((link) => {
@@ -40,7 +40,7 @@ const isActive = (href: string) => {
                 <a
                   href={href}
                   aria-current={isActive(href) ? "page" : undefined}
-                  class="font-[var(--font-mono)] text-[0.76rem] font-semibold uppercase tracking-[0.08em] text-[var(--ink-soft)] no-underline transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-[var(--ink)] aria-[current=page]:text-[var(--accent)]"
+                  class="font-mono text-xs font-semibold uppercase tracking-wider text-stone-700 no-underline transition-colors duration-150 ease-out hover:text-stone-950 aria-[current=page]:text-orange-600"
                 >
                   {link.label}
                 </a>

@@ -17,25 +17,25 @@ const year = date.getFullYear();
 ---
 
 <article
-  class:list={["note-card", "my-[0.9rem] min-w-0 border-b border-[var(--paper-edge)] py-2 lg:my-[1.2rem] lg:py-3 2xl:my-[1.4rem] 2xl:py-[0.9rem]", { "has-thumb": hasThumb }]}
+  class:list={["note-card", "my-4 min-w-0 border-b border-stone-300 py-2 lg:my-5 lg:py-3 xl:my-6", { "has-thumb": hasThumb }]}
 >
-  <div class="note-row flex min-w-0 flex-wrap items-baseline gap-4 lg:gap-[var(--gap-lg)] 2xl:gap-[var(--gap-xl)]">
+  <div class="note-row flex min-w-0 flex-wrap items-baseline gap-4 lg:gap-8 xl:gap-12">
     <time
       datetime={date.toISOString()}
-      class="min-w-16 shrink-0 font-[var(--font-mono)] text-[0.78rem] tracking-[0.04em] text-[var(--ink-mute)] lg:min-w-20 lg:text-[0.82rem] 2xl:text-[0.86rem]"
+      class="min-w-16 shrink-0 font-mono text-xs tracking-wide text-stone-500 lg:min-w-20 lg:text-sm"
     >
       {year}.{mmdd}
     </time>
     <div class="note-text min-w-0 flex-1 break-words [&_a]:break-words [&_p]:break-words">
       <a
         href={`${import.meta.env.BASE_URL}thoughts/${entry.id}/`}
-        class="font-[var(--font-display)] text-[1.1rem] text-[var(--ink)] no-underline lg:text-[1.25rem] 2xl:text-[1.35rem]"
+        class="font-serif text-lg text-stone-950 no-underline lg:text-xl xl:text-2xl"
       >
         {title}
       </a>
       {
         description && (
-          <p class="mt-[0.3rem] mb-0 text-[0.9rem] leading-[1.5] text-[var(--ink-mute)] lg:mt-[0.4rem] lg:text-[1rem] lg:leading-[1.6] 2xl:text-[1.05rem]">
+          <p class="mt-1 mb-0 text-sm leading-normal text-stone-500 lg:mt-2 lg:text-base lg:leading-relaxed">
             {description}
           </p>
         )
@@ -43,7 +43,7 @@ const year = date.getFullYear();
       {
         tags.length > 0 && (
           <ul
-            class="mt-[0.6rem] mb-0 flex list-none flex-wrap gap-[0.4rem] p-0"
+            class="mt-2 mb-0 flex list-none flex-wrap gap-2 p-0"
           >
             {tags.map((t) => (
               <li>
@@ -58,7 +58,7 @@ const year = date.getFullYear();
       hasThumb && (
         <a
           href={`${import.meta.env.BASE_URL}thoughts/${entry.id}/`}
-          class="note-thumb-link block size-auto h-16 w-24 shrink-0 self-center overflow-hidden rounded-[var(--radius-sm)] border border-[var(--paper-edge)] max-[480px]:mt-2 max-[480px]:h-[140px] max-[480px]:w-full lg:h-24 lg:w-36 2xl:h-28 2xl:w-44"
+          class="note-thumb-link block size-auto h-16 w-24 shrink-0 self-center overflow-hidden rounded-sm border border-stone-300 sm:mt-2 sm:h-36 sm:w-full lg:mt-0 lg:h-24 lg:w-36 xl:h-28 xl:w-44"
           aria-label={title}
         >
           <img

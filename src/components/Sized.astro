@@ -16,11 +16,11 @@ const {
 } = Astro.props;
 
 const sizes: Record<string, string> = {
-  xs: "0.78rem",
-  sm: "0.9rem",
+  xs: "0.75rem",
+  sm: "0.875rem",
   md: "1rem",
-  lg: "1.4rem",
-  xl: "1.9rem",
+  lg: "1.25rem",
+  xl: "1.875rem",
 };
 const colors: Record<string, string> = {
   ink: "var(--ink)",
@@ -33,7 +33,7 @@ const family = serif ? "var(--font-display)" : "var(--font-body)";
 ---
 
 <Tag
-  class="my-[var(--gap-md)] block font-[family-name:var(--sized-font)] text-[length:var(--sized-size)] leading-[1.5] text-[var(--sized-color)] [text-align:var(--sized-align)]"
+  class="my-6 block font-[family-name:var(--sized-font)] text-[length:var(--sized-size)] leading-normal text-[var(--sized-color)] [text-align:var(--sized-align)]"
   style={`--sized-font: ${family}; --sized-size: ${sizes[size]}; --sized-color: ${colors[color]}; --sized-align: ${align};`}
 >
   <slot />

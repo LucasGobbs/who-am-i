@@ -16,19 +16,19 @@ const {
 } = Astro.props;
 ---
 
-<figure class="my-[var(--gap-xl)] text-center">
+<figure class="my-12 text-center">
   <canvas
     id={id}
     width={width}
     height={height}
-    class="inline-block h-auto max-w-full rounded-[var(--radius-md)] border border-[var(--paper-edge)] bg-[var(--paper-deep)]"
+    class="inline-block h-auto max-w-full rounded-md border border-stone-300 bg-stone-100"
   >
     Canvas not supported.
   </canvas>
   {
     caption && (
       <figcaption
-        class="mt-2 font-[family-name:var(--font-mono)] text-[0.78rem] tracking-[0.03em] text-[var(--ink-mute)]"
+        class="mt-2 font-mono text-xs tracking-wide text-stone-500"
       >
         {caption}
       </figcaption>

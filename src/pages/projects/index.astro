@@ -26,8 +26,8 @@ const years = [...byYear.keys()].sort((a, b) => b - a);
   description="Things I have built."
 >
   <p class="label mb-2">Work</p>
-  <h1 class="mb-[var(--gap-sm)]">Projects</h1>
-  <p class="mb-[var(--gap-lg)] text-[0.98rem] text-[var(--ink-mute)]">
+  <h1 class="mb-4">Projects</h1>
+  <p class="mb-8 text-base text-stone-500">
     Things I have built.
   </p>
 
@@ -36,11 +36,11 @@ const years = [...byYear.keys()].sort((a, b) => b - a);
   <div data-interest-list class="project-list">
     {
       years.map((year) => (
-        <section class="my-[var(--gap-xl)] lg:my-[var(--gap-xxl)]">
-          <h2 class="mb-[var(--gap-md)] border-b border-[var(--paper-edge)] pb-[0.4rem] font-[family-name:var(--font-mono)] text-[0.85rem] font-medium tracking-[0.06em] text-[var(--ink-mute)] lg:mb-[var(--gap-lg)] lg:pb-2 lg:text-[0.9rem] lg:tracking-[0.07em] min-[1440px]:text-[0.92rem]">
+        <section class="my-10 lg:my-16">
+          <h2 class="mb-6 border-b border-stone-200 pb-2 font-mono text-sm font-medium tracking-wider text-stone-500 lg:mb-8 lg:text-base xl:text-lg">
             {year}
           </h2>
-          <div class="flex flex-col gap-[var(--gap-md)] lg:gap-[var(--gap-lg)] min-[1440px]:gap-[calc(var(--gap-lg)+0.25rem)]">
+          <div class="flex flex-col gap-6 lg:gap-8 xl:gap-10">
             {byYear.get(year)!.map((entry) => (
               <div
                 data-interest-item

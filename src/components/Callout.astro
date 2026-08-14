@@ -15,13 +15,13 @@ const p = palette[kind];
 ---
 
 <aside
-  class="my-[var(--gap-lg)] min-w-0 max-w-full break-words rounded-[var(--radius-sm)] px-[var(--gap-md)] py-[var(--gap-md)] text-[var(--callout-fg)] [background:var(--callout-bg)] sm:px-[var(--gap-lg)] [&_ol]:max-w-full [&_p]:max-w-full [&_pre]:max-w-full [&_table]:max-w-full [&_ul]:max-w-full"
+  class="my-8 min-w-0 max-w-full break-words rounded-sm px-6 py-6 text-[var(--callout-fg)] [background:var(--callout-bg)] sm:px-8 [&_ol]:max-w-full [&_p]:max-w-full [&_pre]:max-w-full [&_table]:max-w-full [&_ul]:max-w-full"
   style={`--callout-bg: ${p.bg}; --callout-fg: ${p.fg};`}
 >
-  <p class="label m-0 mb-[0.4rem] text-[var(--callout-fg)] opacity-70">
+  <p class="label m-0 mb-2 text-[var(--callout-fg)] opacity-70">
     {title ?? p.label}
   </p>
-  <div class="m-0 text-[0.96rem] leading-[1.6]">
+  <div class="m-0 text-base leading-relaxed">
     <slot />
   </div>
 </aside>

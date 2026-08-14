@@ -11,14 +11,14 @@ const hasThumb = Boolean(thumbnail);
 ---
 
 <article
-  class="group overflow-hidden rounded-[var(--radius-md)] border border-[var(--paper-edge)] bg-[var(--paper-deep)] transition-[border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:border-[var(--ink-mute)]"
+  class="group overflow-hidden rounded-md border border-stone-300 bg-stone-100 transition-colors duration-150 ease-out hover:border-stone-500"
 >
   <a
     href={`${import.meta.env.BASE_URL}projects/${entry.id}/`}
     class:list={[
       "flex text-inherit no-underline",
       {
-        "min-h-[140px] items-stretch max-[640px]:min-h-0 max-[640px]:flex-col min-[1024px]:min-h-[180px] min-[1440px]:min-h-[200px]": hasThumb,
+        "min-h-36 items-stretch flex-col lg:min-h-44 lg:flex-row xl:min-h-48": hasThumb,
       },
     ]}
     aria-label={title}
@@ -27,33 +27,33 @@ const hasThumb = Boolean(thumbnail);
       class:list={[
         "min-w-0",
         {
-          "flex flex-1 flex-col justify-center p-[var(--gap-lg)] max-[640px]:px-[var(--gap-lg)] max-[640px]:py-[var(--gap-md)] min-[1024px]:py-[var(--gap-xl)] min-[1024px]:pr-[var(--gap-xl)] min-[1024px]:pl-[var(--gap-lg)] min-[1440px]:p-[var(--gap-xl)]": hasThumb,
-          "px-[var(--gap-lg)] py-[var(--gap-md)]": !hasThumb,
+          "flex flex-1 flex-col justify-center px-8 py-6 lg:py-12 lg:pr-12 xl:p-12": hasThumb,
+          "px-8 py-6": !hasThumb,
         },
       ]}
     >
-      <h3 class="m-0 mb-[0.25rem] text-[var(--step-title,1.1rem)] leading-[1.3] text-[var(--ink)] min-[1024px]:text-[1.25rem]">{title}</h3>
-      {description && <p class="m-0 mb-[var(--gap-sm)] text-[0.92rem] leading-[1.55] text-[var(--ink-soft)] min-[1024px]:text-[1rem] min-[1024px]:leading-[1.62]">{description}</p>}
+      <h3 class="m-0 mb-1 text-lg leading-snug text-stone-950 lg:text-xl">{title}</h3>
+      {description && <p class="m-0 mb-4 text-sm leading-relaxed text-stone-700 lg:text-base">{description}</p>}
       {(tech.length > 0 || tags.length > 0) && (
-        <ul class="m-0 mb-[var(--gap-sm)] flex list-none flex-wrap gap-[0.4rem] p-0">
+        <ul class="m-0 mb-4 flex list-none flex-wrap gap-2 p-0">
           {tech.map((t) => <li><Tag>{t}</Tag></li>)}
           {tags.map((t) => <li><Tag>{t}</Tag></li>)}
         </ul>
       )}
-      <p class="m-0 font-[var(--font-mono)] text-[0.75rem] tracking-[0.04em] text-[var(--ink-faint)]">
+      <p class="m-0 font-mono text-xs tracking-wide text-stone-400">
         <time datetime={date.toISOString()}>
           {new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short" }).format(date)}
         </time>
       </p>
     </div>
     {hasThumb && (
-      <div class="flex min-h-full w-[200px] flex-none items-stretch overflow-hidden border-l border-[var(--paper-edge)] bg-[var(--paper)] max-[640px]:min-h-0 max-[640px]:w-full max-[640px]:border-t max-[640px]:border-l-0 min-[1024px]:w-[280px] min-[1440px]:w-[320px]">
+      <div class="flex min-h-0 w-full flex-none items-stretch overflow-hidden border-t border-stone-300 bg-stone-50 lg:min-h-full lg:w-72 lg:border-t-0 lg:border-l xl:w-80">
         <img
           src={thumbnail!.startsWith("/") ? `${import.meta.env.BASE_URL}${thumbnail!.replace(/^\//, "")}` : thumbnail}
           alt={thumbnailAlt ?? title}
           loading="lazy"
           decoding="async"
-          class="block h-full w-full rounded-none object-cover transition-transform duration-[var(--dur-med)] ease-[var(--ease-out)] group-hover:scale-[1.03] max-[640px]:h-auto max-[640px]:aspect-video"
+          class="block h-auto w-full rounded-none object-cover transition-transform duration-300 ease-out group-hover:scale-105 lg:h-full lg:aspect-auto aspect-video"
         />
       </div>
     )}
