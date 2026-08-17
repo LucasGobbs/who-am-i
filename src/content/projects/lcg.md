@@ -10,9 +10,8 @@ links:
   - label: "Source"
     href: "https://github.com/LucasGobbs/lcg"
 tags:
-  - c
   - libraries
-  - preprocessor
+  -  STB Library
 interest: development
 ---
 

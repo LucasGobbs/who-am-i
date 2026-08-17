@@ -357,6 +357,7 @@ th {
   float: left;
   margin: 0.05em 0.08em 0 0;
   color: var(--accent);
+  transform: translateY(-50em);
 }
 
 /* Section number kicker: oxblood mono numeral before a heading. */
