@@ -12,10 +12,65 @@ const redirectUrl = "https://casamento-mairaelucas.vercel.app/convite";
     <meta http-equiv="refresh" content={`0;url=${redirectUrl}`} />
     <link rel="canonical" href={redirectUrl} />
   </head>
+  <style>
+    :global(*) {
+      box-sizing: border-box;
+    }
+
+    body {
+      display: grid;
+      min-height: 100vh;
+      margin: 0;
+      place-items: center;
+      padding: 1.5rem;
+      background: #f8f4ef;
+      color: #3f3731;
+      font-family: Georgia, serif;
+    }
+
+    .card {
+      width: min(100%, 28rem);
+      padding: 3rem 2rem;
+      border: 1px solid #dfd2c5;
+      border-radius: 1.25rem;
+      background: rgba(255, 252, 248, 0.85);
+      box-shadow: 0 1.5rem 4rem rgba(91, 67, 48, 0.12);
+      text-align: center;
+    }
+
+    .ornament {
+      margin: 0 0 1.25rem;
+      color: #a4775c;
+      font-size: 1.25rem;
+      letter-spacing: 0.5rem;
+    }
+
+    h1 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(1.8rem, 8vw, 2.5rem);
+      font-weight: 400;
+    }
+
+    p {
+      margin: 0;
+      color: #75675d;
+      line-height: 1.6;
+    }
+
+    a {
+      color: #9a6547;
+      text-underline-offset: 0.2em;
+    }
+  </style>
+
   <body>
-    <p>
-      Redirecionando para <a href={redirectUrl}>convite</a>...
-    </p>
+    <main class="card">
+      <p class="ornament" aria-hidden="true">✦ ✦ ✦</p>
+      <h1>Convite</h1>
+      <p>
+        Redirecionando para <a href={redirectUrl}>convite</a>...
+      </p>
+    </main>
     <script>
       window.location.replace("https://casamento-mairaelucas.vercel.app/convite");
     </script>
