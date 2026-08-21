@@ -1,0 +1,23 @@
+---
+// Static redirect to external wedding invitation site
+const redirectUrl = "https://casamento-mairaelucas.vercel.app/convite";
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Convite</title>
+    <meta http-equiv="refresh" content={`0;url=${redirectUrl}`} />
+    <link rel="canonical" href={redirectUrl} />
+  </head>
+  <body>
+    <p>
+      Redirecionando para <a href={redirectUrl}>convite</a>...
+    </p>
+    <script>
+      window.location.replace("https://casamento-mairaelucas.vercel.app/convite");
+    </script>
+  </body>
+</html>
