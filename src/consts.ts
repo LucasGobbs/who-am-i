@@ -5,7 +5,7 @@ export const SITE_TITLE = "Lucas Gobbi — Software Developer";
 export const SITE_DESCRIPTION =
   "Personal website, resume, and thoughts of Lucas Gobbi, a software developer working with backend, frontend, and integrations.";
 // Must match the `site` value in astro.config.mjs (no trailing slash).
-export const SITE_URL = "https://lucasgobbs.github.io/who-am-i";
+export const SITE_URL = "https://gobbi.is-a.dev";
 export const SITE_AUTHOR = "Lucas Gobbi";
 export const SITE_ROLE = "Software Developer";
 export const SITE_LOCATION = "Rio de Janeiro, Brazil";

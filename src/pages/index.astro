@@ -9,6 +9,8 @@ import {
   SITE_LOCATION,
   EXPERIENCES,
   SITE_DESCRIPTION,
+  SITE_URL,
+  SOCIAL_LINKS,
 } from "../consts";
 import { getSortedThoughts } from "../lib/thoughts";
 import { getSortedProjects } from "../lib/projects";
@@ -17,9 +19,28 @@ const thoughts = (await getSortedThoughts()).slice(0, 3);
 const projects = (await getSortedProjects()).slice(0, 2);
 const first = SITE_AUTHOR.charAt(0);
 const rest = SITE_AUTHOR.slice(1);
+
+const personJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": SITE_AUTHOR,
+  "url": SITE_URL,
+  "jobTitle": SITE_ROLE,
+  "worksFor": {
+    "@type": "Organization",
+    "name": EXPERIENCES[0]?.company ?? "",
+  },
+  "sameAs": SOCIAL_LINKS
+    .filter((l) => l.href.startsWith("http"))
+    .map((l) => l.href),
+});
 ---
 
-<PageLayout title={`${SITE_AUTHOR} — ${SITE_ROLE}`} description={SITE_DESCRIPTION}>
+<PageLayout
+  title={`${SITE_AUTHOR} — ${SITE_ROLE}`}
+  description={SITE_DESCRIPTION}
+  jsonLd={personJsonLd}
+>
   <section class="hero mb-16">
     <p class="kicker mb-5">Notebook · Resume · Projects</p>
     <h1 class="mega-name text-6xl leading-none tracking-tight">

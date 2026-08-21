@@ -2,6 +2,7 @@
 import PageLayout from "./PageLayout.astro";
 import Tag from "../components/Tag.astro";
 import type { CollectionEntry } from "astro:content";
+import { SITE_AUTHOR, SITE_URL } from "../consts";
 
 interface Props {
   entry: CollectionEntry<"thoughts">;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const { entry, prev, next } = Astro.props;
-const { title, date, tags, description } = entry.data;
+const { title, date, tags, description, thumbnail } = entry.data;
 
 const dateFormatted = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
@@ -19,9 +20,38 @@ const dateFormatted = new Intl.DateTimeFormat("en-US", {
 }).format(date);
 
 const titleAttr = description ?? title;
+const postUrl = `${SITE_URL}/thoughts/${entry.id}/`;
+const imageUrl = thumbnail
+  ? thumbnail.startsWith("http") ? thumbnail : `${SITE_URL}${thumbnail}`
+  : undefined;
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": title,
+  "description": titleAttr,
+  "datePublished": date.toISOString(),
+  "author": {
+    "@type": "Person",
+    "name": SITE_AUTHOR,
+    "url": SITE_URL,
+  },
+  "url": postUrl,
+  ...(imageUrl ? { "image": imageUrl } : {}),
+  ...(tags.length > 0 ? { "keywords": tags.join(", ") } : {}),
+});
 ---
 
-<PageLayout title={title} description={titleAttr} canonical={`/thoughts/${entry.id}/`}>
+<PageLayout
+  title={title}
+  description={titleAttr}
+  canonical={`/thoughts/${entry.id}/`}
+  image={thumbnail}
+  ogType="article"
+  jsonLd={jsonLd}
+  articleDate={date.toISOString()}
+  articleTags={tags}
+>
   <div class="relative grid min-w-0 grid-cols-1 gap-10 xl:grid-cols-4 xl:gap-16 2xl:grid-cols-5 2xl:gap-20">
     <article class="note-article min-w-0 max-w-full xl:col-span-3 2xl:col-span-4">
       <header class="mb-10 min-w-0 break-words xl:mb-16">
