@@ -1,14 +1,14 @@
 ---
 title: "Flowing from Aseprite to Unity: My workflow to send assets to Unity"
-description: "What's possible inside a thought post — terminals, canvas, quotes, asides, sized text, images, and code."
+description: "Three iterations of an Aseprite-to-Unity pipeline: plugin import, animator overrides, and a custom Lua script that generates separate files per layer group."
 date: 2024-03-26
 tags:
   - tools
   - integration
   - aseprite
   - gamedev
-thumbnail: "/favicon.svg"
-thumbnailAlt: "Square zine mark: italic lg on cream paper."
+thumbnail: "/flowing-from-aseprite-to-unity/thumb.png"
+thumbnailAlt: "Aseprite logo with an arrow pointing to the Unity logo."
 interest: "gamedev"
 ---
 
@@ -19,48 +19,192 @@ import Callout from "../../components/Callout.astro";
 import Pullquote from "../../components/Pullquote.astro";
 import Sized from "../../components/Sized.astro";
 import Figure from "../../components/Figure.astro";
-import Canvas from "../../components/Canvas.astro";
 import Section from "../../components/Section.astro";
 import Divider from "../../components/Divider.astro";
 
 <Callout kind="note">
-  This post is a port of an medium post https://medium.com/@tinoakstudios/flowing-from-aseprite-to-unity-61e6fa4f73e0
+  This post is a port of a Medium article originally published at [medium.com/@tinoakstudios](https://medium.com/@tinoakstudios/flowing-from-aseprite-to-unity-61e6fa4f73e0).
 </Callout>
+
 Hello everyone,
 
 Over the past six years or more, I've relied on Aseprite for the bulk of my creative projects. Throughout this time, one consistent challenge has been the transition from creating sprites in Aseprite to integrating them into game engines.
 
-However, I've continually found ways to optimize my workflow, employing various tricks and scripts to mitigate these challenges. With the recent introduction of the Aseprite importer plugin and the refinement of my own scripts and techniques, I've managed to develop a highly efficient process.
+I've continually found ways to optimize my workflow, employing various tricks and scripts to mitigate these challenges. With the recent introduction of the Aseprite importer plugin and the refinement of my own scripts and techniques, I've managed to develop a highly efficient process.
 
-This flow virtually eliminates the overhead traditionally associated with iterating on my artwork, allowing me to focus more on the creative process itself.
+This flow virtually eliminates the overhead traditionally associated with iterating on artwork, allowing me to focus more on the creative process itself.
 
 <Divider variant="dots" space="lg" />
 
-For context, currently I'm in the development of a project titled VoidBite, a top-down shooter featuring spaceships and elements of bullet hell. During the development, I encountered significant challenges when transferring sprites to Unity. Mainly because despite finding an art style that I quite liked, all the sprites and elements tended to blend together on the game screen, which detracted from the visual “coolness” of the game.
+For context, I'm currently developing **VoidBite**, a top-down shooter featuring spaceships and bullet hell elements. During development, I encountered significant challenges when transferring sprites to Unity. Despite finding an art style I quite liked, all the sprites and elements tended to blend together on the game screen, which detracted from the visual "coolness" of the game.
 
-To address this issue, I adopted a highly iterative approach to creating the artwork.
+To address this, I adopted a highly iterative approach to creating the artwork:
 
-This involved:
-1. Generating a base sprite
-2. Integrating it into Unity (In the beginning using sprite atlas)
-3. Checking its visual impact
-4. Refining
-5. Step 2 AGAIN A LOT OF TIMES
+1. Generate a base sprite
+2. Integrate it into Unity (initially using sprite atlas)
+3. Check its visual impact
+4. Refine
+5. Step 2 again — a lot of times
 
-Ensuring that each sprite contributed effectively to the overall visual composition.
+<Callout kind="note">In the initial stages, integrating the different components was a tedious and time-consuming process. The fact that most game elements exhibited similar behavior only exacerbated the redundancy of the work.</Callout>
 
-> In the initial stages, integrating the different components was a **tedious** and **time-consuming** process. In addition, the fact that most game elements exhibited similar behavior only exacerbated the **redundancy** of the work
+With these challenges in mind, I devised a workflow aimed at facilitating rapid iterations and implementing generic animation behaviors.
 
-With these challenges in mind, I devised a workflow aimed at facilitating rapid iterations and implementing generic animation behaviors. This approach not only expedited the development process but also ensured consistency and cohesion across all elements of the game.
-
-<br />
 Here's how the process unfolds:
 
+<Divider variant="dotted" space="md" />
+
 <Section title="Using the plugin Aseprite Import Unity (Initial Workflow)">
-  Normal Markdown works everywhere: **bold**, *italic*, `inline code`,
-  [links](https://example.com), and lists.
 
-  <Sized as="h3" size="lg" align="center" serif>A large centered heading</Sized>
+<Figure
+  src="/flowing-from-aseprite-to-unity/thumb.png"
+  alt="Aseprite logo with an arrow pointing to the Unity logo."
+  caption="Aseprite → Unity"
+/>
 
-  <Sized size="sm" color="mute" align="center">fine print, smaller and muted</Sized>
+This plugin is an absolute delight to work with, simplifying the bulk process of importing assets with remarkable efficiency. It eliminates the need to manually export Aseprite files into PNGs and streamlines the creation of animation tags and sprites. Its customizable nature ensures it can be tailored to your specific requirements.
+
+If my game solely focused on player animations, this initial step would be the only thing I needed.
+
+First of all, include the plugin in your unity project. Once you've inserted one aseprite file to unity, the plugin automatically creates the components by the settings.
+
+<Figure
+  src="/flowing-from-aseprite-to-unity/aseprite_unity_import.png"
+  alt="Unity Project window showing components created by the Aseprite importer: Texture Atlas, Animation Clips, Animator (No Transitions), and Sprites."
+  caption="Components created by aseprite unity importer."
+/>
+
+The next step involves configuring the importer settings to your needs. In my case:
+
+- **Pixels Per Unit** set to `32` to match my sprite size
+- **Layer Import** set to `Merge Frame` — allows the plugin to automatically merge layers within the same frame
+- **Pivot Alignment** set to `Center` — essential for games involving sprite rotations to ensure smooth rotation around the center
+- **Filter Mode** set to `Bilinear` — for sprites used with my custom shader, to reduce jitteriness and artifacts
+
+<Figure
+  src="/flowing-from-aseprite-to-unity/creating_presets.png"
+  alt="Unity Inspector showing Aseprite Import Settings with Pixels Per Unit 32, Layer Import Merge Frame, Pivot Alignment Center, and a preset selection dialog."
+  caption="Saving a Unity preset to apply these settings uniformly across all sprites."
+/>
+
+Following this setup, I create a Unity preset with these configurations to apply them uniformly across all sprites, eliminating the need to repeat the process for each file.
+
+The last step involves creating transitions between the generated clips:
+
+<Figure
+  src="/flowing-from-aseprite-to-unity/creating_animation_transitions.png"
+  alt="Unity Animator window showing state machine with Idle, Warming, Accelerating, Turbo, and Explode states connected by transitions."
+  caption="Creating animator transitions between the clips generated by the plugin."
+/>
+
+With these steps, we've established a simple streamlined workflow. Any changes made in Aseprite are automatically synchronized with Unity, eliminating the need for manual intervention. It's a seamless process that keeps your development pipeline fast.
+
+That already improved the process considerably — but for my use case, it still wasn't enough.
+
+Creating transitions for all my sprites was still slow, and most sprites follow a default behavior:
+
+- **Ships:** Idle → Warming → Accelerating → Turbo → Explode
+- **Bullets and other elements:** Idle → Slide → Hit
+
+With numerous ships and elements, creating transitions quickly became overwhelming. So we arrived at the second iteration:
+
+</Section>
+
+<Divider variant="dots" space="lg" />
+
+<Section title="Override Animator to the Rescue (Second Iteration)">
+
+We now have a bunch of Aseprite files containing different sprites, but they all use the same tags and require identical animations. Unity provides a feature called **Animator Override Controller**, which lets you take an existing sprite animator as a template and create overrides for subsequent sprites.
+
+With that in mind, the steps are:
+
+1. Export the animation controller of one element using the Aseprite plugin
+2. Create all the transition logic within that exported animation controller
+3. Create Animator Override Controllers for each remaining object, pointing at the template, then drag-and-drop the animation clips generated by the plugin
+
+<Figure
+  src="/flowing-from-aseprite-to-unity/exporting_animator_from_aseprite_plugin.png"
+  alt="Unity Inspector showing the Export Animation Assets dialog, with Animator Controller checked and Animation Clips unchecked."
+  caption="Exporting only the Animator Controller from the Aseprite importer to use as a base template."
+/>
+
+<Figure
+  src="/flowing-from-aseprite-to-unity/using_animator_override_controller.png"
+  alt="Three-step diagram: configure the exported animator, create an Override Controller, then set the object clips in the override slots."
+  caption="Using Animator Override Controller: set the base animator, then swap clips per sprite."
+/>
+
+With these new steps, our workflow became streamlined even with multiple sprites. We now only need to create the Animator Override Controller and drag-and-drop the clips. Pretty neat, right?
+
+<Sized as="p" size="lg" color="soft" serif>Not for me. I needed more.</Sized>
+
+One issue I encountered is the necessity of saving sprites in multiple files. While not a dealbreaker, it can be tedious — particularly for consistency. I enjoy working with numerous sprites simultaneously and drawing inspiration from one to another.
+
+Another reason for wanting to keep multiple sprites in one file is **layered animations**. For example, a layer of cracks in a spaceship when it sustains damage. With the current solution, the cracks need to live in a separate file. This becomes problematic when modifying the spaceship's shape: now you must navigate through several files to adjust the crack shape, without even having the spaceship in the same file for reference.
+
+To address these challenges, we arrived at the third iteration:
+
+</Section>
+
+<Divider variant="dots" space="lg" />
+
+<Section title="Aseprite Scripts Saving the Day (Third Iteration)">
+
+Arguably one of the most sorely missed features of Aseprite, its scripting capability is both robust and intuitive. Aseprite scripts can do everything, and they're really easy to set up.
+
+In this iteration I devised a single Aseprite script tailored precisely to the needs of my project. The script iterates through layer groups within an Aseprite file and generates separate `.ase` files for each group, carrying the respective tags and sprite data.
+
+<Figure
+  src="/flowing-from-aseprite-to-unity/generating_asefile_by_script.gif"
+  alt="Aseprite open with Ships.aseprite showing multiple ship layer groups (PurpleShip, GreenShip, RedShip, YellowShip), alongside a Windows Explorer folder showing the generated .ase files."
+  caption="The Lua script iterating through layer groups and generating individual .ase files per ship."
+/>
+
+```lua
+-- Sample of the script
+function exportLayers(sprite, rootLayer, pathPrefix, pathSufix)
+
+  for i, layer in ipairs(rootLayer.layers) do
+     if (layer.isEditable) then
+
+        local layerName = string.lower(layer.name)
+        local filenameBase = pathPrefix .. layerName
+        local ending = ".ase"
+
+        if not layer.isGroup then
+           layer.isVisible = true
+           sprite:saveCopyAs(filenameBase .. ending)
+           layer.isVisible = false
+        else
+           -- ...
+```
+
+<Callout kind="tip" title="Setup">
+  Open Aseprite, then go to **File → Scripts → Open Scripts Folder**. Paste the script into that directory, then press **F5** in Aseprite to run it. Assign a keyboard shortcut to the script for one-key access.
+</Callout>
+
+You can find the script in the original Medium post linked above. I may go into more depth on how it works if someone finds it useful.
+
+</Section>
+
+<Divider variant="line" space="lg" />
+
+<Section title="Final Thoughts">
+
+With this workflow in place, navigating an iterative asset creation process is quite manageable — particularly in scenarios where time is short or when collaborating with others.
+
+Different projects come with their own unique set of requirements. In another project, for example, I made adjustments to the Lua exporter script to upscale sprites so they could be used with Unity's default Bilinear Filter.
+
+Beyond the workflow itself, there are various additional steps I take to circumvent specific challenges: employing a custom shader to eliminate pixel artifacts, implementing sprite mipmaps to address rendered resolution issues, and more. Those deserve their own posts.
+
+To all who've journeyed through this post, thank you. I hope you found it insightful. Questions and feedback are welcome.
+
+*Valeu!*
+
+<Figure
+  src="/flowing-from-aseprite-to-unity/voidbite.gif"
+  alt="VoidBite gameplay screenshot showing several pixel-art spaceships and enemies floating in a dark space environment with a planet in the background."
+  caption="VoidBite — still in development."
+/>
+
 </Section>

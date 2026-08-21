@@ -426,6 +426,14 @@ th {
     color: var(--ink-soft);
   }
 
+  .prose-thoughts ul {
+    list-style-type: disc;
+  }
+
+  .prose-thoughts ol {
+    list-style-type: decimal;
+  }
+
   .prose-thoughts li {
     margin: 0.4rem 0;
   }
@@ -471,7 +479,7 @@ th {
     color: var(--ink);
   }
 
-  .prose-thoughts blockquote {
+  .prose-thoughts blockquote:not([data-pullquote]) {
     background: var(--paper-recess);
     padding: var(--gap-md) var(--gap-lg);
     border-radius: var(--radius-sm);
@@ -571,7 +579,7 @@ th {
 
   @media (max-width: 640px) {
     .prose-thoughts pre,
-    .prose-thoughts blockquote {
+    .prose-thoughts blockquote:not([data-pullquote]) {
       padding-inline: var(--gap-md);
     }
   }
