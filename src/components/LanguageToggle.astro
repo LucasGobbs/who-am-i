@@ -1,0 +1,37 @@
+---
+interface Props {
+  current: "en" | "br";
+  enHref?: string;
+  brHref?: string;
+}
+const { current, enHref, brHref } = Astro.props;
+---
+
+{
+  (enHref || brHref) && (
+    <p
+      class="my-0 flex items-baseline gap-2 font-mono text-xs uppercase tracking-widest text-stone-500"
+      aria-label="Language"
+    >
+      {current === "en" ? (
+        <span class="font-semibold text-stone-950" aria-current="true">
+          EN
+        </span>
+      ) : enHref ? (
+        <a href={enHref} class="text-stone-500 no-underline hover:text-stone-950">
+          EN
+        </a>
+      ) : null}
+      <span class="text-stone-300" aria-hidden="true">·</span>
+      {current === "br" ? (
+        <span class="font-semibold text-stone-950" aria-current="true">
+          PT
+        </span>
+      ) : brHref ? (
+        <a href={brHref} class="text-stone-500 no-underline hover:text-stone-950">
+          PT
+        </a>
+      ) : null}
+    </p>
+  )
+}

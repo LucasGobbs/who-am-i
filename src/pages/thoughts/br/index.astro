@@ -1,0 +1,80 @@
+---
+import PageLayout from "../../../layouts/PageLayout.astro";
+import NoteCard from "../../../components/NoteCard.astro";
+import LanguageToggle from "../../../components/LanguageToggle.astro";
+import { getSortedThoughts } from "../../../lib/thoughts";
+import { groupThoughtsByLang, isPtVariant } from "../../../lib/lang";
+import { SITE_AUTHOR } from "../../../consts";
+
+const base = import.meta.env.BASE_URL;
+const all = await getSortedThoughts();
+const { en, br } = groupThoughtsByLang(all);
+const canonical = [...en.values()];
+
+interface Row {
+  entry: (typeof canonical)[number];
+  slug: string;
+  isPt: boolean;
+  href: string;
+}
+
+const rows: Row[] = canonical.map((entry) => {
+  const pt = br.get(entry.id);
+  return {
+    entry: pt ?? entry,
+    slug: entry.id,
+    isPt: Boolean(pt),
+    href: pt ? `${base}thoughts/br/${entry.id}/` : `${base}thoughts/${entry.id}/`,
+  };
+});
+
+const byYear = new Map<number, Row[]>();
+for (const row of rows) {
+  const y = row.entry.data.date.getFullYear();
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(row);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+const ptCount = rows.filter((r) => r.isPt).length;
+---
+
+<PageLayout
+  title={`Pensamentos — ${SITE_AUTHOR}`}
+  description="Notas e posts pequenos, em português brasileiro."
+>
+  <p class="label mb-2">Caderno</p>
+  <h1 class="mb-4">Thoughts</h1>
+  <div class="mb-8 flex flex-wrap items-baseline justify-between gap-4">
+    <p class="my-0 text-base text-stone-500">
+      Notas e posts pequenos, em português. Itens sem tradução abrem em inglês.
+    </p>
+    <LanguageToggle
+      current="br"
+      enHref={`${base}thoughts/`}
+      brHref={`${base}thoughts/br/`}
+    />
+  </div>
+
+  <div>
+    {
+      years.map((year) => (
+        <section class="my-10">
+          <h2 class="mb-6 border-b border-stone-200 pb-2 font-mono text-sm font-medium tracking-wider text-stone-500">
+            {year}
+          </h2>
+          {byYear.get(year)!.map((row) => (
+            <div>
+              <NoteCard entry={row.entry} hrefOverride={row.href} />
+              <p class="m-0 font-mono text-xs uppercase tracking-widest text-stone-400">
+                {row.isPt ? "pt-br" : "en — sem tradução"}
+              </p>
+            </div>
+          ))}
+        </section>
+      ))
+    }
+  </div>
+  <p class="mt-10 font-mono text-xs uppercase tracking-widest text-stone-400">
+    {ptCount} de {rows.length} em português
+  </p>
+</PageLayout>

@@ -4,8 +4,10 @@ import type { CollectionEntry } from "astro:content";
 
 interface Props {
   entry: CollectionEntry<"thoughts">;
+  hrefOverride?: string;
 }
-const { entry } = Astro.props;
+const { entry, hrefOverride } = Astro.props;
+const cardHref = hrefOverride ?? `${import.meta.env.BASE_URL}thoughts/${entry.id}/`;
 const { title, date, tags, description, thumbnail, thumbnailAlt } = entry.data;
 const hasThumb = Boolean(thumbnail);
 
@@ -28,7 +30,7 @@ const year = date.getFullYear();
     </time>
     <div class="note-text min-w-0 flex-1 break-words [&_a]:break-words [&_p]:break-words">
       <a
-        href={`${import.meta.env.BASE_URL}thoughts/${entry.id}/`}
+        href={cardHref}
         class="font-serif text-lg text-stone-950 no-underline lg:text-xl xl:text-2xl"
       >
         {title}
@@ -57,7 +59,7 @@ const year = date.getFullYear();
     {
       hasThumb && (
         <a
-          href={`${import.meta.env.BASE_URL}thoughts/${entry.id}/`}
+          href={cardHref}
           class="note-thumb-link block size-auto h-16 w-24 shrink-0 self-center overflow-hidden rounded-sm border border-stone-300 sm:mt-2 sm:h-36 sm:w-full lg:mt-0 lg:h-24 lg:w-36 xl:h-28 xl:w-44"
           aria-label={title}
         >

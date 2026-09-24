@@ -2,7 +2,9 @@
 import PageLayout from "../../layouts/PageLayout.astro";
 import NoteCard from "../../components/NoteCard.astro";
 import InterestFilter from "../../components/InterestFilter.astro";
+import LanguageToggle from "../../components/LanguageToggle.astro";
 import { getSortedThoughts } from "../../lib/thoughts";
+import { isPtVariant } from "../../lib/lang";
 import { INTERESTS, SITE_AUTHOR, type Interest } from "../../consts";
 
 const requested = Astro.url.searchParams.get("i") as Interest | null;
@@ -10,7 +12,7 @@ const validIds = new Set<Interest>(INTERESTS.map((i) => i.id));
 const current: "all" | Interest =
   requested && validIds.has(requested) ? requested : "all";
 
-const all = await getSortedThoughts();
+const all = (await getSortedThoughts()).filter((t) => !isPtVariant(t.id));
 
 const byYear = new Map<number, typeof all>();
 for (const t of all) {
@@ -27,9 +29,16 @@ const years = [...byYear.keys()].sort((a, b) => b - a);
 >
   <p class="label mb-2">Notebook</p>
   <h1 class="mb-4">Thoughts</h1>
-  <p class="mb-8 text-base text-stone-500">
-    Small posts and notes, mostly for future me.
-  </p>
+  <div class="mb-8 flex flex-wrap items-baseline justify-between gap-4">
+    <p class="my-0 text-base text-stone-500">
+      Small posts and notes, mostly for future me.
+    </p>
+    <LanguageToggle
+      current="en"
+      enHref={`${import.meta.env.BASE_URL}thoughts/`}
+      brHref={`${import.meta.env.BASE_URL}thoughts/br/`}
+    />
+  </div>
 
   <InterestFilter current={current} basePath={`${import.meta.env.BASE_URL}thoughts`} />
 

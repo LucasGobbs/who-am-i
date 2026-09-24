@@ -23,6 +23,18 @@ import { SITE_AUTHOR } from "../../consts";
     </label>
     <input id="qr-size" type="range" min="128" max="512" step="32" value="256" class="accent-stone-900" />
     <span id="qr-size-val" class="min-w-14 font-mono text-xs text-stone-400">256px</span>
+
+    <label class="font-mono text-xs uppercase tracking-wide text-stone-500">
+      Background
+    </label>
+    <div id="qr-bg" class="inline-flex overflow-hidden rounded-full border border-stone-200">
+      <button type="button" data-bg="#f7f2e8" aria-pressed="true" class="cursor-pointer px-3 py-1 font-mono text-xs uppercase tracking-wider transition-colors duration-150 ease-out">
+        Paper
+      </button>
+      <button type="button" data-bg="#ffffff" aria-pressed="false" class="cursor-pointer px-3 py-1 font-mono text-xs uppercase tracking-wider transition-colors duration-150 ease-out">
+        White
+      </button>
+    </div>
   </div>
 
   <div id="qr-output" class="my-6 inline-block min-h-32 rounded-lg border border-stone-200 bg-stone-100 p-6">
@@ -46,9 +58,12 @@ import { SITE_AUTHOR } from "../../consts";
       const size = document.getElementById("qr-size");
       const sizeVal = document.getElementById("qr-size-val");
       const dl = document.getElementById("qr-download");
-      if (!input || !output || !size || !sizeVal || !dl) return;
+      const bgPicker = document.getElementById("qr-bg");
+      if (!input || !output || !size || !sizeVal || !dl || !bgPicker) return;
 
       let canvas = null;
+      let bg = "#f7f2e8";
+      const bgButtons = bgPicker.querySelectorAll("button");
       const emptyMessage = '<p class="font-mono text-xs text-stone-400">Type something to generate a QR code.</p>';
       const errorMessage = '<p class="font-mono text-xs text-red-600">Failed to load QR library. Check your connection.</p>';
 
@@ -68,7 +83,7 @@ import { SITE_AUTHOR } from "../../consts";
           canvas.width = px;
           canvas.height = px;
           canvas.className = "block h-auto max-w-full";
-          await mod.toCanvas(canvas, text, { width: px, margin: 1, color: { dark: "#1a1714", light: "#f7f2e8" } });
+          await mod.toCanvas(canvas, text, { width: px, margin: 1, color: { dark: "#1a1714", light: bg } });
           output.innerHTML = "";
           output.appendChild(canvas);
           dl.disabled = false;
@@ -77,6 +92,27 @@ import { SITE_AUTHOR } from "../../consts";
           dl.disabled = true;
         }
       };
+
+      const syncBgButtons = () => {
+        bgButtons.forEach((b) => {
+          const active = b.dataset.bg === bg;
+          b.setAttribute("aria-pressed", String(active));
+          b.classList.toggle("bg-stone-900", active);
+          b.classList.toggle("text-stone-50", active);
+          b.classList.toggle("bg-stone-50", !active);
+          b.classList.toggle("text-stone-500", !active);
+        });
+      };
+
+      bgButtons.forEach((b) => {
+        b.addEventListener("click", () => {
+          if (b.dataset.bg === bg) return;
+          bg = b.dataset.bg;
+          syncBgButtons();
+          render();
+        });
+      });
+      syncBgButtons();
 
       input.addEventListener("input", render);
       size.addEventListener("input", render);

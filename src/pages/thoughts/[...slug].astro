@@ -1,11 +1,14 @@
 ---
 import { getCollection, render } from "astro:content";
 import NoteLayout from "../../layouts/NoteLayout.astro";
+import { groupThoughtsByLang } from "../../lib/lang";
 
 export async function getStaticPaths() {
-  const thoughts = (await getCollection("thoughts"))
-    .filter((t) => !t.data.draft)
-    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  const all = (await getCollection("thoughts")).filter((t) => !t.data.draft);
+  const { en, br } = groupThoughtsByLang(all);
+  const thoughts = [...en.values()].sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime()
+  );
 
   return thoughts.map((entry, i) => ({
     params: { slug: entry.id },
@@ -17,14 +20,20 @@ export async function getStaticPaths() {
       next: thoughts[i - 1]
         ? { slug: thoughts[i - 1].id, title: thoughts[i - 1].data.title }
         : null,
+      lang: br.has(entry.id)
+        ? {
+            current: "en" as const,
+            href: `${import.meta.env.BASE_URL}thoughts/br/${entry.id}/`,
+          }
+        : undefined,
     },
   }));
 }
 
-const { entry, prev, next } = Astro.props;
+const { entry, prev, next, lang } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<NoteLayout entry={entry} prev={prev} next={next}>
+<NoteLayout entry={entry} prev={prev} next={next} lang={lang}>
   <Content />
 </NoteLayout>

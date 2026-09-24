@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from "astro:content";
+import NoteLayout from "../../../layouts/NoteLayout.astro";
+import { groupThoughtsByLang } from "../../../lib/lang";
+
+export async function getStaticPaths() {
+  const all = (await getCollection("thoughts")).filter((t) => !t.data.draft);
+  const { en, br } = groupThoughtsByLang(all);
+
+  return [...br.entries()].map(([slug, entry]) => ({
+    params: { slug },
+    props: {
+      entry,
+      slug,
+      lang: {
+        current: "br" as const,
+        href: `${import.meta.env.BASE_URL}thoughts/${slug}/`,
+      },
+      hasEn: en.has(slug),
+    },
+  }));
+}
+
+const { entry, slug, lang } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<NoteLayout entry={entry} lang={lang} canonicalSlug={slug}>
+  <Content />
+</NoteLayout>

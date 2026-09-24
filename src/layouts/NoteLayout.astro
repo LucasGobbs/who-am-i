@@ -8,10 +8,13 @@ interface Props {
   entry: CollectionEntry<"thoughts">;
   prev?: { slug: string; title: string } | null;
   next?: { slug: string; title: string } | null;
+  lang?: { current: "en" | "br"; href: string };
+  canonicalSlug?: string;
 }
 
-const { entry, prev, next } = Astro.props;
+const { entry, prev, next, lang, canonicalSlug } = Astro.props;
 const { title, date, tags, description, thumbnail } = entry.data;
+const entrySlug = canonicalSlug ?? entry.id;
 
 const dateFormatted = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
@@ -20,7 +23,7 @@ const dateFormatted = new Intl.DateTimeFormat("en-US", {
 }).format(date);
 
 const titleAttr = description ?? title;
-const postUrl = `${SITE_URL}/thoughts/${entry.id}/`;
+const postUrl = `${SITE_URL}/thoughts/${entrySlug}/`;
 const imageUrl = thumbnail
   ? thumbnail.startsWith("http") ? thumbnail : `${SITE_URL}${thumbnail}`
   : undefined;
@@ -45,7 +48,7 @@ const jsonLd = JSON.stringify({
 <PageLayout
   title={title}
   description={titleAttr}
-  canonical={`/thoughts/${entry.id}/`}
+  canonical={`/thoughts/${entrySlug}/`}
   image={thumbnail}
   ogType="article"
   jsonLd={jsonLd}
@@ -59,8 +62,18 @@ const jsonLd = JSON.stringify({
           <a href={`${import.meta.env.BASE_URL}thoughts/`} class="text-stone-500 no-underline">← Thoughts</a>
         </p>
         <h1 class="mb-2 mt-0 min-w-0 font-serif text-4xl break-words xl:text-5xl">{title}</h1>
-        <p class="label m-0 text-stone-500">
+        <p class="label m-0 flex flex-wrap items-baseline gap-3 text-stone-500">
           <time datetime={date.toISOString()}>{dateFormatted}</time>
+          {
+            lang && (
+              <a
+                href={lang.href}
+                class="font-mono text-xs uppercase tracking-widest text-stone-500 no-underline hover:text-stone-950"
+              >
+                {lang.current === "en" ? "ler em português" : "read in english"}
+              </a>
+            )
+          }
         </p>
         {
           tags.length > 0 && (
