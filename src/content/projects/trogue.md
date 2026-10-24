@@ -1,7 +1,7 @@
 ---
 title: "Trogue"
 description: "Graphics agnostic API to make UI applications with terminal look. A terminal emulator abstraction that decouples UI logic from backend rendering implementations."
-date: 2026-08-13
+date: 2020-07-08
 tech:
   - Rust
 role: "Creator"
@@ -17,6 +17,8 @@ draft: false
 ---
 
 A terminal emulator that's agnostic of backend rendering APIs. Build terminal-style UIs without coupling to any specific graphics backend.
+
+![Trogue demo scene](/projects/trogue/demo.gif)
 
 ## Backend Abstraction
 
